@@ -1,0 +1,110 @@
+name: Morning edition
+
+# One edition a day, at 06:07 in Helsinki, so it is waiting by 06:30.
+# GitHub cron runs in UTC and Finland shifts between UTC+2 and UTC+3,
+# so both candidate times are scheduled and the clock job lets only the
+# one that is really 06:07 in Helsinki through.
+on:
+  schedule:
+    - cron: "7 3 * * *"   # 06:07 Finnish summer time (UTC+3)
+    - cron: "7 4 * * *"   # 06:07 Finnish winter time (UTC+2)
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: morning-edition
+  cancel-in-progress: false
+
+jobs:
+  clock:
+    runs-on: ubuntu-latest
+    outputs:
+      go: ${{ steps.check.outputs.go }}
+    steps:
+      - id: check
+        env:
+          EVENT: ${{ github.event_name }}
+          SCHEDULE: ${{ github.event.schedule }}
+        run: |
+          go=true
+          if [ "$EVENT" = "schedule" ]; then
+            offset=$(TZ=Europe/Helsinki date +%z)
+            case "$SCHEDULE" in
+              "7 3 * * *") [ "$offset" = "+0300" ] || go=false ;;
+              "7 4 * * *") [ "$offset" = "+0200" ] || go=false ;;
+            esac
+          fi
+          echo "Helsinki offset $(TZ=Europe/Helsinki date +%z), go=$go"
+          echo "go=$go" >> "$GITHUB_OUTPUT"
+
+  edition:
+    needs: clock
+    if: needs.clock.outputs.go == 'true'
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    permissions:
+      contents: write   # commit index.html back to the repository
+      pages: write      # publish to GitHub Pages
+      id-token: write   # required by deploy-pages
+      issues: write     # morning notification
+    environment:
+      name: github-pages
+      url: ${{ steps.deploy.outputs.page_url }}
+    steps:
+      - uses: actions/checkout@v5
+
+      - uses: actions/setup-python@v6
+        with:
+          python-version: "3.12"
+
+      - name: Install dependencies
+        run: python -m pip install --disable-pip-version-check --quiet anthropic==2.8.0 feedparser==6.0.14
+
+      - name: Write today's edition
+        id: generate
+        env:
+          ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+        run: python generate.py
+
+      - name: Commit index.html
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add index.html
+          if git diff --cached --quiet; then
+            echo "No change to commit."
+          else
+            git commit --quiet -m "Aamun arkki · $(TZ=Europe/Helsinki date +%F)"
+            git push --quiet
+          fi
+
+      - name: Stage the page
+        run: mkdir -p _site && cp index.html _site/index.html
+
+      - uses: actions/upload-pages-artifact@v4
+        with:
+          path: _site
+
+      - id: deploy
+        uses: actions/deploy-pages@v4
+
+      - name: Send the morning link
+        env:
+          GH_TOKEN: ${{ github.token }}
+          GH_REPO: ${{ github.repository }}
+          OWNER: ${{ github.repository_owner }}
+          DATE: ${{ steps.generate.outputs.date }}
+          ATMOSPHERE: ${{ steps.generate.outputs.atmosphere }}
+          URL: ${{ steps.deploy.outputs.page_url }}
+        run: |
+          body=$(printf '**%s**\n\n%s\n\n%s' "$DATE" "$ATMOSPHERE" "$URL")
+          thread=$(gh issue list --state open --search 'author:app/github-actions in:title "Aamun arkki"' \
+                     --json number --jq '.[0].number // empty')
+          if [ -n "$thread" ]; then
+            gh issue comment "$thread" --body "$body"
+          else
+            gh issue create --title "Aamun arkki" \
+              --body "$(printf '@%s – tähän ketjuun tulee joka aamu linkki päivän arkkiin.\n\n%s' "$OWNER" "$body")"
+          fi
