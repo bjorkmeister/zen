@@ -60,12 +60,12 @@ jobs:
           python-version: "3.12"
 
       - name: Install dependencies
-        run: python -m pip install --disable-pip-version-check --quiet anthropic==2.8.0 feedparser==6.0.14
+        run: python -m pip install --disable-pip-version-check --quiet google-genai==3.3.0 feedparser==6.0.14
 
       - name: Write today's edition
         id: generate
         env:
-          ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+          GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
         run: python generate.py
 
       - name: Commit index.html

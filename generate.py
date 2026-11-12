@@ -4,14 +4,14 @@
 Each morning this script
   1. reads today's weather and daylight for Espoo from Open-Meteo,
   2. reads the last day and a half of a few curated RSS feeds in five domains,
-  3. asks Claude to distil them into one calm page in Finnish, and
+  3. asks Gemini to distil them into one calm page in Finnish, and
   4. renders template.html into index.html.
 
 There is no state: every run starts from nothing and overwrites index.html.
 If any required step fails the script exits non-zero and writes nothing, so
 yesterday's edition stays up rather than a broken one going out.
 
-Requires ANTHROPIC_API_KEY. Dependencies: anthropic, feedparser.
+Requires GEMINI_API_KEY. Dependencies: google-genai, feedparser.
 """
 
 from __future__ import annotations
@@ -31,8 +31,9 @@ from datetime import datetime
 from pathlib import Path
 from zoneinfo import ZoneInfo
 
-import anthropic
 import feedparser
+from google import genai
+from google.genai import errors, types
 
 ROOT = Path(__file__).resolve().parent
 TEMPLATE = ROOT / "template.html"
@@ -41,7 +42,9 @@ OUTPUT = ROOT / "index.html"
 TZ = ZoneInfo("Europe/Helsinki")
 ESPOO = {"latitude": 60.2055, "longitude": 24.6559}
 
-MODEL = "claude-opus-5-5"
+# Tried in order. Carbon writes best but needs a paid key; Flash is on the free
+# tier; the moving alias keeps the paper alive when a named model is retired.
+MODELS = ("gemini-4-carbon", "gemini-3.8-flash", "gemini-flash-latest")
 USER_AGENT = "Mozilla/5.0 (compatible; AamunArkki/1.0; personal morning digest)"
 WINDOW_HOURS = 36       # "yesterday", with slack for time zones and late publishing
 ITEMS_PER_FEED = 10
@@ -388,34 +391,48 @@ def briefing(today: datetime, weather: Weather, news: dict[str, list[Item]]) -> 
 
 
 def compose(prompt: str) -> dict:
-    client = anthropic.Anthropic(max_retries=4, timeout=600)
-    response = client.beta.messages.create(
-        model=MODEL,
-        max_tokens=16000,
-        betas=["server-side-fallback-2026-07-01"],
-        fallbacks="default",
-        output_config={
-            "effort": "high",
-            "format": {"type": "json_schema", "schema": edition_schema()},
-        },
-        system=SYSTEM_PROMPT,
-        messages=[{"role": "user", "content": prompt}],
+    """Ask each model in turn until one returns a complete edition."""
+    client = genai.Client(http_options=types.HttpOptions(
+        timeout=300_000,  # milliseconds
+        retry_options=types.HttpRetryOptions(attempts=4),
+    ))
+    config = types.GenerateContentConfig(
+        system_instruction=SYSTEM_PROMPT,
+        response_mime_type="application/json",
+        response_json_schema=edition_schema(),
+        thinking_config=types.ThinkingConfig(thinking_level=types.ThinkingLevel.HIGH),
+        max_output_tokens=16000,
     )
-    print(f"  model {response.model}, stop {response.stop_reason}, "
-          f"tokens in {response.usage.input_tokens} / out {response.usage.output_tokens}")
-    if response.stop_reason == "refusal":
-        raise RuntimeError(f"declined: {response.stop_details}")
-    if response.stop_reason == "max_tokens":
-        raise RuntimeError("response truncated at max_tokens")
+    for model in MODELS:
+        try:
+            response = client.models.generate_content(model=model, contents=prompt, config=config)
+        except errors.APIError as error:
+            print(f"  ! {model}: {error.code} {error.message}", file=sys.stderr)
+            continue
+        candidate = response.candidates[0] if response.candidates else None
+        finish = candidate.finish_reason if candidate else None
+        usage = response.usage_metadata
+        print(f"  model {model}, finish {finish}, tokens in "
+              f"{usage.prompt_token_count if usage else '?'} / out {usage.candidates_token_count if usage else '?'}")
+        if finish != types.FinishReason.STOP or not response.text:
+            continue
+        try:
+            edition = json.loads(response.text)
+        except json.JSONDecodeError:
+            print(f"  ! {model}: response was not valid JSON", file=sys.stderr)
+            continue
+        if complete(edition):
+            return edition
+        print(f"  ! {model}: edition is missing fields", file=sys.stderr)
+    raise RuntimeError("no model produced an edition")
 
-    # Only text written after the last model switch belongs to the final answer.
-    parts: list[str] = []
-    for block in response.content:
-        if block.type == "fallback":
-            parts = []
-        elif block.type == "text":
-            parts.append(block.text)
-    return json.loads("".join(parts))
+
+def complete(edition: dict) -> bool:
+    text_fields = ("atmosphere", "megatrend_synthesis", "executive_reflection", "zen_anchor")
+    signals = edition.get("signals") or {}
+    return (all(str(edition.get(field, "")).strip() for field in text_fields)
+            and all(str((signals.get(section.key) or {}).get(part, "")).strip()
+                    for section in SECTIONS for part in ("title", "body")))
 
 
 def tidy(text: str) -> str:
