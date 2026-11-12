@@ -181,6 +181,16 @@
     border-radius: 50%;
   }
 
+  .anchor .next {
+    max-width: none;
+    margin-top: clamp(72px, 13vw, 112px);
+    color: var(--stone);
+    font: 500 0.625rem/1.6 var(--sans);
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    font-variant-numeric: tabular-nums;
+  }
+
   .anchor p {
     max-width: 26ch;
     margin: 0 auto;
@@ -247,6 +257,7 @@
 
   <footer class="anchor">
     <p>{{ zen_anchor }}</p>
+    <p class="next">Seuraava painos {{ next_edition }}</p>
   </footer>
 
 </main>

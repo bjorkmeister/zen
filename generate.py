@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """Aamun arkki: a single-edition morning broadsheet for Espoo.
 
-Each morning this script
+At 6.00, 14.00 and 20.00 this script
   1. reads today's weather and daylight for Espoo from Open-Meteo,
   2. reads the last day and a half of a few curated RSS feeds in five domains,
   3. asks Gemini to distil them into one calm page in Finnish, and
@@ -27,7 +27,7 @@ import urllib.parse
 import urllib.request
 from concurrent.futures import ThreadPoolExecutor
 from dataclasses import dataclass
-from datetime import datetime
+from datetime import datetime, timedelta
 from pathlib import Path
 from zoneinfo import ZoneInfo
 
@@ -41,6 +41,12 @@ OUTPUT = ROOT / "index.html"
 
 TZ = ZoneInfo("Europe/Helsinki")
 ESPOO = {"latitude": 60.2055, "longitude": 24.6559}
+
+# Edition hours in Helsinki time and their names. Keep in step with the cron
+# lines in .github/workflows/morning_edition.yml, which start each run ten
+# minutes early. The first edition is the one that sends the morning link.
+EDITIONS = {6: "aamupainos", 14: "iltapäiväpainos", 20: "iltapainos"}
+LEAD = timedelta(minutes=20)  # a run this close before an edition hour belongs to it
 
 # Tried in order. Carbon writes best but needs a paid key; Flash and Hydrogen
 # are on the free tier, so the paper still appears if Carbon is unavailable.
@@ -297,12 +303,24 @@ def long_date(day: datetime) -> str:
     return f"{WEEKDAYS[day.weekday()].capitalize()} {day.day}. {MONTHS[day.month - 1]} {day.year}"
 
 
+def editions(now: datetime) -> tuple[datetime, datetime]:
+    """The edition this run belongs to, and the one after it."""
+    anchor = now + LEAD
+    slots = sorted(
+        (anchor + timedelta(days=offset)).replace(hour=hour, minute=0, second=0, microsecond=0)
+        for offset in (-1, 0, 1) for hour in EDITIONS
+    )
+    current = max(slot for slot in slots if slot <= anchor)
+    upcoming = min(slot for slot in slots if slot > anchor)
+    return current, upcoming
+
+
 # --------------------------------------------------------------------------
 # Composition
 # --------------------------------------------------------------------------
 
 SYSTEM_PROMPT = """\
-You are the sole editor of Aamun arkki ("the morning sheet"), a one-page broadsheet with exactly one reader: a senior Finnish leader in Espoo who works where technology, organisations and strategy meet. They read it once, slowly, with their first coffee, and then close the screen. Your task is to give them clarity and calm: the few things that matter, why they matter, and nothing else.
+You are the sole editor of Aamun arkki ("the morning sheet"), a one-page broadsheet with exactly one reader: a senior Finnish leader in Espoo who works where technology, organisations and strategy meet. The sheet appears three times a day – morning (6.00), afternoon (14.00) and evening (20.00) – and the reader reads each edition once, slowly, and then closes the screen. The briefing says which edition this is; let the atmosphere and the zen anchor fit that hour of the day. Your task is to give them clarity and calm: the few things that matter, why they matter, and nothing else.
 
 Language
 Write every field in Finnish: natural, precise, contemporary written Finnish of the kind the best Finnish long-form editors produce. Use Finnish syntax, not translated English. Prefer a good Finnish word to an anglicism, an active verb to a stack of nouns, and avoid officialese such as "toimesta", "omata", "suorittaa" used as a filler verb, or "tulee olemaan". Keep proper names in their original form. Use Finnish typography: ”lainausmerkit”, ajatusviiva (–), kellonajat pisteellä (8.06), desimaalipilkku, miinusmerkki (−3°).
@@ -313,7 +331,7 @@ Editorial principles
 - Calm and exact. No hype, no alarm, no exclamation marks, no emoji, no markdown, no rhetorical questions.
 
 Fields
-atmosphere: exactly one sentence, at most 30 words. Today's weather in Espoo and the rhythm of daylight, including the temperature from the data. Evocative but concrete, true to the data; no stock phrases.
+atmosphere: exactly one sentence, at most 30 words. The weather in Espoo as it stands at this edition's hour and the rhythm of daylight, including the current temperature from the data. Evocative but concrete, true to the data; no stock phrases.
 
 megatrend_synthesis: one paragraph of 3–4 sentences. Look beneath the individual headlines and name the structural current that links at least two of the domains. Name the mechanism – who gains leverage, which constraint moves, which incentive changes – rather than the topic. Do not summarise the headlines one by one.
 
@@ -325,7 +343,7 @@ If a domain's material is thin, choose its least trivial item and state plainly 
 
 executive_reflection: one paragraph of 3–5 sentences for a senior leader. Start from a concrete pattern visible in today's material and draw a first-principles insight about organisations, strategy or systems – for example incentive structures, second-order effects, governance friction, Conway's law, information asymmetry, principal–agent problems, operational leverage, feedback delays or optionality. It must be specific enough that it could not have been written on any other day. Forbidden: management clichés and motivational language (such as "muutos on ainoa pysyvä", "kulttuuri syö strategian aamiaiseksi", ketteryys, synergia, paradigman muutos, mukavuusalue, win-win), lists, advice in the imperative, and questions.
 
-zen_anchor: exactly one sentence, at most 20 words. Timeless, quiet and concrete; it may draw on today's season or light in Espoo. It restores perspective and gently turns the reader toward their real day, without mentioning screens, news, reading or this page, and without quotations, attributed sayings or familiar aphorisms.
+zen_anchor: exactly one sentence, at most 20 words. Timeless, quiet and concrete; it may draw on today's season or light in Espoo. It restores perspective and gently turns the reader toward the rest of their real day – or, in the evening edition, toward rest – without mentioning screens, news, reading or this page, and without quotations, attributed sayings or familiar aphorisms.
 """
 
 
@@ -361,12 +379,13 @@ def edition_schema() -> dict:
     }
 
 
-def briefing(today: datetime, weather: Weather, news: dict[str, list[Item]]) -> str:
+def briefing(today: datetime, edition_hour: int, weather: Weather, news: dict[str, list[Item]]) -> str:
     rain = f"{weather.precipitation_mm:.1f} mm".replace(".", ",")
     if weather.precipitation_chance is not None:
         rain += f", todennäköisyys {weather.precipitation_chance} %"
     lines = [
         f"Päivä: {long_date(today)}, vuoden {today.timetuple().tm_yday}. päivä.",
+        f"Painos: {EDITIONS[edition_hour]}, luetaan noin kello {edition_hour}.00.",
         "",
         "Sää Espoossa tänään (Open-Meteo):",
         f"- nyt {degrees(weather.now)}, tuntuu kuin {degrees(weather.feels_like)}",
@@ -418,7 +437,8 @@ def compose(prompt: str) -> dict:
         finish = candidate.finish_reason if candidate else None
         usage = response.usage_metadata
         print(f"  {model}: {time.monotonic() - started:.0f} s, finish {finish}, tokens in "
-              f"{usage.prompt_token_count if usage else '?'} / out {usage.candidates_token_count if usage else '?'}",
+              f"{usage.prompt_token_count if usage else '?'} / out {usage.candidates_token_count if usage else '?'}"
+              f" + thinking {usage.thoughts_token_count if usage else '?'}",
               flush=True)
         if finish != types.FinishReason.STOP or not response.text:
             continue
@@ -473,10 +493,11 @@ def render(template: str, page: dict[str, str], signals: list[dict[str, str]]) -
     return fill(template[:block.start()], page) + repeated + fill(template[block.end():], page)
 
 
-def build_page(today: datetime, weather: Weather, news: dict[str, list[Item]],
+def build_page(today: datetime, upcoming: datetime, weather: Weather, news: dict[str, list[Item]],
                edition: dict) -> tuple[dict[str, str], list[dict[str, str]]]:
     sources = {item.id: item.source for items in news.values() for item in items}
     page = {
+        "next_edition": f"{upcoming.hour:02d}.{upcoming.minute:02d}",
         "date_long": long_date(today),
         "date_short": f"{WEEKDAYS[today.weekday()]} {today.day}.{today.month}.",
         "day_number": str(today.timetuple().tm_yday),
@@ -502,18 +523,21 @@ def build_page(today: datetime, weather: Weather, news: dict[str, list[Item]],
     return page, signals
 
 
-def announce(page: dict[str, str]) -> None:
-    """Hand the date and the weather sentence to the workflow's notification step."""
+def announce(page: dict[str, str], morning: bool) -> None:
+    """Hand the date, the weather sentence and whether this is the morning
+    edition (the one that sends the link) to the workflow."""
     target = os.environ.get("GITHUB_OUTPUT")
     if target:
         with open(target, "a", encoding="utf-8") as out:
             out.write(f"date={page['date_long']}\n")
             out.write(f"atmosphere={page['atmosphere']}\n")
+            out.write(f"morning={'true' if morning else 'false'}\n")
 
 
 def main() -> int:
     today = datetime.now(TZ)
-    print(f"Aamun arkki · {long_date(today)}")
+    current, upcoming = editions(today)
+    print(f"Aamun arkki · {long_date(today)} · {EDITIONS[current.hour]}")
 
     template = TEMPLATE.read_text(encoding="utf-8")
     weather = fetch_weather()
@@ -525,11 +549,11 @@ def main() -> int:
     if sum(1 for items in news.values() if items) < MIN_SECTIONS_WITH_NEWS:
         raise RuntimeError("too few feeds answered; keeping yesterday's edition")
 
-    edition = compose(briefing(today, weather, news))
-    page, signals = build_page(today, weather, news, edition)
+    edition = compose(briefing(today, current.hour, weather, news))
+    page, signals = build_page(today, upcoming, weather, news, edition)
     OUTPUT.write_text(render(template, page, signals), encoding="utf-8")
-    announce(page)
-    print(f"  wrote {OUTPUT.name}")
+    announce(page, morning=current.hour == min(EDITIONS))
+    print(f"  wrote {OUTPUT.name}; next edition {page['next_edition']}")
     return 0
 
 
