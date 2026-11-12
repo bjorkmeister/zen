@@ -42,9 +42,9 @@ OUTPUT = ROOT / "index.html"
 TZ = ZoneInfo("Europe/Helsinki")
 ESPOO = {"latitude": 60.2055, "longitude": 24.6559}
 
-# Tried in order. Carbon writes best but needs a paid key; Flash is on the free
-# tier; the moving alias keeps the paper alive when a named model is retired.
-MODELS = ("gemini-4-carbon", "gemini-3.8-flash", "gemini-flash-latest")
+# Tried in order. Carbon writes best but needs a paid key; Flash and Hydrogen
+# are on the free tier, so the paper still appears if Carbon is unavailable.
+MODELS = ("gemini-4-carbon", "gemini-3.8-flash", "gemini-4-hydrogen")
 USER_AGENT = "Mozilla/5.0 (compatible; AamunArkki/1.0; personal morning digest)"
 WINDOW_HOURS = 36       # "yesterday", with slack for time zones and late publishing
 ITEMS_PER_FEED = 10
@@ -392,28 +392,34 @@ def briefing(today: datetime, weather: Weather, news: dict[str, list[Item]]) -> 
 
 def compose(prompt: str) -> dict:
     """Ask each model in turn until one returns a complete edition."""
+    # One unhurried attempt per model: deep thinking can take minutes, and a
+    # timed-out call is better handed to the next model than repeated.
     client = genai.Client(http_options=types.HttpOptions(
-        timeout=300_000,  # milliseconds
-        retry_options=types.HttpRetryOptions(attempts=4),
+        timeout=600_000,  # milliseconds
+        retry_options=types.HttpRetryOptions(attempts=1),
     ))
     config = types.GenerateContentConfig(
         system_instruction=SYSTEM_PROMPT,
         response_mime_type="application/json",
         response_json_schema=edition_schema(),
-        thinking_config=types.ThinkingConfig(thinking_level=types.ThinkingLevel.HIGH),
-        max_output_tokens=16000,
+        # Thinking counts against max_output_tokens, so leave ample room for both.
+        thinking_config=types.ThinkingConfig(thinking_level=types.ThinkingLevel.MEDIUM),
+        max_output_tokens=32768,
     )
     for model in MODELS:
+        print(f"  asking {model}", flush=True)
+        started = time.monotonic()
         try:
             response = client.models.generate_content(model=model, contents=prompt, config=config)
-        except errors.APIError as error:
-            print(f"  ! {model}: {error.code} {error.message}", file=sys.stderr)
+        except (errors.APIError, OSError) as error:  # OSError covers timeouts and dropped connections
+            print(f"  ! {model}: {type(error).__name__}: {error}", file=sys.stderr, flush=True)
             continue
         candidate = response.candidates[0] if response.candidates else None
         finish = candidate.finish_reason if candidate else None
         usage = response.usage_metadata
-        print(f"  model {model}, finish {finish}, tokens in "
-              f"{usage.prompt_token_count if usage else '?'} / out {usage.candidates_token_count if usage else '?'}")
+        print(f"  {model}: {time.monotonic() - started:.0f} s, finish {finish}, tokens in "
+              f"{usage.prompt_token_count if usage else '?'} / out {usage.candidates_token_count if usage else '?'}",
+              flush=True)
         if finish != types.FinishReason.STOP or not response.text:
             continue
         try:

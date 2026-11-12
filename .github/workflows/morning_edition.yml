@@ -43,7 +43,7 @@ jobs:
     needs: clock
     if: needs.clock.outputs.go == 'true'
     runs-on: ubuntu-latest
-    timeout-minutes: 20
+    timeout-minutes: 40
     permissions:
       contents: write   # commit index.html back to the repository
       pages: write      # publish to GitHub Pages
@@ -66,7 +66,7 @@ jobs:
         id: generate
         env:
           GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
-        run: python generate.py
+        run: python -u generate.py
 
       - name: Commit index.html
         run: |
