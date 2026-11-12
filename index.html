@@ -1,0 +1,286 @@
+<!doctype html>
+<html lang="fi">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="color-scheme" content="light">
+<meta name="theme-color" content="#F6F4EF">
+<meta name="robots" content="noindex, nofollow">
+<meta name="description" content="Marraskuun sade kastelee Espoon neljän asteen koleudessa, joka tuulessa tuntuu −2 asteelta, ja kello 8.15 nouseva aurinko jättää valolle aikaa vain kello 15.55 saakka.">
+<title>Aamun arkki · perjantai 13.11.</title>
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' fill='%23F6F4EF'/%3E%3Ccircle cx='16' cy='16' r='9' fill='none' stroke='%23181818' stroke-width='1.5'/%3E%3C/svg%3E">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Plus+Jakarta+Sans:wght@400;500&display=swap">
+<style>
+  :root {
+    --paper: #F6F4EF;
+    --ink: #181818;
+    --stone: #76726A;
+    --rule: #E2DFD7;
+    --serif: "Instrument Serif", "Iowan Old Style", "Palatino Linotype", Georgia, serif;
+    --sans: "Plus Jakarta Sans", "Helvetica Neue", Helvetica, Arial, sans-serif;
+    --gutter: clamp(20px, 6vw, 40px);
+    --label: 9.5rem;
+  }
+
+  *, *::before, *::after { box-sizing: border-box; }
+
+  html {
+    background: var(--paper);
+    -webkit-text-size-adjust: 100%;
+    text-size-adjust: 100%;
+  }
+
+  body {
+    margin: 0;
+    background: var(--paper);
+    color: var(--ink);
+    font: 400 1.03rem/1.72 var(--sans);
+    font-kerning: normal;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    text-rendering: optimizeLegibility;
+    overflow-wrap: break-word;
+    hyphens: auto;
+    -webkit-hyphens: auto;
+    cursor: default;
+    -webkit-tap-highlight-color: transparent;
+  }
+
+  ::selection { background: var(--rule); color: var(--ink); }
+
+  h1, h2, h3, p { margin: 0; font-weight: 400; }
+
+  .sheet {
+    width: min(680px, 100% - 2 * var(--gutter));
+    margin: 0 auto;
+    padding: clamp(56px, 11vw, 120px) 0 clamp(72px, 13vw, 152px);
+  }
+
+  /* Masthead ------------------------------------------------------------ */
+
+  .masthead { text-align: center; }
+
+  .masthead h1 {
+    font: 400 clamp(3rem, 11vw, 4.75rem)/0.95 var(--serif);
+    letter-spacing: -0.012em;
+  }
+
+  .folio {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    gap: 4px 24px;
+    margin-top: clamp(28px, 5vw, 40px);
+    padding: 11px 0 10px;
+    border-top: 1px solid var(--rule);
+    border-bottom: 1px solid var(--rule);
+    color: var(--stone);
+    font-size: 0.6875rem;
+    font-weight: 500;
+    letter-spacing: 0.14em;
+    line-height: 1.6;
+    text-transform: uppercase;
+  }
+
+  /* Weather ------------------------------------------------------------- */
+
+  .weather {
+    padding: clamp(48px, 9vw, 72px) 0 clamp(52px, 9vw, 76px);
+    text-align: center;
+  }
+
+  .atmosphere {
+    max-width: 34ch;
+    margin: 0 auto;
+    font: italic 400 clamp(1.55rem, 4.6vw, 2rem)/1.3 var(--serif);
+    text-wrap: balance;
+    hyphens: manual;
+  }
+
+  .almanac {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 2px 1.6em;
+    margin-top: 22px;
+    color: var(--stone);
+    font-size: 0.8125rem;
+    letter-spacing: 0.01em;
+    font-variant-numeric: tabular-nums;
+  }
+
+  .almanac span { white-space: nowrap; }
+
+  /* Entries: hanging label, then text ----------------------------------- */
+
+  .part {
+    padding: clamp(40px, 7vw, 56px) 0;
+    border-top: 1px solid var(--rule);
+  }
+
+  .entry {
+    display: grid;
+    grid-template-columns: var(--label) minmax(0, 1fr);
+    align-items: baseline;
+    column-gap: 1.75rem;
+  }
+
+  .entry + .entry { margin-top: clamp(36px, 6vw, 48px); }
+
+  .label {
+    color: var(--stone);
+    font: 500 0.6875rem/1.6 var(--sans);
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    hyphens: manual;
+  }
+
+  .source {
+    display: block;
+    margin-top: 2px;
+    font: italic 400 0.95rem/1.35 var(--serif);
+    letter-spacing: 0;
+    text-transform: none;
+  }
+
+  .source:empty { display: none; }
+
+  .synthesis {
+    font: 400 clamp(1.3rem, 3.4vw, 1.5rem)/1.45 var(--serif);
+    text-wrap: pretty;
+  }
+
+  .signal h3 {
+    margin-bottom: 8px;
+    font: 400 clamp(1.4rem, 3.6vw, 1.625rem)/1.2 var(--serif);
+    text-wrap: balance;
+  }
+
+  .signal p,
+  .reflection { text-wrap: pretty; }
+
+  .reflection { font-size: 1.0625rem; line-height: 1.75; }
+
+  /* Anchor -------------------------------------------------------------- */
+
+  .anchor {
+    padding-top: clamp(64px, 12vw, 104px);
+    border-top: 1px solid var(--rule);
+    text-align: center;
+  }
+
+  .anchor::before {
+    content: "";
+    display: block;
+    width: 9px;
+    height: 9px;
+    margin: 0 auto 30px;
+    border: 1px solid var(--stone);
+    border-radius: 50%;
+  }
+
+  .anchor p {
+    max-width: 26ch;
+    margin: 0 auto;
+    font: italic 400 clamp(1.45rem, 4.2vw, 1.75rem)/1.35 var(--serif);
+    text-wrap: balance;
+    hyphens: manual;
+  }
+
+  /* Narrow screens: labels sit above their text ------------------------- */
+
+  @media (max-width: 600px) {
+    .entry { display: block; }
+    .label { margin-bottom: 10px; }
+    .source { display: inline; margin: 0; }
+    .source::before { content: " · "; font-style: normal; }
+    .folio { justify-content: center; }
+  }
+
+  @media print {
+    @page { margin: 18mm 16mm; }
+    .sheet { width: auto; padding: 0; }
+    .part, .anchor { break-inside: avoid; }
+  }
+</style>
+</head>
+<body>
+<main class="sheet">
+
+  <header class="masthead">
+    <h1>Aamun arkki</h1>
+    <p class="folio"><span>Perjantai 13. marraskuuta 2026</span><span>Espoo · N:o 317</span></p>
+  </header>
+
+  <section class="weather" aria-label="Sää">
+    <p class="atmosphere">Marraskuun sade kastelee Espoon neljän asteen koleudessa, joka tuulessa tuntuu −2 asteelta, ja kello 8.15 nouseva aurinko jättää valolle aikaa vain kello 15.55 saakka.</p>
+    <p class="almanac"><span>Nyt 4°</span><span>Ylin 5°</span><span>Aurinko 8.15–15.55</span><span>Valoa 7 h 40 min (−5 min)</span></p>
+  </section>
+
+  <section class="part">
+    <div class="entry">
+      <h2 class="label">Pohjavirrat</h2>
+      <p class="synthesis">Yksityisestä teknologia-arkkitehtuurista on tullut turvallisuuden ja makrotalouden kriittinen pullonkaula, mikä muuttaa valtioiden, markkinoiden ja alustayhtiöiden välistä neuvotteluvoimaa. Kun Ukrainan ilmapuolustus heikkenee Starshield-yhteyksien rajoituksiin kesken rauhantunnustelujen ja Yhdysvaltain keskuspankkiirit varoittavat tekoälyinvestointien kiihdyttävän inflaatiota uusiin korkonostoihin saakka, yksityiset koodi- ja pääomapäätökset rajaavat suoraan julkisen vallan liikkumatilaa. Samalla sijoittajien rauhallinen reaktio Jensen Huangin lähtöön Nvidiasta osoittaa, että tekoälystä on tullut yksittäistä perustajaa suurempi teollinen perusrakenne. Valtiot pyrkivät nyt tasapainottamaan tätä riippuvuutta sääntelyllä ja julkisella rahoituksella, mistä kertovat sekä Indonesian lakiesitys alustojen uutismaksuista että Kanadan sitoutuminen paikallisjournalismin liittovaltiorahoitukseen.</p>
+    </div>
+  </section>
+
+  <section class="part" aria-label="Signaalit">
+    
+    <article class="entry signal">
+      <h2 class="label">Tekniikka<span class="source">Ars Technica</span></h2>
+      <div>
+        <h3>Starshieldin nopeusrajoitukset heikentävät Ukrainan ilmapuolustusta</h3>
+        <p>Ukraina kertoo kykynsä torjua Venäjän iskuja heikentyneen jälleen, koska sen käyttämää Starshield-satelliittiyhteyttä on rajoitettu. Kun valtiollinen puolustus nojaa kaupalliseen viestintäverkkoon, palveluntarjoajan tekninen säätöpäätös toimii suorana geopoliittisena vipuvartena rauhanneuvottelujen rinnalla.</p>
+      </div>
+    </article>
+    
+    <article class="entry signal">
+      <h2 class="label">Talous<span class="source">Financial Times</span></h2>
+      <div>
+        <h3>Nvidian osake toipui nopeasti Jensen Huangin lähdöstä</h3>
+        <p>Nvidian osakekurssi palautui torstain pörssipäivän päätteeksi lähes ennalleen, kun sijoittajat ostivat osaketta toimitusjohtaja Jensen Huangin lähdön aiheuttamasta pudotuksesta. Markkinareaktio osoittaa, että pääomamarkkina hinnoittelee yhtiön arvon tekoälyinfrastruktuurin rakenteellisen kysynnän varaan eikä enää perustajajohtajan henkilön varaan.</p>
+      </div>
+    </article>
+    
+    <article class="entry signal">
+      <h2 class="label">Design<span class="source">Dezeen</span></h2>
+      <div>
+        <h3>Korjausviiveet altistavat Britannian parlamenttitalon suurpalolle</h3>
+        <p>Tuore raportti varoittaa, että Lontoon Westminsterin palatsia uhkaa Notre Damen kaltainen tulipalo peruskorjauksen viivästymisen vuoksi. Tapaus paljastaa, kuinka julkisten instituutioiden päätöksenteon hitaus muuttaa kertyneen korjausvelan lopulta akuutiksi fyysiseksi järjestelmäriskiksi.</p>
+      </div>
+    </article>
+    
+    <article class="entry signal">
+      <h2 class="label">Media<span class="source">Nieman Lab</span></h2>
+      <div>
+        <h3>Indonesia velvoittamassa alustajätit maksamaan uutissisällöistä</h3>
+        <p>Meta, TikTok ja Google vastustivat keskiviikkona Indonesian parlamentin kuulemisessa lakiesitystä, joka pakottaisi digitaaliset alustat maksamaan paikallisille julkaisijoille uutisten koostamisesta ja esikatselusta. Sääntely siirtää jakeluketjun arvonjakoa kohti sisällöntuottajia suurella kasvumarkkinalla ja kaventaa alustojen ilmaista raaka-aine-etua.</p>
+      </div>
+    </article>
+    
+    <article class="entry signal">
+      <h2 class="label">Huippu-urheilu<span class="source">The Athletic</span></h2>
+      <div>
+        <h3>Manchester United palkkaa Mauricio Pochettinon maajoukkueesta</h3>
+        <p>Mauricio Pochettino on solmimassa kahden ja puolen vuoden valmennussopimuksen Manchester Unitedin kanssa ja siirtyy seuraan johdettuaan Yhdysvaltain miesten maajoukkuetta vielä kahdessa Haiti-ottelussa. Siirto osoittaa, että eurooppalaisten huippuseurojen taloudellinen ja kilpailullinen vetovoima ohittaa maajoukkuejalkapallon pitkäjänteiset sopimuskaudet.</p>
+      </div>
+    </article>
+    
+  </section>
+
+  <section class="part">
+    <div class="entry">
+      <h2 class="label">Pohdinta</h2>
+      <p class="reflection">Yhdysvaltain ilmailuhallinto FAA laajentaa tekoälyohjauksen koko maan ilmatilaan lentoyhtiöiden kiitosten saattelemana, mutta lennonjohtajien ammattiliitto jätettiin valmistelun ulkopuolelle, ja samaan aikaan Google tuo Gemini 4 Hydrogen -mallin käyttöön ilman aiempien versioiden hidasta turvaseulaa koulupilottien oikeusjutuista huolimatta. Molemmissa tapauksissa järjestelmän tilaaja tai omistaja kuittaa välittömän kapasiteetti- ja nopeushyödyn, kun taas poikkeamatilanteiden operatiivinen vastuu jää kentällä toimiville lennonjohtajille ja kouluille. Kun tehokkuushyödyn saaja ja häiriöriskin kantaja eriytyvät näin toisistaan, organisaatioon syntyy päämies–agentti-epäsuhta, joka peittää järjestelmän haurauden normaalioloissa. Nopeus, joka saavutetaan ohittamalla reunatapauksista vastaavat ammattilaiset, ei poista kitkaa vaan varastoi sen myöhemmin laukeavaksi vastuu- ja luottamusvelaksi.</p>
+    </div>
+  </section>
+
+  <footer class="anchor">
+    <p>Sade tummuttaa paljaat kalliot ja puunrungot, ja lyhyt päivä pyytää tekemään vain sen, mikä on tänään välttämätöntä.</p>
+  </footer>
+
+</main>
+</body>
+</html>
