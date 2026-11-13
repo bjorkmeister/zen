@@ -524,6 +524,21 @@ def build_page(today: datetime, upcoming: datetime, number: int, weather: Weathe
 
 
 EDITION_NUMBER = re.compile(r'<meta name="edition-number" content="(\d+)">')
+EDITION_SLOT = re.compile(r'<meta name="edition-slot" content="([^"]+)">')
+
+
+def slot_id(slot: datetime) -> str:
+    return slot.strftime("%Y-%m-%dT%H:%M")
+
+
+def already_published(slot: datetime) -> bool:
+    """True when the current page is already this edition. Each edition has a
+    backup schedule in case GitHub drops a run; the backup then stands down."""
+    try:
+        found = EDITION_SLOT.search(OUTPUT.read_text(encoding="utf-8"))
+    except FileNotFoundError:
+        return False
+    return bool(found) and found.group(1) == slot_id(slot)
 
 
 def edition_number() -> int:
@@ -543,6 +558,7 @@ def announce(page: dict[str, str], morning: bool) -> None:
     target = os.environ.get("GITHUB_OUTPUT")
     if target:
         with open(target, "a", encoding="utf-8") as out:
+            out.write("published=true\n")
             out.write(f"date={page['date_long']}\n")
             out.write(f"number={page['number']}\n")
             out.write(f"atmosphere={page['atmosphere']}\n")
@@ -553,6 +569,9 @@ def main() -> int:
     today = datetime.now(TZ)
     current, upcoming = editions(today)
     print(f"Aamun arkki · {long_date(today)} · {EDITIONS[current.hour]}")
+    if os.environ.get("GITHUB_EVENT_NAME") == "schedule" and already_published(current):
+        print("  this edition is already published; nothing to do")
+        return 0
 
     template = TEMPLATE.read_text(encoding="utf-8")
     weather = fetch_weather()
@@ -566,6 +585,7 @@ def main() -> int:
 
     edition = compose(briefing(today, current.hour, weather, news))
     page, signals = build_page(today, upcoming, edition_number(), weather, news, edition)
+    page["slot"] = slot_id(current)
     OUTPUT.write_text(render(template, page, signals), encoding="utf-8")
     announce(page, morning=current.hour == min(EDITIONS))
     print(f"  wrote {OUTPUT.name}: N:o {page['number']}; next edition {page['next_edition']}")
