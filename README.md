@@ -56,9 +56,9 @@ Everything is in two files, near the top.
 | The editorial voice | `SYSTEM_PROMPT` in `generate.py` |
 | The models | `MODELS` in `generate.py`, tried in order |
 | The look | The colour and font tokens at the top of `template.html` |
-| The edition times | `EDITIONS` in `generate.py` **and** the `cron` lines in the workflow |
+| The edition times | `EDITIONS` in `generate.py` (and `TZ` for another time zone) |
 
-The edition times live in two places because GitHub's scheduler runs in UTC. Finland switches between UTC+2 and UTC+3, so the workflow lists both sets of times and runs only the set that matches Helsinki's current offset. Runs start ten minutes before the hour because GitHub's scheduler is busiest on the hour. If you move to another time zone, change `TZ` in `generate.py` and the zone and offsets in the workflow's clock job.
+GitHub's scheduler can delay or drop runs, so the workflow doesn't fire at exact times. It looks in every half hour, and `generate.py`, which knows Helsinki time including summer time, decides whether an edition is due. A look-in that finds the latest edition already on the page stops within seconds. One that finds it missing publishes it, so a lost run delays an edition by half an hour instead of skipping it. Running the workflow by hand from the Actions tab always publishes.
 
 The page is written in Finnish. To change the language, rewrite the language section of `SYSTEM_PROMPT`, the labels in `template.html`, and the Finnish day and month names in `generate.py`.
 

@@ -1,20 +1,15 @@
 name: Morning edition
 
-# Three editions a day, at 6.00, 14.00 and 20.00 in Helsinki. Each run starts
-# ten minutes early because GitHub's scheduler is busiest on the hour, and a
-# backup run follows half an hour later because GitHub sometimes drops
-# scheduled runs. A backup that finds its edition already published stops
-# before doing anything; one that finds it missing publishes it.
-# GitHub cron runs in UTC and Finland shifts between UTC+2 and UTC+3, so both
-# sets of times are scheduled and the clock job lets through only the set that
-# matches Helsinki's current offset. The edition hours also live in generate.py.
+# Three editions a day, at 6.00, 14.00 and 20.00 in Helsinki (EDITIONS in
+# generate.py). GitHub's scheduler can delay or drop runs, so instead of
+# firing at exact times the workflow looks in every half hour and publishes
+# only when the latest edition is missing from the page. The look-in at :50
+# publishes the coming edition ten minutes early; if that one is lost, the next
+# look-in publishes it. A look-in that finds nothing due takes a few seconds.
 on:
   schedule:
-    - cron: "50 2,10,16 * * *"   # 5.50, 13.50, 19.50 Finnish summer time (UTC+3)
-    - cron: "20 3,11,17 * * *"   # 6.20, 14.20, 20.20 summer time backup
-    - cron: "50 3,11,17 * * *"   # 5.50, 13.50, 19.50 Finnish winter time (UTC+2)
-    - cron: "20 4,12,18 * * *"   # 6.20, 14.20, 20.20 winter time backup
-  workflow_dispatch:
+    - cron: "20,50 * * * *"
+  workflow_dispatch:   # publishes immediately, whatever the time
 
 permissions:
   contents: read
@@ -24,30 +19,26 @@ concurrency:
   cancel-in-progress: false
 
 jobs:
-  clock:
+  check:
     runs-on: ubuntu-latest
     outputs:
-      go: ${{ steps.check.outputs.go }}
+      due: ${{ steps.due.outputs.due }}
     steps:
-      - id: check
+      - uses: actions/checkout@v5
+
+      - id: due
         env:
           EVENT: ${{ github.event_name }}
-          SCHEDULE: ${{ github.event.schedule }}
         run: |
-          go=true
-          if [ "$EVENT" = "schedule" ]; then
-            offset=$(TZ=Europe/Helsinki date +%z)
-            case "$SCHEDULE" in
-              "50 2,10,16 * * *"|"20 3,11,17 * * *") [ "$offset" = "+0300" ] || go=false ;;
-              "50 3,11,17 * * *"|"20 4,12,18 * * *") [ "$offset" = "+0200" ] || go=false ;;
-            esac
+          if [ "$EVENT" = "workflow_dispatch" ]; then
+            echo "due=true" >> "$GITHUB_OUTPUT"
+          else
+            python3 generate.py --due
           fi
-          echo "Helsinki offset $(TZ=Europe/Helsinki date +%z), go=$go"
-          echo "go=$go" >> "$GITHUB_OUTPUT"
 
   edition:
-    needs: clock
-    if: needs.clock.outputs.go == 'true'
+    needs: check
+    if: needs.check.outputs.due == 'true'
     runs-on: ubuntu-latest
     timeout-minutes: 40
     permissions:
@@ -68,14 +59,13 @@ jobs:
       - name: Install dependencies
         run: python -m pip install --disable-pip-version-check --quiet google-genai==3.3.0 feedparser==6.0.14
 
-      - name: Write today's edition
+      - name: Write the edition
         id: generate
         env:
           GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
         run: python -u generate.py
 
       - name: Commit index.html
-        if: steps.generate.outputs.published == 'true'
         env:
           NUMBER: ${{ steps.generate.outputs.number }}
         run: |
@@ -91,20 +81,17 @@ jobs:
           fi
 
       - name: Stage the page
-        if: steps.generate.outputs.published == 'true'
         run: mkdir -p _site && cp index.html _site/index.html
 
       - uses: actions/upload-pages-artifact@v4
-        if: steps.generate.outputs.published == 'true'
         with:
           path: _site
 
       - id: deploy
         uses: actions/deploy-pages@v4
-        if: steps.generate.outputs.published == 'true'
 
       - name: Send the morning link
-        if: steps.generate.outputs.published == 'true' && steps.generate.outputs.morning == 'true'
+        if: steps.generate.outputs.morning == 'true'
         env:
           GH_TOKEN: ${{ github.token }}
           GH_REPO: ${{ github.repository }}

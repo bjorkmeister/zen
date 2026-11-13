@@ -11,6 +11,10 @@ There is no state: every run starts from nothing and overwrites index.html.
 If any required step fails the script exits non-zero and writes nothing, so
 yesterday's edition stays up rather than a broken one going out.
 
+`python generate.py --due` only answers whether the latest edition is missing
+from the page. It needs nothing beyond the standard library, which is why the
+third-party imports live inside the functions that use them.
+
 Requires GEMINI_API_KEY. Dependencies: google-genai, feedparser.
 """
 
@@ -31,10 +35,6 @@ from datetime import datetime, timedelta
 from pathlib import Path
 from zoneinfo import ZoneInfo
 
-import feedparser
-from google import genai
-from google.genai import errors, types
-
 ROOT = Path(__file__).resolve().parent
 TEMPLATE = ROOT / "template.html"
 OUTPUT = ROOT / "index.html"
@@ -42,9 +42,9 @@ OUTPUT = ROOT / "index.html"
 TZ = ZoneInfo("Europe/Helsinki")
 ESPOO = {"latitude": 60.2055, "longitude": 24.6559}
 
-# Edition hours in Helsinki time and their names. Keep in step with the cron
-# lines in .github/workflows/morning_edition.yml, which start each run ten
-# minutes early. The first edition is the one that sends the morning link.
+# Edition hours in Helsinki time and their names; the workflow looks in every
+# half hour and publishes whichever edition is due. The first edition is the
+# one that sends the morning link.
 EDITIONS = {6: "aamupainos", 14: "iltapäiväpainos", 20: "iltapainos"}
 LEAD = timedelta(minutes=20)  # a run this close before an edition hour belongs to it
 
@@ -221,6 +221,7 @@ def shorten(text: str, limit: int) -> str:
 def read_feed(feed: Feed, now: float) -> list[dict]:
     """Recent entries from one feed, newest first. A failing feed yields nothing."""
     try:
+        import feedparser
         parsed = feedparser.parse(fetch(feed.url))
     except Exception as error:
         print(f"  ! {feed.name}: {type(error).__name__}: {error}", file=sys.stderr)
@@ -411,6 +412,9 @@ def briefing(today: datetime, edition_hour: int, weather: Weather, news: dict[st
 
 def compose(prompt: str) -> dict:
     """Ask each model in turn until one returns a complete edition."""
+    from google import genai
+    from google.genai import errors, types
+
     # One unhurried attempt per model: deep thinking can take minutes, and a
     # timed-out call is better handed to the next model than repeated.
     client = genai.Client(http_options=types.HttpOptions(
@@ -532,8 +536,7 @@ def slot_id(slot: datetime) -> str:
 
 
 def already_published(slot: datetime) -> bool:
-    """True when the current page is already this edition. Each edition has a
-    backup schedule in case GitHub drops a run; the backup then stands down."""
+    """True when the current page is already this edition."""
     try:
         found = EDITION_SLOT.search(OUTPUT.read_text(encoding="utf-8"))
     except FileNotFoundError:
@@ -558,20 +561,30 @@ def announce(page: dict[str, str], morning: bool) -> None:
     target = os.environ.get("GITHUB_OUTPUT")
     if target:
         with open(target, "a", encoding="utf-8") as out:
-            out.write("published=true\n")
             out.write(f"date={page['date_long']}\n")
             out.write(f"number={page['number']}\n")
             out.write(f"atmosphere={page['atmosphere']}\n")
             out.write(f"morning={'true' if morning else 'false'}\n")
 
 
+def check_due() -> int:
+    """Report whether the latest edition is missing from the page. The workflow
+    asks this every half hour, so a delayed or dropped scheduled run never costs
+    an edition: whichever check comes first after an edition hour publishes it."""
+    current, _ = editions(datetime.now(TZ))
+    due = not already_published(current)
+    print(f"{EDITIONS[current.hour]} {slot_id(current)}: {'due' if due else 'already published'}")
+    target = os.environ.get("GITHUB_OUTPUT")
+    if target:
+        with open(target, "a", encoding="utf-8") as out:
+            out.write(f"due={'true' if due else 'false'}\n")
+    return 0
+
+
 def main() -> int:
     today = datetime.now(TZ)
     current, upcoming = editions(today)
     print(f"Aamun arkki · {long_date(today)} · {EDITIONS[current.hour]}")
-    if os.environ.get("GITHUB_EVENT_NAME") == "schedule" and already_published(current):
-        print("  this edition is already published; nothing to do")
-        return 0
 
     template = TEMPLATE.read_text(encoding="utf-8")
     weather = fetch_weather()
@@ -593,4 +606,4 @@ def main() -> int:
 
 
 if __name__ == "__main__":
-    sys.exit(main())
+    sys.exit(check_due() if sys.argv[1:] == ["--due"] else main())
