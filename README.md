@@ -4,6 +4,9 @@ A one-page broadsheet that writes itself three times a day. Weather and daylight
 
 Live: **https://bjorkmeister.github.io/zen/**
 
+<img width="818" height="990" alt="image" src="https://github.com/user-attachments/assets/92652652-fe40-4539-972b-14fbdcf9d1a0" />
+
+
 ## How it works
 
 At 06.00, 14.00 and 20.00 (Helsinki time) a GitHub Action:
