@@ -493,14 +493,14 @@ def render(template: str, page: dict[str, str], signals: list[dict[str, str]]) -
     return fill(template[:block.start()], page) + repeated + fill(template[block.end():], page)
 
 
-def build_page(today: datetime, upcoming: datetime, weather: Weather, news: dict[str, list[Item]],
-               edition: dict) -> tuple[dict[str, str], list[dict[str, str]]]:
+def build_page(today: datetime, upcoming: datetime, number: int, weather: Weather,
+               news: dict[str, list[Item]], edition: dict) -> tuple[dict[str, str], list[dict[str, str]]]:
     sources = {item.id: item.source for items in news.values() for item in items}
     page = {
         "next_edition": f"{upcoming.hour:02d}.{upcoming.minute:02d}",
         "date_long": long_date(today),
         "date_short": f"{WEEKDAYS[today.weekday()]} {today.day}.{today.month}.",
-        "day_number": str(today.timetuple().tm_yday),
+        "number": str(number),
         "temp_now": degrees(weather.now),
         "temp_high": degrees(weather.high),
         "sun": f"{clock(weather.sunrise)}–{clock(weather.sunset)}",
@@ -523,6 +523,20 @@ def build_page(today: datetime, upcoming: datetime, weather: Weather, news: dict
     return page, signals
 
 
+EDITION_NUMBER = re.compile(r'<meta name="edition-number" content="(\d+)">')
+
+
+def edition_number() -> int:
+    """One more than the edition being replaced. Each page records its own
+    number, so the count needs no store of its own and skips no numbers when a
+    run fails. A page without a number (or no page) makes this N:o 1."""
+    try:
+        found = EDITION_NUMBER.search(OUTPUT.read_text(encoding="utf-8"))
+    except FileNotFoundError:
+        return 1
+    return int(found.group(1)) + 1 if found else 1
+
+
 def announce(page: dict[str, str], morning: bool) -> None:
     """Hand the date, the weather sentence and whether this is the morning
     edition (the one that sends the link) to the workflow."""
@@ -530,6 +544,7 @@ def announce(page: dict[str, str], morning: bool) -> None:
     if target:
         with open(target, "a", encoding="utf-8") as out:
             out.write(f"date={page['date_long']}\n")
+            out.write(f"number={page['number']}\n")
             out.write(f"atmosphere={page['atmosphere']}\n")
             out.write(f"morning={'true' if morning else 'false'}\n")
 
@@ -550,10 +565,10 @@ def main() -> int:
         raise RuntimeError("too few feeds answered; keeping yesterday's edition")
 
     edition = compose(briefing(today, current.hour, weather, news))
-    page, signals = build_page(today, upcoming, weather, news, edition)
+    page, signals = build_page(today, upcoming, edition_number(), weather, news, edition)
     OUTPUT.write_text(render(template, page, signals), encoding="utf-8")
     announce(page, morning=current.hour == min(EDITIONS))
-    print(f"  wrote {OUTPUT.name}; next edition {page['next_edition']}")
+    print(f"  wrote {OUTPUT.name}: N:o {page['number']}; next edition {page['next_edition']}")
     return 0
 
 

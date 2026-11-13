@@ -4,8 +4,9 @@ A one-page broadsheet that writes itself three times a day. Weather and daylight
 
 Live: **https://bjorkmeister.github.io/zen/**
 
-<img width="818" height="990" alt="image" src="https://github.com/user-attachments/assets/92652652-fe40-4539-972b-14fbdcf9d1a0" />
-
+<p align="center">
+  <img width="400" alt="An edition of Aamun arkki" src="https://github.com/user-attachments/assets/92652652-fe40-4539-972b-14fbdcf9d1a0" />
+</p>
 
 ## How it works
 
@@ -24,7 +25,9 @@ If anything fails, nothing is published and the previous edition stays up. GitHu
 | `generate.py` | Fetches the data, calls Gemini and renders the page |
 | `template.html` | The page: typography, layout and placeholders |
 | `.github/workflows/morning_edition.yml` | The schedule, the commit, the deploy and the notification |
-| `index.html` | Today's edition, written by the workflow |
+| `index.html` | The current edition, written by the workflow |
+
+Every edition is numbered (*N:o 1, N:o 2, …*). Each page records its own number in a hidden tag, and the next run adds one to it. Only published editions are counted, so a failed run doesn't skip a number. To start counting again from N:o 1, delete `index.html`.
 
 ## Run your own
 
