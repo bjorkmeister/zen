@@ -698,10 +698,10 @@ def compose(profile: Profile, prompt: str) -> dict:
     from google import genai
     from google.genai import errors, types
 
-    # One unhurried attempt per model: deep thinking can take minutes, and a
-    # timed-out call is better handed to the next model than repeated.
+    # One attempt per model: a normal edition takes one to two minutes, so a
+    # call still running after four has stalled and is handed to the next model.
     client = genai.Client(http_options=types.HttpOptions(
-        timeout=600_000,  # milliseconds
+        timeout=240_000,  # milliseconds
         retry_options=types.HttpRetryOptions(attempts=1),
     ))
     config = types.GenerateContentConfig(
