@@ -1,0 +1,114 @@
+{
+ "profile": "main",
+ "editions": [
+  {
+   "number": 10,
+   "slot": "2026-11-16T20:00",
+   "written": "2026-11-16T20:19",
+   "model": "gemini-4-carbon",
+   "seconds": 117,
+   "tokens": {
+    "in": 7392,
+    "out": 1812,
+    "thinking": 9562
+   },
+   "knobs": {
+    "tone": 0,
+    "politics": 0,
+    "outlook": 0,
+    "scope": 0,
+    "depth": 0,
+    "novelty": 0
+   },
+   "seen": {
+    "design/Dezeen": 10,
+    "design/Wallpaper*": 10,
+    "huippu_urheilu/BBC Sport": 9,
+    "huippu_urheilu/The Athletic": 10,
+    "media/Nieman Lab": 1,
+    "media/The Guardian": 5,
+    "media/The New Yorker": 8,
+    "talous/Bloomberg": 10,
+    "talous/Financial Times": 10,
+    "tekniikka/Ars Technica": 6,
+    "tekniikka/Hacker News": 10
+   },
+   "chosen": [
+    {
+     "section": "tekniikka",
+     "label": "Tekniikka",
+     "feed": "tekniikka/Ars Technica",
+     "source": "Ars Technica",
+     "title": "Vulcan-raketin epäonnistuminen kaventaa SpaceX:n haastajien tilaa",
+     "url": "https://arstechnica.com/space/2026/11/vulcan-rocket-fails-during-launch-dealing-major-blow-to-spacex-competitors/",
+     "why": "Valitsin uutisen, koska kantoraketin tuhoutuminen muuttaa suoraan avaruusinfrastruktuurin kilpailuasetelmaa toisin kuin yksittäiset kuluttajatuotteet tai tietoturvapäivitykset.",
+     "considered": 3,
+     "available": 16
+    },
+    {
+     "section": "talous",
+     "label": "Talous",
+     "feed": "talous/Financial Times",
+     "source": "Financial Times",
+     "title": "Nvidian hallitus torjuu Jensen Huangin paluun toimitusjohtajaksi",
+     "url": "https://www.ft.com/content/e5275763-d7e2-4857-8ac6-6b888111986a?syn-25a6b1a6=1",
+     "why": "Maailman keskeisimmän siruyhtiön johtajakriisi ja hallituksen tiukka linjaus ovat rakenteellisesti painavampia uutisia kuin yksittäiset markkinareaktiot tai keskuspankkien puheenvuorot.",
+     "considered": 3,
+     "available": 20
+    },
+    {
+     "section": "design",
+     "label": "Design",
+     "feed": "design/Dezeen",
+     "source": "Dezeen",
+     "title": "Valkoisen talon juhlasalin ja bunkkerin teräsrunko valmistui",
+     "url": "https://www.dezeen.com/2026/11/16/white-house-ballroom-topping-out/",
+     "why": "Valtionpäämiehen virka-asunnon pysyvä rakenteellinen muuttaminen turva- ja edustustiloilla kertoo vallan fyysisistä puitteista enemmän kuin yksittäiset sisustusprojektit tai tuotejulkistukset.",
+     "considered": 3,
+     "available": 20
+    },
+    {
+     "section": "media",
+     "label": "Media",
+     "feed": "media/The Guardian",
+     "source": "The Guardian",
+     "title": "Tšekissä jättimielenosoitus yleisradion lupamaksujen lakkauttamista vastaan",
+     "url": "https://www.theguardian.com/world/2026/nov/15/czechia-protest-prague-media-freedom",
+     "why": "Julkisen median rahoitusperustan muuttaminen on suora instituutioiden valtasuhteita koskeva kysymys, jonka rinnalla henkilövalinnat ja yksittäiset kulttuuriarviot ovat toissijaisia.",
+     "considered": 3,
+     "available": 14
+    },
+    {
+     "section": "huippu_urheilu",
+     "label": "Huippu-urheilu",
+     "feed": "huippu_urheilu/BBC Sport",
+     "source": "BBC Sport",
+     "title": "Jürgen Klopp vaatii Fifan puheenjohtajan Gianni Infantinon vaihtamista",
+     "url": "https://www.bbc.co.uk/sport/football/articles/cjr4gr2k41dxo?at_medium=RSS&at_campaign=rss",
+     "why": "Maajoukkuevalmentajan suora vaatimus maailmanjärjestön johdon vaihtamisesta paljastaa urheilun kansainvälisen hallinnon legitimiteettikriisin selkeämmin kuin yksittäiset ottelutulokset tai pelaajasiirrot.",
+     "considered": 3,
+     "available": 19
+    }
+   ],
+   "critique": {
+    "tone": 1,
+    "politics": 0,
+    "outlook": -1,
+    "scope": 1,
+    "depth": 1,
+    "novelty": -1,
+    "factuality": 10,
+    "freshness": 10,
+    "cliches": [],
+    "regions": {
+     "finland": 0,
+     "europe": 2,
+     "north_america": 3,
+     "elsewhere": 0
+    },
+    "critique": "Mukaan kannattaa valita myös suoraan Suomea tai Pohjoismaita koskeva signaali pelkän sääraamin sijaan.",
+    "model": "gemini-3.8-flash"
+   }
+  }
+ ]
+}
