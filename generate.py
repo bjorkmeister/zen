@@ -87,6 +87,18 @@ class Section:
 # --------------------------------------------------------------------------
 
 @dataclass(frozen=True)
+class Palette:
+    paper: str
+    ink: str
+    stone: str
+    rule: str
+
+
+COTTON = Palette(paper="#F6F4EF", ink="#181818", stone="#76726A", rule="#E2DFD7")   # warm cotton paper
+ROSA = Palette(paper="#F7EEEA", ink="#1B1616", stone="#7C6D69", rule="#EADCD6")     # the same, with a blush of rose
+
+
+@dataclass(frozen=True)
 class Profile:
     key: str
     folder: str                      # where the page lives under the site root
@@ -104,6 +116,7 @@ class Profile:
     reflection_label: str
     reflection: str
     email_to_env: str = ""           # secret holding the recipient; empty sends to GMAIL_USER
+    palette: Palette = COTTON
 
     @property
     def output(self) -> Path:
@@ -184,6 +197,7 @@ MINNA = Profile(
     editions={6: "aamupainos"},
     notify="email",
     email_to_env="MINNA_EMAIL",
+    palette=ROSA,
     window_hours=72,  # design, food and culture do not go stale overnight
     min_sections=5,
     sections=(
@@ -743,7 +757,7 @@ def render(template: str, page: dict[str, str], signals: list[dict[str, str]]) -
     block = SIGNAL_BLOCK.search(template)
     if not block:
         raise ValueError("template has no <!-- signal --> block")
-    repeated = "".join(fill(block.group(1), signal) for signal in signals)
+    repeated = "".join(fill(block.group(1), {**page, **signal}) for signal in signals)  # rows may use page values too
     return fill(template[:block.start()], page) + repeated + fill(template[block.end():], page)
 
 
@@ -752,6 +766,7 @@ def build_page(profile: Profile, today: datetime, current: datetime, upcoming: d
                edition: dict) -> tuple[dict[str, str], list[dict[str, str]]]:
     sources = {item.id: item.source for items in news.values() for item in items}
     page = {
+        **{name: getattr(profile.palette, name) for name in ("paper", "ink", "stone", "rule")},
         "slot": slot_id(current),
         "next_edition": next_edition_text(today, upcoming),
         "date_long": long_date(today),
