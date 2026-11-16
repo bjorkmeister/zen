@@ -41,7 +41,25 @@ You need a GitHub account and a Gemini API key. It takes about five minutes.
 6. **Turn on Actions.** Open the **Actions** tab and confirm that you want to run workflows in your fork.
 7. **Run the first edition.** On the Actions tab, choose **Morning edition → Run workflow**. It takes about two minutes.
 
-Your page is now at `https://<your-username>.github.io/<repository-name>/`, and it refreshes on schedule from then on.
+Your page is now at `https://<your-username>.github.io/<repository-name>/`.
+
+### Make the timing punctual (recommended)
+
+GitHub's own scheduler is best-effort. On a quiet repository it may run a schedule only every few hours, so editions arrive late or are skipped. A free external cron service fixes this by waking the workflow at the right minutes. Each wake-up only checks whether an edition is due, so an extra one costs nothing.
+
+1. **Create a token.** On GitHub, open *Settings → Developer settings → Personal access tokens → Fine-grained tokens → Generate new token*.
+   - *Repository access:* only this repository.
+   - *Permissions:* **Contents: Read and write**. Nothing else.
+   - *Expiration:* the longest available. Put a reminder in your calendar to renew it.
+2. **Create a cron job** at [cron-job.org](https://cron-job.org) (free account):
+   - *URL:* `https://api.github.com/repos/<your-username>/<repository-name>/dispatches`
+   - *Schedule:* custom. Every day, hours **5, 6, 13, 14, 19, 20**, minutes **20, 50**, time zone **Europe/Helsinki**.
+   - *Advanced → Request method:* **POST**
+   - *Advanced → Headers:* `Authorization: Bearer <your token>` and `Accept: application/vnd.github+json`
+   - *Advanced → Request body:* `{"event_type":"edition"}`
+3. **Test it** with the job's *Test run* button. GitHub answers `204`, and a run appears on the Actions tab.
+
+The workflow's own schedule stays on as a fallback.
 
 The first run opens an issue called *Aamun arkki* that @-mentions you. Every morning edition adds a comment to that thread, so you get one email a day. If you don't receive it, check that email is enabled for *Participating and @mentions* in your GitHub notification settings.
 

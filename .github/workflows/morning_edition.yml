@@ -1,15 +1,21 @@
 name: Morning edition
 
 # Three editions a day, at 6.00, 14.00 and 20.00 in Helsinki (EDITIONS in
-# generate.py). GitHub's scheduler can delay or drop runs, so instead of
-# firing at exact times the workflow looks in every half hour and publishes
-# only when the latest edition is missing from the page. The look-in at :50
-# publishes the coming edition ten minutes early; if that one is lost, the next
-# look-in publishes it. A look-in that finds nothing due takes a few seconds.
+# generate.py). Every look-in asks generate.py whether the latest edition is
+# missing from the page and publishes only then, so extra look-ins are
+# harmless and a lost one costs nothing. A look-in that finds nothing due
+# takes a few seconds.
+#
+# GitHub's own scheduler is best-effort and on this repository has fired only
+# every few hours, so the punctual look-ins come from an external cron service
+# calling the repository_dispatch API (see the README). The schedule below
+# stays as a fallback.
 on:
+  repository_dispatch:
+    types: [edition]   # external cron at 5.50, 6.20, 13.50, 14.20, 19.50, 20.20
   schedule:
     - cron: "20,50 * * * *"
-  workflow_dispatch:   # publishes immediately, whatever the time
+  workflow_dispatch:   # "Run workflow" by hand publishes immediately, whatever the time
 
 permissions:
   contents: read
