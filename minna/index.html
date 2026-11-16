@@ -1,0 +1,315 @@
+<!doctype html>
+<html lang="fi">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="color-scheme" content="light">
+<meta name="theme-color" content="#F6F4EF">
+<meta name="robots" content="noindex, nofollow">
+<meta name="edition-number" content="1">
+<meta name="edition-slot" content="2026-11-16T06:00">
+<meta name="description" content="Olarissa tihkuttaa viiden asteen tuulessa, joka tuntuu nollalta, ja päivänvalo yltää kello 8.22 valkenevasta aamusta kello 15.48 hämärään, viisi minuuttia eilistä lyhyempänä.">
+<title>Tyyni · maanantai 16.11.</title>
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' fill='%23F6F4EF'/%3E%3Ccircle cx='16' cy='16' r='9' fill='none' stroke='%23181818' stroke-width='1.5'/%3E%3C/svg%3E">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Plus+Jakarta+Sans:wght@400;500&display=swap">
+<style>
+  :root {
+    --paper: #F6F4EF;
+    --ink: #181818;
+    --stone: #76726A;
+    --rule: #E2DFD7;
+    --serif: "Instrument Serif", "Iowan Old Style", "Palatino Linotype", Georgia, serif;
+    --sans: "Plus Jakarta Sans", "Helvetica Neue", Helvetica, Arial, sans-serif;
+    --gutter: clamp(20px, 6vw, 40px);
+    --label: 9.5rem;
+  }
+
+  *, *::before, *::after { box-sizing: border-box; }
+
+  html {
+    background: var(--paper);
+    -webkit-text-size-adjust: 100%;
+    text-size-adjust: 100%;
+  }
+
+  body {
+    margin: 0;
+    background: var(--paper);
+    color: var(--ink);
+    font: 400 1.03rem/1.72 var(--sans);
+    font-kerning: normal;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    text-rendering: optimizeLegibility;
+    overflow-wrap: break-word;
+    hyphens: auto;
+    -webkit-hyphens: auto;
+    cursor: default;
+    -webkit-tap-highlight-color: transparent;
+  }
+
+  ::selection { background: var(--rule); color: var(--ink); }
+
+  h1, h2, h3, p { margin: 0; font-weight: 400; }
+
+  .sheet {
+    width: min(680px, 100% - 2 * var(--gutter));
+    margin: 0 auto;
+    padding: clamp(56px, 11vw, 120px) 0 clamp(72px, 13vw, 152px);
+  }
+
+  /* Masthead ------------------------------------------------------------ */
+
+  .masthead { text-align: center; }
+
+  .masthead h1 {
+    font: 400 clamp(3rem, 11vw, 4.75rem)/0.95 var(--serif);
+    letter-spacing: -0.012em;
+  }
+
+  .folio {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    gap: 4px 24px;
+    margin-top: clamp(28px, 5vw, 40px);
+    padding: 11px 0 10px;
+    border-top: 1px solid var(--rule);
+    border-bottom: 1px solid var(--rule);
+    color: var(--stone);
+    font-size: 0.6875rem;
+    font-weight: 500;
+    letter-spacing: 0.14em;
+    line-height: 1.6;
+    text-transform: uppercase;
+  }
+
+  /* Weather ------------------------------------------------------------- */
+
+  .weather {
+    padding: clamp(48px, 9vw, 72px) 0 clamp(52px, 9vw, 76px);
+    text-align: center;
+  }
+
+  .atmosphere {
+    max-width: 34ch;
+    margin: 0 auto;
+    font: italic 400 clamp(1.55rem, 4.6vw, 2rem)/1.3 var(--serif);
+    text-wrap: balance;
+    hyphens: manual;
+  }
+
+  .almanac {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 2px 1.6em;
+    margin-top: 22px;
+    color: var(--stone);
+    font-size: 0.8125rem;
+    letter-spacing: 0.01em;
+    font-variant-numeric: tabular-nums;
+  }
+
+  .almanac span { white-space: nowrap; }
+
+  /* Entries: hanging label, then text ----------------------------------- */
+
+  .part {
+    padding: clamp(40px, 7vw, 56px) 0;
+    border-top: 1px solid var(--rule);
+  }
+
+  .entry {
+    display: grid;
+    grid-template-columns: var(--label) minmax(0, 1fr);
+    align-items: baseline;
+    column-gap: 1.75rem;
+  }
+
+  .entry + .entry { margin-top: clamp(36px, 6vw, 48px); }
+
+  .label {
+    color: var(--stone);
+    font: 500 0.6875rem/1.6 var(--sans);
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    hyphens: manual;
+  }
+
+  .source {
+    display: block;
+    margin-top: 2px;
+    font: italic 400 0.95rem/1.35 var(--serif);
+    letter-spacing: 0;
+    text-transform: none;
+  }
+
+  .source:empty { display: none; }
+
+  .synthesis {
+    font: 400 clamp(1.3rem, 3.4vw, 1.5rem)/1.45 var(--serif);
+    text-wrap: pretty;
+  }
+
+  .signal h3 {
+    margin-bottom: 8px;
+    font: 400 clamp(1.4rem, 3.6vw, 1.625rem)/1.2 var(--serif);
+    text-wrap: balance;
+  }
+
+  .signal p,
+  .reflection { text-wrap: pretty; }
+
+  .reflection { font-size: 1.0625rem; line-height: 1.75; }
+
+  /* Anchor -------------------------------------------------------------- */
+
+  .anchor {
+    padding-top: clamp(64px, 12vw, 104px);
+    border-top: 1px solid var(--rule);
+    text-align: center;
+  }
+
+  .anchor::before {
+    content: "";
+    display: block;
+    width: 9px;
+    height: 9px;
+    margin: 0 auto 30px;
+    border: 1px solid var(--stone);
+    border-radius: 50%;
+  }
+
+  .anchor .next {
+    max-width: none;
+    margin-top: clamp(72px, 13vw, 112px);
+    color: var(--stone);
+    font: 500 0.625rem/1.6 var(--sans);
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    font-variant-numeric: tabular-nums;
+  }
+
+  .anchor p {
+    max-width: 26ch;
+    margin: 0 auto;
+    font: italic 400 clamp(1.45rem, 4.2vw, 1.75rem)/1.35 var(--serif);
+    text-wrap: balance;
+    hyphens: manual;
+  }
+
+  /* Narrow screens: labels sit above their text ------------------------- */
+
+  @media (max-width: 600px) {
+    .entry { display: block; }
+    .label { margin-bottom: 10px; }
+    .source { display: inline; margin: 0; }
+    .source::before { content: " · "; font-style: normal; }
+    .folio { justify-content: center; }
+  }
+
+  @media print {
+    @page { margin: 18mm 16mm; }
+    .sheet { width: auto; padding: 0; }
+    .part, .anchor { break-inside: avoid; }
+  }
+</style>
+</head>
+<body>
+<main class="sheet">
+
+  <header class="masthead">
+    <h1>Tyyni</h1>
+    <p class="folio"><span>Maanantai 16. marraskuuta 2026</span><span>Espoo · N:o 1</span></p>
+  </header>
+
+  <section class="weather" aria-label="Sää">
+    <p class="atmosphere">Olarissa tihkuttaa viiden asteen tuulessa, joka tuntuu nollalta, ja päivänvalo yltää kello 8.22 valkenevasta aamusta kello 15.48 hämärään, viisi minuuttia eilistä lyhyempänä.</p>
+    <p class="almanac"><span>Nyt 5°</span><span>Ylin 7°</span><span>Aurinko 8.22–15.48</span><span>Valoa 7 h 26 min (−5 min)</span></p>
+  </section>
+
+  <section class="part">
+    <div class="entry">
+      <h2 class="label">Virtaukset</h2>
+      <p class="synthesis">Tämän aamun aineistossa toistuu suljettujen tilojen ja olemassa olevien esineiden avaaminen uuteen, jaettuun käyttöön. Sama liike näkyy arkkitehtuurissa, kun pankin entinen kultaholvi muutetaan kaupunkilaisten oleskelutilaksi, ja pukeutumisessa, kun vaatteiden vaihtotapahtumat rakentavat ostamisen sijaan turvaa ja yhteisöä. Myös yksityisessä elämässä säilyttäminen vaatii joskus irti päästämistä, kuten vanhempien tyhjentyneestä kodista luopumista käsittelevä essee osoittaa. Aineellinen ympäristö pysyy elävänä silloin, kun sen ei anneta lukkiutua muistomerkiksi vaan sen sallitaan siirtyä eteenpäin.</p>
+    </div>
+  </section>
+
+  <section class="part" aria-label="Signaalit">
+    
+    <article class="entry signal">
+      <h2 class="label">Design<span class="source">Dezeen</span></h2>
+      <div>
+        <h3>Keskuspankin kultaholvi avautui kaupunkilaisten olohuoneeksi Amsterdamissa</h3>
+        <p>Hollantilainen arkkitehtitoimisto Mecanoo on saanut valmiiksi Alankomaiden keskuspankin De Nederlandsche Bankin peruskorjauksen, jossa purettiin neljätoistakerroksinen torni ja avattiin entinen kultaholvi yleisölle. Hanke osoittaa konkreettisesti, kuinka raskas ja suljettu instituutiorakennus voidaan uuden rakentamisen sijaan keventää ja liittää osaksi avointa kaupunkitilaa.</p>
+      </div>
+    </article>
+    
+    <article class="entry signal">
+      <h2 class="label">Lifestyle<span class="source">The Guardian</span></h2>
+      <div>
+        <h3>Ricottamykyt salviavoissa syntyvät arkikeittiössä perunagnoccheja nopeammin</h3>
+        <p>Jess Elliott Dennison esittelee The Guardianissa arkireseptin, jossa ricottasta ja parmesaanista sekoitetut kevyet mykyt tarjotaan ruskistetun salviavoin, rucolan ja sitruunan kanssa. Taikina valmistuu nopeasti yhteen sekoittamalla toisin kuin perinteiset gnocchit, joten ruskistetun voin ja sitruunan yhdistelmä tuo vaivattoman vaihtoehdon marraskuun arki-iltaan.</p>
+      </div>
+    </article>
+    
+    <article class="entry signal">
+      <h2 class="label">Hyvinvointi<span class="source">Psyche</span></h2>
+      <div>
+        <h3>Vanhempien asunnosta luopuminen osana hiljaista surutyötä</h3>
+        <p>Kirjoittaja Susan Hornik käsittelee Psyche-verkkojulkaisun esseessään sitä, miksi hän piti pitkään kiinni edesmenneiden vanhempiensa asunnosta ennen kuin pystyi luopumaan siitä. Teksti jäsentää tunnistettavasti ristiriitaa, jossa fyysisestä tilasta ja esineistä irti päästäminen tuntuu menneisyyden hylkäämiseltä, vaikka muistot säilyvät ilman seiniäkin.</p>
+      </div>
+    </article>
+    
+    <article class="entry signal">
+      <h2 class="label">Ravintolat<span class="source">Helsingin Sanomat</span></h2>
+      <div>
+        <h3>Tennispalatsin lasikulmaan avautui ilmava kahvila Tove</h3>
+        <p>Helsingin Sanomat arvioi Tennispalatsin lasikulmaan avatun Tove-kahvilan, jonka keittolounas jäi testissä vaisuksi mutta leivonnaiset ja tila toimivat. Valoisa kulmatila ja kiireetön tunnelma tekevät paikasta museokäynnistä riippumattoman levähdyspaikan keskustan kahvihetkiin.</p>
+      </div>
+    </article>
+    
+    <article class="entry signal">
+      <h2 class="label">Trendit<span class="source">Vogue</span></h2>
+      <div>
+        <h3>Vaatteiden vaihtotapahtumat rakentavat yhteisöllisyyttä ja turvallista tyyliä</h3>
+        <p>Vogue raportoi Yhdysvalloissa yleistyneistä transyhteisöjen vaatteidenvaihtotapahtumista, joita muun muassa tennesseeläinen Jack Knoxville järjestää. Ilmiö muistuttaa pukeutumisen perusluonteesta: vaatteiden kierrättäminen ihmiseltä toiselle luo yhteenkuuluvuutta ja vapauttaa etsimään omaa ilmaisua kuluttamisen ulkopuolella.</p>
+      </div>
+    </article>
+    
+    <article class="entry signal">
+      <h2 class="label">Kulttuuri<span class="source">Helsingin Sanomat</span></h2>
+      <div>
+        <h3>Alma Pöysti tulkitsee Tiago Rodriguesin Rakastavaisten kuoroa</h3>
+        <p>Helsingin Sanomat arvioi portugalilaisen Tiago Rodriguesin ohjaaman Rakastavaisten kuoro -esityksen, jonka näyttämöroolissa nähdään Alma Pöysti. Rakkautta ja kuolemaa käsittelevä tiivis näyttämöteos tarjoaa keskittynyttä näyttelijäntyötä ja painokasta kieltä keskelle marraskuuta.</p>
+      </div>
+    </article>
+    
+    <article class="entry signal">
+      <h2 class="label">Tapahtumat<span class="source">Helsinki Contemporary</span></h2>
+      <div>
+        <h3>Ikebana ja lasitaide kohtaavat Helsinki Contemporaryssa</h3>
+        <p>Helsinki Contemporaryssa on esillä keskiviikkona 18. marraskuuta kello 12.00 japanilaisen ikebana-mestarin Kosen Ohtsubon ja kuvataiteilija Tuomas A. Laitisen yhteisnäyttely Mitate. Yhteisteokset ja Laitisen lasiveistokset asettavat kasvimateriaalin katoavaisuuden ja lasin muotokielen rinnakkaiseen vuoropuheluun.</p>
+      </div>
+    </article>
+    
+  </section>
+
+  <section class="part">
+    <div class="entry">
+      <h2 class="label">Ajatus</h2>
+      <p class="reflection">Japanilaisessa kukkienasettelussa kasvin kuihtuminen ei ole virhe, vaan osa teoksen mittakaavaa, aivan toisin kuin lasiveistoksessa tai pankin teräsholvissa, jotka on tehty kestämään paikoillaan. Silti myös kivi, metalli ja edesmenneiden vanhempien huoneet joutuvat lopulta taipumaan ajan edessä ja vaihtamaan muotoaan. Kodin ja muistojen vaaliminen kevenee, kun erottaa toisistaan sen, mikä on tarkoitettu säilytettäväksi, ja sen, minkä tehtävä on vain kulkea käsien kautta eteenpäin.</p>
+    </div>
+  </section>
+
+  <footer class="anchor">
+    <p>Tihkusade tummentaa mäntyjen rungot pihalla, ja kahdeksan jälkeen valkeneva aamu kantaa maanantain rauhallisesti liikkeelle.</p>
+    <p class="next">Seuraava painos huomenna 06.00</p>
+  </footer>
+
+</main>
+</body>
+</html>
