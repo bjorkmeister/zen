@@ -72,6 +72,7 @@ SUMMARY_CHARS = 320
 class Feed:
     name: str
     url: str
+    paywalled: bool = False  # shown as "tilaajille" and not linked
 
 
 @dataclass(frozen=True)
@@ -116,6 +117,7 @@ class Profile:
     reflection_label: str
     reflection: str
     email_to_env: str = ""           # secret holding the recipient; empty sends to GMAIL_USER
+    links: bool = False              # the source name opens the original story
     palette: Palette = COTTON
 
     @property
@@ -198,6 +200,7 @@ MINNA = Profile(
     notify="email",
     email_to_env="MINNA_EMAIL",
     palette=ROSA,
+    links=True,
     window_hours=72,  # design, food and culture do not go stale overnight
     min_sections=5,
     sections=(
@@ -217,7 +220,7 @@ MINNA = Profile(
             Feed("The Guardian", "https://www.theguardian.com/lifeandstyle/health-and-wellbeing/rss"),
         )),
         Section("ravintolat", "Ravintolat", (
-            Feed("Helsingin Sanomat", "https://www.hs.fi/rss/ruoka.xml"),
+            Feed("Helsingin Sanomat", "https://www.hs.fi/rss/ruoka.xml", paywalled=True),
             Feed("Eater", "https://www.eater.com/rss/index.xml"),
             Feed("The Guardian", "https://www.theguardian.com/food/rss"),
         )),
@@ -227,7 +230,7 @@ MINNA = Profile(
             Feed("Harper's Bazaar", "https://www.harpersbazaar.com/rss/all.xml/"),
         )),
         Section("kulttuuri", "Kulttuuri", (
-            Feed("Helsingin Sanomat", "https://www.hs.fi/rss/kulttuuri.xml"),
+            Feed("Helsingin Sanomat", "https://www.hs.fi/rss/kulttuuri.xml", paywalled=True),
             Feed("The Guardian", "https://www.theguardian.com/culture/rss"),
         )),
         Section("tapahtumat", "Tapahtumat", events=True),
@@ -338,7 +341,9 @@ def fetch_weather() -> Weather:
         )),
     }
     url = "https://api.open-meteo.com/v1/forecast?" + urllib.parse.urlencode(params)
-    data = json.loads(fetch(url))
+    # Open-Meteo occasionally stalls on the TLS handshake from GitHub's runners;
+    # a patient retry (about a minute in all) nearly always gets through.
+    data = json.loads(fetch(url, attempts=5, timeout=30.0))
     current, daily = data["current"], data["daily"]
     today = -1  # daily arrays are [yesterday, today]
     return Weather(
@@ -365,6 +370,8 @@ class Item:
     title: str
     summary: str
     when: str      # "5 h" for news, "ti 18.11. klo 19.00" for events
+    url: str = ""
+    paywalled: bool = False
 
 
 TAG = re.compile(r"<[^>]+>")
@@ -381,6 +388,12 @@ NOISE = re.compile(
 
 def clean(text: str) -> str:
     return SPACE.sub(" ", html.unescape(TAG.sub(" ", text or ""))).strip()
+
+
+def web_link(value) -> str:
+    """Only plain web addresses ever become links."""
+    value = str(value or "").strip()
+    return value if value.startswith(("https://", "http://")) else ""
 
 
 def shorten(text: str, limit: int) -> str:
@@ -416,10 +429,12 @@ def read_feed(feed: Feed, now: float, window_hours: int) -> list[dict]:
             "source": feed.name,
             "title": title,
             "summary": shorten(summary, SUMMARY_CHARS) if len(summary) >= 25 else "",
+            "url": web_link(entry.get("link")),
+            "paywalled": feed.paywalled,
             "age": max(0, age),
         })
     entries.sort(key=lambda e: e["age"])
-    return [{"source": e["source"], "title": e["title"], "summary": e["summary"], "when": f"{round(e['age'])} h"}
+    return [{**{k: v for k, v in e.items() if k != "age"}, "when": f"{round(e['age'])} h"}
             for e in entries[:ITEMS_PER_FEED]]
 
 
@@ -477,10 +492,14 @@ def read_events(now: datetime) -> list[dict]:
                 or (event.get("audience_max_age") or 99) < 18):
             continue
         seen.add(name)
+        info = event.get("info_url") or {}
         entries.append({
             "source": venue or "Helsinki",
             "title": name,
             "summary": shorten(finnish(event.get("short_description")), SUMMARY_CHARS),
+            # the organiser's own page, or else the city's event page
+            "url": web_link(info.get("fi") or info.get("en") or info.get("sv"))
+                   or f"https://tapahtumat.hel.fi/fi/events/{urllib.parse.quote(str(event.get('id', '')), safe=':')}",
             "when": f"{WEEKDAYS_SHORT[start.weekday()]} {start.day}.{start.month}. klo {clock(start)}",
         })
     return entries[:MAX_EVENTS]
@@ -741,10 +760,17 @@ def tidy(text: str) -> str:
 # --------------------------------------------------------------------------
 
 PLACEHOLDER = re.compile(r"\{\{\s*(\w+)\s*\}\}")
+# <!-- if key -->shown when the value is non-empty<!-- else -->otherwise<!-- /if -->
+# Innermost blocks are resolved first, so blocks can nest.
+CONDITION = re.compile(
+    r"<!-- if (\w+) -->((?:(?!<!-- if ).)*?)(?:<!-- else -->((?:(?!<!-- if ).)*?))?<!-- /if -->", re.S)
 SIGNAL_BLOCK = re.compile(r"<!-- signal -->(.*?)<!-- /signal -->", re.S)
 
 
 def fill(fragment: str, values: dict[str, str]) -> str:
+    while CONDITION.search(fragment):
+        fragment = CONDITION.sub(lambda m: m.group(2) if values.get(m.group(1)) else (m.group(3) or ""), fragment)
+
     def substitute(match: re.Match) -> str:
         key = match.group(1)
         if key not in values:
@@ -764,7 +790,7 @@ def render(template: str, page: dict[str, str], signals: list[dict[str, str]]) -
 def build_page(profile: Profile, today: datetime, current: datetime, upcoming: datetime, number: int,
                weather: Weather, news: dict[str, list[Item]],
                edition: dict) -> tuple[dict[str, str], list[dict[str, str]]]:
-    sources = {item.id: item.source for items in news.values() for item in items}
+    chosen = {item.id: item for items in news.values() for item in items}
     page = {
         **{name: getattr(profile.palette, name) for name in ("paper", "ink", "stone", "rule")},
         "slot": slot_id(current),
@@ -787,9 +813,12 @@ def build_page(profile: Profile, today: datetime, current: datetime, upcoming: d
     signals = []
     for section in profile.sections:
         signal = edition["signals"][section.key]
+        item = chosen.get(str(signal.get("source_id", "")).strip())
         signals.append({
             "signal_label": section.label,
-            "signal_source": sources.get(str(signal.get("source_id", "")).strip(), ""),
+            "signal_source": item.source if item else "",
+            "signal_url": item.url if item and profile.links and not item.paywalled else "",
+            "signal_paywalled": "1" if item and profile.links and item.paywalled else "",
             "signal_title": tidy(signal["title"]).rstrip("."),
             "signal_body": tidy(signal["body"]),
         })

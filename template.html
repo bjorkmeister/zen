@@ -149,6 +149,15 @@
 
   .source:empty { display: none; }
 
+  a.source {
+    color: inherit;
+    text-decoration: underline;
+    text-decoration-color: var(--rule);
+    text-decoration-thickness: 1px;
+    text-underline-offset: 3px;
+    cursor: pointer;
+  }
+
   .synthesis {
     font: 400 clamp(1.3rem, 3.4vw, 1.5rem)/1.45 var(--serif);
     text-wrap: pretty;
@@ -241,7 +250,7 @@
   <section class="part" aria-label="Signaalit">
     <!-- signal -->
     <article class="entry signal">
-      <h2 class="label">{{ signal_label }}<span class="source">{{ signal_source }}</span></h2>
+      <h2 class="label">{{ signal_label }}<!-- if signal_url --><a class="source" href="{{ signal_url }}" target="_blank" rel="noopener">{{ signal_source }}&nbsp;↗</a><!-- else --><span class="source">{{ signal_source }}<!-- if signal_paywalled --> · tilaajille<!-- /if --></span><!-- /if --></h2>
       <div>
         <h3>{{ signal_title }}</h3>
         <p>{{ signal_body }}</p>
