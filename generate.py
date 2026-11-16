@@ -1,61 +1,67 @@
 #!/usr/bin/env python3
-"""Aamun arkki: a single-edition morning broadsheet for Espoo.
+"""Tyyni: a calm one-page broadsheet for Espoo, in more than one edition.
 
-At 6.00, 14.00 and 20.00 this script
-  1. reads today's weather and daylight for Espoo from Open-Meteo,
-  2. reads the last day and a half of a few curated RSS feeds in five domains,
+Each reader has a profile: their sources, editorial voice, edition hours and
+how they hear that a new edition is out. For a profile, this script
+  1. reads the weather and daylight for Olari, Espoo from Open-Meteo,
+  2. reads recent items from the profile's curated RSS feeds (and, for some,
+     Helsinki and Espoo cultural events from the Linked Events API),
   3. asks Gemini to distil them into one calm page in Finnish, and
-  4. renders template.html into index.html.
+  4. renders template.html into the profile's index.html.
 
-There is no state: every run starts from nothing and overwrites index.html.
+There is no state: every run starts from nothing and overwrites the page.
 If any required step fails the script exits non-zero and writes nothing, so
-yesterday's edition stays up rather than a broken one going out.
+the previous edition stays up rather than a broken one going out.
 
-`python generate.py --due` only answers whether the latest edition is missing
-from the page. It needs nothing beyond the standard library, which is why the
+    python generate.py                  write the main edition
+    python generate.py --profile minna  write Minna's edition
+    python generate.py --due            list the profiles whose latest edition is missing
+    python generate.py --send minna     email Minna the edition just written
+
+`--due` needs nothing beyond the standard library, which is why the
 third-party imports live inside the functions that use them.
 
-Requires GEMINI_API_KEY. Dependencies: google-genai, feedparser.
+Requires GEMINI_API_KEY; sending email also needs GMAIL_USER and
+GMAIL_APP_PASSWORD. Dependencies: google-genai, feedparser.
 """
 
 from __future__ import annotations
 
+import argparse
 import calendar
 import html
 import json
 import os
 import re
+import smtplib
 import sys
 import time
 import urllib.parse
 import urllib.request
 from concurrent.futures import ThreadPoolExecutor
 from dataclasses import dataclass
-from datetime import datetime, timedelta
+from datetime import date, datetime, timedelta
+from email.message import EmailMessage
+from email.utils import formataddr
 from pathlib import Path
+from typing import Callable
 from zoneinfo import ZoneInfo
 
 ROOT = Path(__file__).resolve().parent
 TEMPLATE = ROOT / "template.html"
-OUTPUT = ROOT / "index.html"
+EMAIL_TEMPLATE = ROOT / "email.html"
 
 TZ = ZoneInfo("Europe/Helsinki")
-ESPOO = {"latitude": 60.2055, "longitude": 24.6559}
+OLARI = {"latitude": 60.1772, "longitude": 24.7383}  # Olari, Espoo
 
-# Edition hours in Helsinki time and their names; the workflow looks in every
-# half hour and publishes whichever edition is due. The first edition is the
-# one that sends the morning link.
-EDITIONS = {6: "aamupainos", 14: "iltapäiväpainos", 20: "iltapainos"}
 LEAD = timedelta(minutes=20)  # a run this close before an edition hour belongs to it
 
 # Tried in order. Carbon writes best but needs a paid key; Flash and Hydrogen
 # are on the free tier, so the paper still appears if Carbon is unavailable.
 MODELS = ("gemini-4-carbon", "gemini-3.8-flash", "gemini-4-hydrogen")
-USER_AGENT = "Mozilla/5.0 (compatible; AamunArkki/1.0; personal morning digest)"
-WINDOW_HOURS = 36       # "yesterday", with slack for time zones and late publishing
+USER_AGENT = "Mozilla/5.0 (compatible; Tyyni/1.0; personal daily digest)"
 ITEMS_PER_FEED = 10
 SUMMARY_CHARS = 320
-MIN_SECTIONS_WITH_NEWS = 4
 
 
 # --------------------------------------------------------------------------
@@ -72,33 +78,185 @@ class Feed:
 class Section:
     key: str
     label: str
-    feeds: tuple[Feed, ...]
+    feeds: tuple[Feed, ...] = ()
+    events: bool = False  # Helsinki and Espoo cultural events instead of feeds
 
 
-SECTIONS: tuple[Section, ...] = (
-    Section("tekniikka", "Tekniikka", (
-        Feed("Ars Technica", "https://feeds.arstechnica.com/arstechnica/index"),
-        Feed("Hacker News", "https://hnrss.org/frontpage?points=200"),
-    )),
-    Section("talous", "Talous", (
-        Feed("Financial Times", "https://www.ft.com/rss/home"),
-        Feed("The Economist", "https://www.economist.com/finance-and-economics/rss.xml"),
-        Feed("Bloomberg", "https://feeds.bloomberg.com/economics/news.rss"),
-    )),
-    Section("design", "Design", (
-        Feed("Dezeen", "https://www.dezeen.com/feed/"),
-        Feed("Wallpaper*", "https://www.wallpaper.com/rss"),
-    )),
-    Section("media", "Media", (
-        Feed("Nieman Lab", "https://www.niemanlab.org/feed/"),
-        Feed("The Guardian", "https://www.theguardian.com/media/rss"),
-        Feed("The New Yorker", "https://www.newyorker.com/feed/culture"),
-    )),
-    Section("huippu_urheilu", "Huippu-urheilu", (
-        Feed("BBC Sport", "https://feeds.bbci.co.uk/sport/rss.xml"),
-        Feed("The Athletic", "https://www.nytimes.com/athletic/rss/news/"),
-    )),
+# --------------------------------------------------------------------------
+# Profiles
+# --------------------------------------------------------------------------
+
+@dataclass(frozen=True)
+class Profile:
+    key: str
+    folder: str                      # where the page lives under the site root
+    editions: dict[int, str]         # Helsinki hour -> edition name; the first one notifies
+    notify: str                      # "github": a comment in the issue thread; "email"
+    sections: tuple[Section, ...]
+    window_hours: int                # how far back the feeds are read
+    min_sections: int                # fewer answering sections than this: keep the old page
+    reader: str                      # who reads it and what the page is for
+    principles: str                  # what to choose and what to leave out
+    synthesis_label: str
+    synthesis: str
+    signal_why: str                  # what the second sentence of each signal explains
+    signal_notes: str
+    reflection_label: str
+    reflection: str
+    email_to_env: str = ""           # secret holding the recipient; empty sends to GMAIL_USER
+
+    @property
+    def output(self) -> Path:
+        return ROOT / self.folder / "index.html"
+
+    @property
+    def mail_data(self) -> Path:
+        return ROOT / f".edition-{self.key}.json"  # handed from writing to sending; never committed
+
+
+MAIN = Profile(
+    key="main",
+    folder="",
+    editions={6: "aamupainos", 14: "iltapäiväpainos", 20: "iltapainos"},
+    notify="github",
+    window_hours=36,  # "yesterday", with slack for time zones and late publishing
+    min_sections=4,
+    sections=(
+        Section("tekniikka", "Tekniikka", (
+            Feed("Ars Technica", "https://feeds.arstechnica.com/arstechnica/index"),
+            Feed("Hacker News", "https://hnrss.org/frontpage?points=200"),
+        )),
+        Section("talous", "Talous", (
+            Feed("Financial Times", "https://www.ft.com/rss/home"),
+            Feed("The Economist", "https://www.economist.com/finance-and-economics/rss.xml"),
+            Feed("Bloomberg", "https://feeds.bloomberg.com/economics/news.rss"),
+        )),
+        Section("design", "Design", (
+            Feed("Dezeen", "https://www.dezeen.com/feed/"),
+            Feed("Wallpaper*", "https://www.wallpaper.com/rss"),
+        )),
+        Section("media", "Media", (
+            Feed("Nieman Lab", "https://www.niemanlab.org/feed/"),
+            Feed("The Guardian", "https://www.theguardian.com/media/rss"),
+            Feed("The New Yorker", "https://www.newyorker.com/feed/culture"),
+        )),
+        Section("huippu_urheilu", "Huippu-urheilu", (
+            Feed("BBC Sport", "https://feeds.bbci.co.uk/sport/rss.xml"),
+            Feed("The Athletic", "https://www.nytimes.com/athletic/rss/news/"),
+        )),
+    ),
+    reader=(
+        "You are the sole editor of Tyyni (\"still, calm\"), a one-page broadsheet with exactly one reader: "
+        "a senior Finnish leader in Espoo who works where technology, organisations and strategy meet. "
+        "The sheet appears three times a day – morning (6.00), afternoon (14.00) and evening (20.00) – and the "
+        "reader reads each edition once, slowly, and then closes the screen. The briefing says which edition "
+        "this is; let the atmosphere and the zen anchor fit that hour of the day. Your task is to give them "
+        "clarity and calm: the few things that matter, why they matter, and nothing else."
+    ),
+    principles=(
+        "- Signal over noise. Choose events with structural consequence: shifts in incentives, capital, "
+        "regulation, platforms, institutions or power. Pass over product launches, minor deals, rumours, "
+        "previews, viewing guides, listicles, celebrity, and opinion pieces unless they reveal something structural."
+    ),
+    synthesis_label="Pohjavirrat",
+    synthesis=(
+        "one paragraph of 3–4 sentences. Look beneath the individual headlines and name the structural current "
+        "that links at least two of the domains. Name the mechanism – who gains leverage, which constraint moves, "
+        "which incentive changes – rather than the topic. Do not summarise the headlines one by one."
+    ),
+    signal_why="why it matters structurally",
+    signal_notes="",
+    reflection_label="Pohdinta",
+    reflection=(
+        "one paragraph of 3–5 sentences for a senior leader. Start from a concrete pattern visible in today's "
+        "material and draw a first-principles insight about organisations, strategy or systems – for example "
+        "incentive structures, second-order effects, governance friction, Conway's law, information asymmetry, "
+        "principal–agent problems, operational leverage, feedback delays or optionality. It must be specific "
+        "enough that it could not have been written on any other day. Forbidden: management clichés and "
+        "motivational language (such as \"muutos on ainoa pysyvä\", \"kulttuuri syö strategian aamiaiseksi\", "
+        "ketteryys, synergia, paradigman muutos, mukavuusalue, win-win), lists, advice in the imperative, and questions."
+    ),
 )
+
+MINNA = Profile(
+    key="minna",
+    folder="minna",
+    editions={6: "aamupainos"},
+    notify="email",
+    email_to_env="MINNA_EMAIL",
+    window_hours=72,  # design, food and culture do not go stale overnight
+    min_sections=5,
+    sections=(
+        Section("design", "Design", (
+            Feed("Dezeen", "https://www.dezeen.com/feed/"),
+            Feed("Wallpaper*", "https://www.wallpaper.com/rss"),
+            Feed("Design Milk", "https://design-milk.com/feed/"),
+        )),
+        Section("lifestyle", "Lifestyle", (
+            Feed("Monocle", "https://monocle.com/feed/"),
+            Feed("The Guardian", "https://www.theguardian.com/lifeandstyle/rss"),
+            Feed("Condé Nast Traveler", "https://www.cntraveler.com/feed/rss"),
+        )),
+        Section("hyvinvointi", "Hyvinvointi", (
+            Feed("Psyche", "https://psyche.co/feed"),
+            Feed("Greater Good", "https://greatergood.berkeley.edu/site/rss/articles"),
+            Feed("The Guardian", "https://www.theguardian.com/lifeandstyle/health-and-wellbeing/rss"),
+        )),
+        Section("ravintolat", "Ravintolat", (
+            Feed("Helsingin Sanomat", "https://www.hs.fi/rss/ruoka.xml"),
+            Feed("Eater", "https://www.eater.com/rss/index.xml"),
+            Feed("The Guardian", "https://www.theguardian.com/food/rss"),
+        )),
+        Section("trendit", "Trendit", (
+            Feed("Vogue", "https://www.vogue.com/feed/rss"),
+            Feed("The Guardian", "https://www.theguardian.com/fashion/rss"),
+            Feed("Harper's Bazaar", "https://www.harpersbazaar.com/rss/all.xml/"),
+        )),
+        Section("kulttuuri", "Kulttuuri", (
+            Feed("Helsingin Sanomat", "https://www.hs.fi/rss/kulttuuri.xml"),
+            Feed("The Guardian", "https://www.theguardian.com/culture/rss"),
+        )),
+        Section("tapahtumat", "Tapahtumat", events=True),
+    ),
+    reader=(
+        "You are the sole editor of Tyyni (\"still, calm\"), a one-page sheet with exactly one reader: a woman in "
+        "Olari, Espoo, with a refined eye for design, interiors, food, wellbeing and culture. The sheet appears "
+        "once a day, at 6.00; she reads it once, slowly, with her first coffee, and then closes the screen. Your "
+        "task is to bring her beauty, inspiration and calm: a handful of things worth her attention today, and why."
+    ),
+    principles=(
+        "- Beauty and substance over noise. Choose what is genuinely well made, thoughtful, new or useful: "
+        "architecture, interiors and objects with craft; restaurants and food made with care; wellbeing grounded "
+        "in research; culture worth leaving the house for; trends that say something about how people want to live.\n"
+        "- Leave out entirely: war, politics, economy, markets, technology business, crime, disasters and health "
+        "scares. Leave out too: celebrity gossip, red carpets, shopping lists and gift guides, sales pressure, "
+        "diet culture, body ideals and influencer hype.\n"
+        "- Prefer what is near: Helsinki and Espoo first when the material allows, then the Nordic countries, then the world.\n"
+        "- Write to her as an equal: no clichés about women, no \"hemmottele itseäsi\", no self-care jargon."
+    ),
+    synthesis_label="Virtaukset",
+    synthesis=(
+        "one paragraph of 3–4 sentences. Name the current that runs through today's material – a shared mood, "
+        "material, colour, value or way of living that shows in at least two domains. Say precisely what it is "
+        "and where it shows; do not list the items one by one."
+    ),
+    signal_why="why it is worth her attention – what makes it beautiful, interesting or useful in her own life",
+    signal_notes=(
+        "For ravintolat, prefer restaurant and food news from Helsinki or Espoo when there is any. For tapahtumat, "
+        "choose the one event in Helsinki or Espoo that a person with her taste would most enjoy, and name the "
+        "venue and the day and time in the first sentence."
+    ),
+    reflection_label="Ajatus",
+    reflection=(
+        "one paragraph of 3–4 sentences: a quiet, grounded thought about living well, drawn from something "
+        "concrete in today's material – attention, rhythm, materials and craft, rest, seasons, friendship, the "
+        "home. It must be specific enough that it could not have been written on any other day. Forbidden: "
+        "self-help clichés (such as \"pienet asiat\", \"hetkessä eläminen\", \"oma aika\", \"self care\"), "
+        "advice in the imperative, and questions."
+    ),
+)
+
+PROFILES = {profile.key: profile for profile in (MAIN, MINNA)}
 
 
 # --------------------------------------------------------------------------
@@ -153,7 +311,7 @@ WMO_FI = {
 
 def fetch_weather() -> Weather:
     params = {
-        **ESPOO,
+        **OLARI,
         "timezone": "Europe/Helsinki",
         "wind_speed_unit": "ms",
         "past_days": 1,       # yesterday's daylight, for the change in day length
@@ -192,7 +350,7 @@ class Item:
     source: str
     title: str
     summary: str
-    age_hours: int
+    when: str      # "5 h" for news, "ti 18.11. klo 19.00" for events
 
 
 TAG = re.compile(r"<[^>]+>")
@@ -218,7 +376,7 @@ def shorten(text: str, limit: int) -> str:
     return cut.rstrip(" ,;:.–-") + "…"
 
 
-def read_feed(feed: Feed, now: float) -> list[dict]:
+def read_feed(feed: Feed, now: float, window_hours: int) -> list[dict]:
     """Recent entries from one feed, newest first. A failing feed yields nothing."""
     try:
         import feedparser
@@ -232,7 +390,7 @@ def read_feed(feed: Feed, now: float) -> list[dict]:
         if not stamp:
             continue
         age = (now - calendar.timegm(stamp)) / 3600
-        if not -1 <= age <= WINDOW_HOURS:
+        if not -1 <= age <= window_hours:
             continue
         title = clean(entry.get("title", ""))
         if not title or NOISE.search(title):
@@ -244,19 +402,88 @@ def read_feed(feed: Feed, now: float) -> list[dict]:
             "source": feed.name,
             "title": title,
             "summary": shorten(summary, SUMMARY_CHARS) if len(summary) >= 25 else "",
-            "age_hours": max(0, round(age)),
+            "age": max(0, age),
         })
-    entries.sort(key=lambda e: e["age_hours"])
-    return entries[:ITEMS_PER_FEED]
+    entries.sort(key=lambda e: e["age"])
+    return [{"source": e["source"], "title": e["title"], "summary": e["summary"], "when": f"{round(e['age'])} h"}
+            for e in entries[:ITEMS_PER_FEED]]
 
 
-def fetch_news() -> dict[str, list[Item]]:
-    now = time.time()
-    jobs = [(section, feed) for section in SECTIONS for feed in section.feeds]
+# Linked Events (api.hel.fi): concerts, exhibitions, theatre, dance and film
+# starting in the next few days, without the children's, family, youth and
+# senior programmes and the courses and workshops that make up most of the feed.
+EVENT_KEYWORDS = "yso:p11185,yso:p5121,yso:p2625,yso:p1278,yso:p1235"
+EVENT_AUDIENCES_LEFT_OUT = {
+    "yso:p4354", "yso:p13050", "yso:p11617", "yso:p2433",
+    "yso:p20513", "yso:p6915", "yso:p16485", "yso:p15937",
+}
+EVENT_NOT_FOR_HER = re.compile(
+    r"lapsi|lasten|lapset|taapero|perhe|vauva|baby|leikki|nuori|nuorten|seniori|koulu|päiväkoti"
+    r"|eläkel|palvelukeskus|harjoitu|kurssi|työpaja|kerho",
+    re.I,
+)
+EVENT_DAYS = 3
+MAX_EVENTS = 40
+WEEKDAYS_SHORT = ("ma", "ti", "ke", "to", "pe", "la", "su")
+
+
+def read_events(now: datetime) -> list[dict]:
+    """Coming cultural events in Helsinki and Espoo. A failing API yields nothing."""
+    params = {
+        "start": "today",
+        "end": (now.date() + timedelta(days=EVENT_DAYS)).isoformat(),
+        "division": "espoo,helsinki",
+        "keyword": EVENT_KEYWORDS,
+        "super_event_type": "none",
+        "max_duration": 86400,
+        "sort": "start_time",
+        "page_size": 100,
+        "include": "location",
+    }
+    try:
+        data = json.loads(fetch("https://api.hel.fi/linkedevents/v1/event/?" + urllib.parse.urlencode(params)))
+    except Exception as error:
+        print(f"  ! Linked Events: {type(error).__name__}: {error}", file=sys.stderr)
+        return []
+    entries, seen = [], set()
+    for event in data.get("data", []):
+        def finnish(value) -> str:
+            value = value or {}
+            return clean(value.get("fi") or value.get("en") or value.get("sv") or "")
+        name = finnish(event.get("name"))
+        venue = finnish((event.get("location") or {}).get("name"))
+        keywords = {k.get("@id", "").rstrip("/").rsplit("/", 1)[-1] for k in event.get("keywords") or []}
+        try:
+            start = datetime.fromisoformat(event["start_time"].replace("Z", "+00:00")).astimezone(TZ)
+        except (KeyError, TypeError, ValueError):
+            continue
+        if (not name or name in seen or start < now
+                or keywords & EVENT_AUDIENCES_LEFT_OUT
+                or EVENT_NOT_FOR_HER.search(f"{name} {venue}")
+                or (event.get("audience_max_age") or 99) < 18):
+            continue
+        seen.add(name)
+        entries.append({
+            "source": venue or "Helsinki",
+            "title": name,
+            "summary": shorten(finnish(event.get("short_description")), SUMMARY_CHARS),
+            "when": f"{WEEKDAYS_SHORT[start.weekday()]} {start.day}.{start.month}. klo {clock(start)}",
+        })
+    return entries[:MAX_EVENTS]
+
+
+def fetch_news(profile: Profile) -> dict[str, list[Item]]:
+    now_ts, now = time.time(), datetime.now(TZ)
+    jobs: list[tuple[Section, Callable[[], list[dict]]]] = []
+    for section in profile.sections:
+        if section.events:
+            jobs.append((section, lambda: read_events(now)))
+        for feed in section.feeds:
+            jobs.append((section, lambda feed=feed: read_feed(feed, now_ts, profile.window_hours)))
     with ThreadPoolExecutor(max_workers=len(jobs)) as pool:
-        results = list(pool.map(lambda job: read_feed(job[1], now), jobs))
+        results = list(pool.map(lambda job: job[1](), jobs))
 
-    news: dict[str, list[Item]] = {section.key: [] for section in SECTIONS}
+    news: dict[str, list[Item]] = {section.key: [] for section in profile.sections}
     seen: set[str] = set()
     for (section, _), entries in zip(jobs, results):
         for entry in entries:
@@ -300,55 +527,77 @@ def daylight_change(seconds: float) -> str:
     return f"{'+' if minutes > 0 else '−'}{abs(minutes)} min"
 
 
-def long_date(day: datetime) -> str:
+def long_date(day: datetime | date) -> str:
     return f"{WEEKDAYS[day.weekday()].capitalize()} {day.day}. {MONTHS[day.month - 1]} {day.year}"
 
 
-def editions(now: datetime) -> tuple[datetime, datetime]:
+def short_date(day: datetime | date) -> str:
+    return f"{WEEKDAYS[day.weekday()]} {day.day}.{day.month}."
+
+
+def editions(now: datetime, hours: dict[int, str]) -> tuple[datetime, datetime]:
     """The edition this run belongs to, and the one after it."""
     anchor = now + LEAD
     slots = sorted(
         (anchor + timedelta(days=offset)).replace(hour=hour, minute=0, second=0, microsecond=0)
-        for offset in (-1, 0, 1) for hour in EDITIONS
+        for offset in (-1, 0, 1) for hour in hours
     )
     current = max(slot for slot in slots if slot <= anchor)
     upcoming = min(slot for slot in slots if slot > anchor)
     return current, upcoming
 
 
+def next_edition_text(now: datetime, upcoming: datetime) -> str:
+    when = f"{upcoming.hour:02d}.{upcoming.minute:02d}"
+    return when if upcoming.date() == now.date() else f"huomenna {when}"
+
+
 # --------------------------------------------------------------------------
 # Composition
 # --------------------------------------------------------------------------
 
-SYSTEM_PROMPT = """\
-You are the sole editor of Aamun arkki ("the morning sheet"), a one-page broadsheet with exactly one reader: a senior Finnish leader in Espoo who works where technology, organisations and strategy meet. The sheet appears three times a day – morning (6.00), afternoon (14.00) and evening (20.00) – and the reader reads each edition once, slowly, and then closes the screen. The briefing says which edition this is; let the atmosphere and the zen anchor fit that hour of the day. Your task is to give them clarity and calm: the few things that matter, why they matter, and nothing else.
-
+LANGUAGE = """\
 Language
-Write every field in Finnish: natural, precise, contemporary written Finnish of the kind the best Finnish long-form editors produce. Use Finnish syntax, not translated English. Prefer a good Finnish word to an anglicism, an active verb to a stack of nouns, and avoid officialese such as "toimesta", "omata", "suorittaa" used as a filler verb, or "tulee olemaan". Keep proper names in their original form. Use Finnish typography: ”lainausmerkit”, ajatusviiva (–), kellonajat pisteellä (8.06), desimaalipilkku, miinusmerkki (−3°).
+Write every field in Finnish: natural, precise, contemporary written Finnish of the kind the best Finnish long-form editors produce. Use Finnish syntax, not translated English. Prefer a good Finnish word to an anglicism, an active verb to a stack of nouns, and avoid officialese such as "toimesta", "omata", "suorittaa" used as a filler verb, or "tulee olemaan". Keep proper names in their original form. Use Finnish typography: ”lainausmerkit”, ajatusviiva (–), kellonajat pisteellä (8.06), desimaalipilkku, miinusmerkki (−3°)."""
 
-Editorial principles
-- Signal over noise. Choose events with structural consequence: shifts in incentives, capital, regulation, platforms, institutions or power. Pass over product launches, minor deals, rumours, previews, viewing guides, listicles, celebrity, and opinion pieces unless they reveal something structural.
+SHARED_PRINCIPLES = """\
 - Use only the material provided for events. Never invent facts, figures, quotes or outcomes. Widely known background may frame an item, but must not add new news. If an item is thin, write less rather than guess.
-- Calm and exact. No hype, no alarm, no exclamation marks, no emoji, no markdown, no rhetorical questions.
+- Calm and exact. No hype, no alarm, no exclamation marks, no emoji, no markdown, no rhetorical questions."""
 
-Fields
-atmosphere: exactly one sentence, at most 30 words. The weather in Espoo as it stands at this edition's hour and the rhythm of daylight, including the current temperature from the data. Evocative but concrete, true to the data; no stock phrases.
+ATMOSPHERE = """\
+atmosphere: exactly one sentence, at most 30 words. The weather in Espoo as it stands at this edition's hour and the rhythm of daylight, including the current temperature from the data. Evocative but concrete, true to the data; no stock phrases."""
 
-megatrend_synthesis: one paragraph of 3–4 sentences. Look beneath the individual headlines and name the structural current that links at least two of the domains. Name the mechanism – who gains leverage, which constraint moves, which incentive changes – rather than the topic. Do not summarise the headlines one by one.
-
-signals: one entry per domain (tekniikka, talous, design, media, huippu_urheilu), each about the single most consequential item in that domain's material.
-- source_id: the id of the item you chose, exactly as given (for example "TE3").
-- title: a short Finnish headline, at most 8 words, sentence case, no full stop.
-- body: exactly two sentences. First, what happened, concretely and with the actor named. Second, why it matters structurally. Objective; no praise words.
-If a domain's material is thin, choose its least trivial item and state plainly why it matters. Never pad.
-
-executive_reflection: one paragraph of 3–5 sentences for a senior leader. Start from a concrete pattern visible in today's material and draw a first-principles insight about organisations, strategy or systems – for example incentive structures, second-order effects, governance friction, Conway's law, information asymmetry, principal–agent problems, operational leverage, feedback delays or optionality. It must be specific enough that it could not have been written on any other day. Forbidden: management clichés and motivational language (such as "muutos on ainoa pysyvä", "kulttuuri syö strategian aamiaiseksi", ketteryys, synergia, paradigman muutos, mukavuusalue, win-win), lists, advice in the imperative, and questions.
-
-zen_anchor: exactly one sentence, at most 20 words. Timeless, quiet and concrete; it may draw on today's season or light in Espoo. It restores perspective and gently turns the reader toward the rest of their real day – or, in the evening edition, toward rest – without mentioning screens, news, reading or this page, and without quotations, attributed sayings or familiar aphorisms.
-"""
+ZEN = """\
+zen_anchor: exactly one sentence, at most 20 words. Timeless, quiet and concrete; it may draw on today's season or light in Espoo. It restores perspective and gently turns the reader toward the rest of their real day – or, in an evening edition, toward rest – without mentioning screens, news, reading or this page, and without quotations, attributed sayings or familiar aphorisms."""
 
 
-def edition_schema() -> dict:
+def system_prompt(profile: Profile) -> str:
+    keys = ", ".join(section.key for section in profile.sections)
+    example = f"{profile.sections[0].key[:2].upper()}3"
+    signals = (
+        f"signals: one entry per domain ({keys}), each about the single most worthwhile item in that domain's material.\n"
+        f"- source_id: the id of the item you chose, exactly as given (for example \"{example}\").\n"
+        "- title: a short Finnish headline, at most 8 words, sentence case, no full stop.\n"
+        f"- body: exactly two sentences. First, what happened, concretely and with the actor named. Second, {profile.signal_why}. "
+        "Objective; no praise words.\n"
+        "If a domain's material is thin, choose its least trivial item and state plainly why it matters. Never pad."
+    )
+    if profile.signal_notes:
+        signals += "\n" + profile.signal_notes
+    return "\n\n".join((
+        profile.reader,
+        LANGUAGE,
+        "Editorial principles\n" + profile.principles + "\n" + SHARED_PRINCIPLES,
+        "Fields",
+        ATMOSPHERE,
+        "synthesis: " + profile.synthesis,
+        signals,
+        "reflection: " + profile.reflection,
+        ZEN,
+    ))
+
+
+def edition_schema(profile: Profile) -> dict:
     signal = {
         "type": "object",
         "properties": {
@@ -359,58 +608,59 @@ def edition_schema() -> dict:
         "required": ["source_id", "title", "body"],
         "additionalProperties": False,
     }
-    keys = [section.key for section in SECTIONS]
+    keys = [section.key for section in profile.sections]
     return {
         "type": "object",
         "properties": {
             "atmosphere": {"type": "string"},
-            "megatrend_synthesis": {"type": "string"},
+            "synthesis": {"type": "string"},
             "signals": {
                 "type": "object",
                 "properties": {key: signal for key in keys},
                 "required": keys,
                 "additionalProperties": False,
             },
-            "executive_reflection": {"type": "string"},
+            "reflection": {"type": "string"},
             "zen_anchor": {"type": "string"},
         },
-        "required": ["atmosphere", "megatrend_synthesis", "signals",
-                     "executive_reflection", "zen_anchor"],
+        "required": ["atmosphere", "synthesis", "signals", "reflection", "zen_anchor"],
         "additionalProperties": False,
     }
 
 
-def briefing(today: datetime, edition_hour: int, weather: Weather, news: dict[str, list[Item]]) -> str:
+def briefing(profile: Profile, today: datetime, edition_hour: int, weather: Weather,
+             news: dict[str, list[Item]]) -> str:
     rain = f"{weather.precipitation_mm:.1f} mm".replace(".", ",")
     if weather.precipitation_chance is not None:
         rain += f", todennäköisyys {weather.precipitation_chance} %"
     lines = [
         f"Päivä: {long_date(today)}, vuoden {today.timetuple().tm_yday}. päivä.",
-        f"Painos: {EDITIONS[edition_hour]}, luetaan noin kello {edition_hour}.00.",
+        f"Painos: {profile.editions[edition_hour]}, luetaan noin kello {edition_hour}.00.",
         "",
-        "Sää Espoossa tänään (Open-Meteo):",
+        "Sää Olarissa, Espoossa tänään (Open-Meteo):",
         f"- nyt {degrees(weather.now)}, tuntuu kuin {degrees(weather.feels_like)}",
         f"- päivän ylin {degrees(weather.high)}, alin {degrees(weather.low)}; {weather.condition}",
         f"- sade {rain}; tuuli enimmillään {round(weather.wind_ms)} m/s",
         f"- aurinko nousee {clock(weather.sunrise)} ja laskee {clock(weather.sunset)}",
         f"- valoisaa {duration(weather.daylight_s)} ({daylight_change(weather.daylight_change_s)} eiliseen)",
         "",
-        f"Uutisaineisto, viimeiset {WINDOW_HOURS} tuntia. Muoto: [id] lähde · ikä – otsikko – tiivistelmä.",
+        f"Aineisto: uutiset viimeiseltä {profile.window_hours} tunnilta, tapahtumat seuraavilta päiviltä. "
+        "Muoto: [id] lähde · ikä tai ajankohta – otsikko – tiivistelmä.",
     ]
-    for section in SECTIONS:
+    for section in profile.sections:
         lines += ["", f"## {section.key} ({section.label})"]
         items = news[section.key]
         if not items:
             lines.append("(ei aineistoa tänään)")
         for item in items:
-            text = f"[{item.id}] {item.source} · {item.age_hours} h – {item.title}"
+            text = f"[{item.id}] {item.source} · {item.when} – {item.title}"
             if item.summary:
                 text += f" – {item.summary}"
             lines.append(text)
     return "\n".join(lines)
 
 
-def compose(prompt: str) -> dict:
+def compose(profile: Profile, prompt: str) -> dict:
     """Ask each model in turn until one returns a complete edition."""
     from google import genai
     from google.genai import errors, types
@@ -422,9 +672,9 @@ def compose(prompt: str) -> dict:
         retry_options=types.HttpRetryOptions(attempts=1),
     ))
     config = types.GenerateContentConfig(
-        system_instruction=SYSTEM_PROMPT,
+        system_instruction=system_prompt(profile),
         response_mime_type="application/json",
-        response_json_schema=edition_schema(),
+        response_json_schema=edition_schema(profile),
         # Thinking counts against max_output_tokens, so leave ample room for both.
         thinking_config=types.ThinkingConfig(thinking_level=types.ThinkingLevel.MEDIUM),
         max_output_tokens=32768,
@@ -451,18 +701,18 @@ def compose(prompt: str) -> dict:
         except json.JSONDecodeError:
             print(f"  ! {model}: response was not valid JSON", file=sys.stderr)
             continue
-        if complete(edition):
+        if complete(profile, edition):
             return edition
         print(f"  ! {model}: edition is missing fields", file=sys.stderr)
     raise RuntimeError("no model produced an edition")
 
 
-def complete(edition: dict) -> bool:
-    text_fields = ("atmosphere", "megatrend_synthesis", "executive_reflection", "zen_anchor")
+def complete(profile: Profile, edition: dict) -> bool:
+    text_fields = ("atmosphere", "synthesis", "reflection", "zen_anchor")
     signals = edition.get("signals") or {}
     return (all(str(edition.get(field, "")).strip() for field in text_fields)
             and all(str((signals.get(section.key) or {}).get(part, "")).strip()
-                    for section in SECTIONS for part in ("title", "body")))
+                    for section in profile.sections for part in ("title", "body")))
 
 
 def tidy(text: str) -> str:
@@ -497,26 +747,30 @@ def render(template: str, page: dict[str, str], signals: list[dict[str, str]]) -
     return fill(template[:block.start()], page) + repeated + fill(template[block.end():], page)
 
 
-def build_page(today: datetime, upcoming: datetime, number: int, weather: Weather,
-               news: dict[str, list[Item]], edition: dict) -> tuple[dict[str, str], list[dict[str, str]]]:
+def build_page(profile: Profile, today: datetime, current: datetime, upcoming: datetime, number: int,
+               weather: Weather, news: dict[str, list[Item]],
+               edition: dict) -> tuple[dict[str, str], list[dict[str, str]]]:
     sources = {item.id: item.source for items in news.values() for item in items}
     page = {
-        "next_edition": f"{upcoming.hour:02d}.{upcoming.minute:02d}",
+        "slot": slot_id(current),
+        "next_edition": next_edition_text(today, upcoming),
         "date_long": long_date(today),
-        "date_short": f"{WEEKDAYS[today.weekday()]} {today.day}.{today.month}.",
+        "date_short": short_date(today),
         "number": str(number),
         "temp_now": degrees(weather.now),
         "temp_high": degrees(weather.high),
         "sun": f"{clock(weather.sunrise)}–{clock(weather.sunset)}",
         "daylight": duration(weather.daylight_s),
         "daylight_change": daylight_change(weather.daylight_change_s),
+        "synthesis_label": profile.synthesis_label,
+        "reflection_label": profile.reflection_label,
         "atmosphere": tidy(edition["atmosphere"]),
-        "megatrend_synthesis": tidy(edition["megatrend_synthesis"]),
-        "executive_reflection": tidy(edition["executive_reflection"]),
+        "synthesis": tidy(edition["synthesis"]),
+        "reflection": tidy(edition["reflection"]),
         "zen_anchor": tidy(edition["zen_anchor"]),
     }
     signals = []
-    for section in SECTIONS:
+    for section in profile.sections:
         signal = edition["signals"][section.key]
         signals.append({
             "signal_label": section.label,
@@ -535,75 +789,143 @@ def slot_id(slot: datetime) -> str:
     return slot.strftime("%Y-%m-%dT%H:%M")
 
 
-def already_published(slot: datetime) -> bool:
-    """True when the current page is already this edition."""
+def current_page(profile: Profile) -> str:
     try:
-        found = EDITION_SLOT.search(OUTPUT.read_text(encoding="utf-8"))
+        return profile.output.read_text(encoding="utf-8")
     except FileNotFoundError:
-        return False
+        return ""
+
+
+def already_published(profile: Profile, slot: datetime) -> bool:
+    """True when the profile's page is already this edition."""
+    found = EDITION_SLOT.search(current_page(profile))
     return bool(found) and found.group(1) == slot_id(slot)
 
 
-def edition_number() -> int:
+def edition_number(profile: Profile) -> int:
     """One more than the edition being replaced. Each page records its own
     number, so the count needs no store of its own and skips no numbers when a
     run fails. A page without a number (or no page) makes this N:o 1."""
-    try:
-        found = EDITION_NUMBER.search(OUTPUT.read_text(encoding="utf-8"))
-    except FileNotFoundError:
-        return 1
+    found = EDITION_NUMBER.search(current_page(profile))
     return int(found.group(1)) + 1 if found else 1
 
 
-def announce(page: dict[str, str], morning: bool) -> None:
-    """Hand the date, the weather sentence and whether this is the morning
-    edition (the one that sends the link) to the workflow."""
+def write_outputs(values: dict[str, str]) -> None:
     target = os.environ.get("GITHUB_OUTPUT")
     if target:
         with open(target, "a", encoding="utf-8") as out:
-            out.write(f"date={page['date_long']}\n")
-            out.write(f"number={page['number']}\n")
-            out.write(f"atmosphere={page['atmosphere']}\n")
-            out.write(f"morning={'true' if morning else 'false'}\n")
+            for key, value in values.items():
+                out.write(f"{key}={SPACE.sub(' ', value)}\n")
 
 
-def check_due() -> int:
-    """Report whether the latest edition is missing from the page. The workflow
-    asks this every half hour, so a delayed or dropped scheduled run never costs
-    an edition: whichever check comes first after an edition hour publishes it."""
-    current, _ = editions(datetime.now(TZ))
-    due = not already_published(current)
-    print(f"{EDITIONS[current.hour]} {slot_id(current)}: {'due' if due else 'already published'}")
-    target = os.environ.get("GITHUB_OUTPUT")
-    if target:
-        with open(target, "a", encoding="utf-8") as out:
-            out.write(f"due={'true' if due else 'false'}\n")
+# --------------------------------------------------------------------------
+# Email
+# --------------------------------------------------------------------------
+
+def plain_email(page: dict[str, str], signals: list[dict[str, str]], url: str) -> str:
+    lines = [f"Tyyni · {page['date_long']} · N:o {page['number']}", "", page["atmosphere"], "",
+             page["synthesis"], "", "Tänään lehdessä:"]
+    lines += [f"– {signal['signal_label']}: {signal['signal_title']}" for signal in signals]
+    lines += ["", url, "", page["zen_anchor"]]
+    return "\n".join(lines)
+
+
+def send_email(profile: Profile) -> int:
+    """Email the edition written by the last run of this profile. Without the
+    Gmail credentials it says so and does nothing, so setting them up later
+    never breaks a run."""
+    user, password = os.environ.get("GMAIL_USER", ""), os.environ.get("GMAIL_APP_PASSWORD", "")
+    if not (user and password):
+        print("  Gmail credentials are not set; no email sent")
+        return 0
+    data = json.loads(profile.mail_data.read_text(encoding="utf-8"))
+    page, signals = data["page"], data["signals"]
+    url = os.environ.get("PAGE_URL", "")
+    recipient = os.environ.get(profile.email_to_env, "") if profile.email_to_env else ""
+    recipient = recipient or user  # until a recipient is set, the sender gets it: a safe way to test
+
+    message = EmailMessage()
+    message["Subject"] = f"Tyyni · {page['date_short']}"
+    message["From"] = formataddr(("Tyyni", user))
+    message["To"] = recipient
+    message.set_content(plain_email(page, signals, url))
+    message.add_alternative(
+        render(EMAIL_TEMPLATE.read_text(encoding="utf-8"), {**page, "url": url}, signals), subtype="html")
+    with smtplib.SMTP_SSL("smtp.gmail.com", 465, timeout=60) as smtp:
+        smtp.login(user, password)
+        smtp.send_message(message)
+    print(f"  emailed N:o {page['number']}{' to the sender (test)' if recipient == user else ''}")
     return 0
 
 
-def main() -> int:
+# --------------------------------------------------------------------------
+# Commands
+# --------------------------------------------------------------------------
+
+def check_due() -> int:
+    """List the profiles whose latest edition is missing from their page. The
+    workflow asks this at every look-in, so a delayed or dropped run never
+    costs an edition: whichever look-in comes first after an edition hour
+    publishes it."""
+    now, due = datetime.now(TZ), []
+    for profile in PROFILES.values():
+        current, _ = editions(now, profile.editions)
+        missing = not already_published(profile, current)
+        print(f"{profile.key}: {profile.editions[current.hour]} {slot_id(current)}: "
+              f"{'due' if missing else 'already published'}")
+        if missing:
+            due.append(profile.key)
+    write_outputs({"profiles": " ".join(due)})
+    return 0
+
+
+def publish(profile: Profile) -> int:
     today = datetime.now(TZ)
-    current, upcoming = editions(today)
-    print(f"Aamun arkki · {long_date(today)} · {EDITIONS[current.hour]}")
+    current, upcoming = editions(today, profile.editions)
+    print(f"Tyyni · {profile.key} · {long_date(today)} · {profile.editions[current.hour]}")
 
     template = TEMPLATE.read_text(encoding="utf-8")
     weather = fetch_weather()
     print(f"  weather {degrees(weather.now)}, {weather.condition}")
 
-    news = fetch_news()
-    for section in SECTIONS:
+    news = fetch_news(profile)
+    for section in profile.sections:
         print(f"  {section.key:<15} {len(news[section.key]):>3} items")
-    if sum(1 for items in news.values() if items) < MIN_SECTIONS_WITH_NEWS:
-        raise RuntimeError("too few feeds answered; keeping yesterday's edition")
+    if sum(1 for items in news.values() if items) < profile.min_sections:
+        raise RuntimeError("too few sources answered; keeping the previous edition")
 
-    edition = compose(briefing(today, current.hour, weather, news))
-    page, signals = build_page(today, upcoming, edition_number(), weather, news, edition)
-    page["slot"] = slot_id(current)
-    OUTPUT.write_text(render(template, page, signals), encoding="utf-8")
-    announce(page, morning=current.hour == min(EDITIONS))
-    print(f"  wrote {OUTPUT.name}: N:o {page['number']}; next edition {page['next_edition']}")
+    edition = compose(profile, briefing(profile, today, current.hour, weather, news))
+    page, signals = build_page(profile, today, current, upcoming, edition_number(profile),
+                               weather, news, edition)
+    profile.output.parent.mkdir(parents=True, exist_ok=True)
+    profile.output.write_text(render(template, page, signals), encoding="utf-8")
+    morning = current.hour == min(profile.editions)
+    if profile.notify == "email":
+        profile.mail_data.write_text(json.dumps({"page": page, "signals": signals}, ensure_ascii=False),
+                                     encoding="utf-8")
+    write_outputs({
+        f"{profile.key}_number": page["number"],
+        f"{profile.key}_date": page["date_long"],
+        f"{profile.key}_atmosphere": page["atmosphere"],
+        f"{profile.key}_morning": "true" if morning else "false",
+    })
+    print(f"  wrote {profile.output.relative_to(ROOT)}: N:o {page['number']}; next edition {page['next_edition']}")
     return 0
 
 
+def main(argv: list[str] | None = None) -> int:
+    parser = argparse.ArgumentParser(description=__doc__.split("\n\n")[0])
+    group = parser.add_mutually_exclusive_group()
+    group.add_argument("--profile", choices=PROFILES, default="main", help="write this profile's edition")
+    group.add_argument("--due", action="store_true", help="list the profiles whose latest edition is missing")
+    group.add_argument("--send", choices=PROFILES, help="email this profile's latest edition")
+    args = parser.parse_args(argv)
+    if args.due:
+        return check_due()
+    if args.send:
+        return send_email(PROFILES[args.send])
+    return publish(PROFILES[args.profile])
+
+
 if __name__ == "__main__":
-    sys.exit(check_due() if sys.argv[1:] == ["--due"] else main())
+    sys.exit(main())

@@ -1,0 +1,4 @@
+# Handed from writing an edition to emailing it; never published
+.edition-*.json
+_site/
+__pycache__/

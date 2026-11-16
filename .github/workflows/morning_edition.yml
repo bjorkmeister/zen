@@ -1,10 +1,10 @@
 name: Morning edition
 
-# Three editions a day, at 6.00, 14.00 and 20.00 in Helsinki (EDITIONS in
-# generate.py). Every look-in asks generate.py whether the latest edition is
-# missing from the page and publishes only then, so extra look-ins are
-# harmless and a lost one costs nothing. A look-in that finds nothing due
-# takes a few seconds.
+# Tyyni has more than one reader. Each profile in generate.py has its own
+# edition hours (the main edition at 6.00, 14.00 and 20.00, Minna's at 6.00).
+# Every look-in asks generate.py which profiles' latest edition is missing
+# from their page and publishes only those, so extra look-ins are harmless and
+# a lost one costs nothing. A look-in that finds nothing due takes seconds.
 #
 # GitHub's own scheduler is best-effort and on this repository has fired only
 # every few hours, so the punctual look-ins come from an external cron service
@@ -15,7 +15,11 @@ on:
     types: [edition]   # external cron at 5.50, 6.20, 13.50, 14.20, 19.50, 20.20
   schedule:
     - cron: "20,50 * * * *"
-  workflow_dispatch:   # "Run workflow" by hand publishes immediately, whatever the time
+  workflow_dispatch:   # "Run workflow" by hand publishes immediately
+    inputs:
+      profiles:
+        description: "Editions to publish now (space-separated: main minna)"
+        default: "main"
 
 permissions:
   contents: read
@@ -28,30 +32,31 @@ jobs:
   check:
     runs-on: ubuntu-latest
     outputs:
-      due: ${{ steps.due.outputs.due }}
+      profiles: ${{ steps.due.outputs.profiles }}
     steps:
       - uses: actions/checkout@v5
 
       - id: due
         env:
           EVENT: ${{ github.event_name }}
+          REQUESTED: ${{ inputs.profiles }}
         run: |
           if [ "$EVENT" = "workflow_dispatch" ]; then
-            echo "due=true" >> "$GITHUB_OUTPUT"
+            echo "profiles=$REQUESTED" >> "$GITHUB_OUTPUT"
           else
             python3 generate.py --due
           fi
 
   edition:
     needs: check
-    if: needs.check.outputs.due == 'true'
+    if: needs.check.outputs.profiles != ''
     runs-on: ubuntu-latest
-    timeout-minutes: 40
+    timeout-minutes: 60
     permissions:
-      contents: write   # commit index.html back to the repository
+      contents: write   # commit the pages back to the repository
       pages: write      # publish to GitHub Pages
       id-token: write   # required by deploy-pages
-      issues: write     # morning notification
+      issues: write     # the main edition's morning notification
     environment:
       name: github-pages
       url: ${{ steps.deploy.outputs.page_url }}
@@ -65,54 +70,95 @@ jobs:
       - name: Install dependencies
         run: python -m pip install --disable-pip-version-check --quiet google-genai==3.3.0 feedparser==6.0.14
 
-      - name: Write the edition
+      - name: Write the editions
         id: generate
         env:
           GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
-        run: python -u generate.py
+          PROFILES: ${{ needs.check.outputs.profiles }}
+        run: |
+          written="" failed=""
+          for profile in $PROFILES; do
+            if python -u generate.py --profile "$profile"; then
+              written="$written $profile"
+            else
+              failed="$failed $profile"
+            fi
+          done
+          echo "written=${written# }" >> "$GITHUB_OUTPUT"
+          echo "failed=${failed# }" >> "$GITHUB_OUTPUT"
 
-      - name: Commit index.html
+      - name: Commit the pages
+        if: steps.generate.outputs.written != ''
         env:
-          NUMBER: ${{ steps.generate.outputs.number }}
+          MAIN_NUMBER: ${{ steps.generate.outputs.main_number }}
+          MINNA_NUMBER: ${{ steps.generate.outputs.minna_number }}
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add index.html
+          for page in index.html minna/index.html; do
+            if [ -f "$page" ]; then git add "$page"; fi
+          done
           if git diff --cached --quiet; then
             echo "No change to commit."
           else
-            git commit --quiet -m "Aamun arkki N:o $NUMBER · $(TZ=Europe/Helsinki date '+%F %H.%M')"
-            git pull --rebase --quiet   # in case main moved while the edition was being written
+            subject="Tyyni"
+            if [ -n "$MAIN_NUMBER" ]; then subject="$subject N:o $MAIN_NUMBER"; fi
+            if [ -n "$MINNA_NUMBER" ]; then subject="$subject · Minna N:o $MINNA_NUMBER"; fi
+            git commit --quiet -m "$subject · $(TZ=Europe/Helsinki date '+%F %H.%M')"
+            git pull --rebase --quiet   # in case main moved while the editions were being written
             git push --quiet
           fi
 
-      - name: Stage the page
-        run: mkdir -p _site && cp index.html _site/index.html
+      - name: Stage the site
+        if: steps.generate.outputs.written != ''
+        run: |
+          mkdir -p _site
+          cp index.html _site/index.html
+          if [ -f minna/index.html ]; then mkdir -p _site/minna && cp minna/index.html _site/minna/index.html; fi
 
       - uses: actions/upload-pages-artifact@v4
+        if: steps.generate.outputs.written != ''
         with:
           path: _site
 
       - id: deploy
+        if: steps.generate.outputs.written != ''
         uses: actions/deploy-pages@v4
 
-      - name: Send the morning link
-        if: steps.generate.outputs.morning == 'true'
+      - name: Send the main edition's morning link
+        if: steps.generate.outputs.main_morning == 'true'
         env:
           GH_TOKEN: ${{ github.token }}
           GH_REPO: ${{ github.repository }}
           OWNER: ${{ github.repository_owner }}
-          DATE: ${{ steps.generate.outputs.date }}
-          NUMBER: ${{ steps.generate.outputs.number }}
-          ATMOSPHERE: ${{ steps.generate.outputs.atmosphere }}
+          DATE: ${{ steps.generate.outputs.main_date }}
+          NUMBER: ${{ steps.generate.outputs.main_number }}
+          ATMOSPHERE: ${{ steps.generate.outputs.main_atmosphere }}
           URL: ${{ steps.deploy.outputs.page_url }}
         run: |
           body=$(printf '**%s · N:o %s**\n\n%s\n\n%s' "$DATE" "$NUMBER" "$ATMOSPHERE" "$URL")
-          thread=$(gh issue list --state open --search 'author:app/github-actions in:title "Aamun arkki"' \
+          thread=$(gh issue list --state open --search 'author:app/github-actions in:title "Tyyni"' \
                      --json number --jq '.[0].number // empty')
           if [ -n "$thread" ]; then
             gh issue comment "$thread" --body "$body"
           else
-            gh issue create --title "Aamun arkki" \
-              --body "$(printf '@%s – tähän ketjuun tulee joka aamu linkki päivän arkkiin.\n\n%s' "$OWNER" "$body")"
+            gh issue create --title "Tyyni" \
+              --body "$(printf '@%s – tähän ketjuun tulee joka aamu linkki päivän Tyyneen.\n\n%s' "$OWNER" "$body")"
           fi
+
+      - name: Email Minna's edition
+        if: steps.generate.outputs.minna_morning == 'true'
+        env:
+          GMAIL_USER: ${{ secrets.GMAIL_USER }}
+          GMAIL_APP_PASSWORD: ${{ secrets.GMAIL_APP_PASSWORD }}
+          MINNA_EMAIL: ${{ secrets.MINNA_EMAIL }}
+          PAGE_URL: ${{ steps.deploy.outputs.page_url }}minna/
+        run: python -u generate.py --send minna
+
+      - name: Report editions that could not be written
+        if: steps.generate.outputs.failed != ''
+        env:
+          FAILED: ${{ steps.generate.outputs.failed }}
+        run: |
+          echo "::error::Could not write: $FAILED (the previous edition stays up; the next look-in retries)"
+          exit 1

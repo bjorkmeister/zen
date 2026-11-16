@@ -1,33 +1,39 @@
-# Aamun arkki
+# Tyyni
 
-A one-page broadsheet that writes itself three times a day. Weather and daylight for Espoo, the structural current beneath the news, five signals, one reflection and one quiet closing line, set like printed paper. No links, no buttons, no archive, no state.
+A calm one-page broadsheet that writes itself. Weather and daylight for Espoo, the current beneath the day's material, a handful of signals, one reflection and one quiet closing line, set like printed paper. No links, no buttons, no archive, no state.
 
-Live: **https://bjorkmeister.github.io/zen/**
+It comes in more than one edition, one per reader:
+
+| Edition | Page | Content | Appears | Notification |
+| --- | --- | --- | --- | --- |
+| Main | **https://bjorkmeister.github.io/zen/** | Technology, economy, design, media, sport | 06.00, 14.00, 20.00 | GitHub issue thread, after the 06.00 edition |
+| Minna | **https://bjorkmeister.github.io/zen/minna/** | Design, lifestyle, wellbeing, restaurants, trends, culture, events in Helsinki and Espoo | 06.00 | An HTML email |
 
 <p align="center">
-  <img width="400" alt="An edition of Aamun arkki" src="https://github.com/user-attachments/assets/92652652-fe40-4539-972b-14fbdcf9d1a0" />
+  <img width="400" alt="An edition of Tyyni" src="https://github.com/user-attachments/assets/92652652-fe40-4539-972b-14fbdcf9d1a0" />
 </p>
 
 ## How it works
 
-At 06.00, 14.00 and 20.00 (Helsinki time) a GitHub Action:
+At each edition hour (Helsinki time) a GitHub Action:
 
-1. reads the weather and day length from [Open-Meteo](https://open-meteo.com) (no key needed),
-2. reads the last 36 hours of a dozen curated RSS feeds across technology, economy, design, media and sport,
+1. reads the weather and day length for Olari, Espoo from [Open-Meteo](https://open-meteo.com) (no key needed),
+2. reads recent items from the edition's curated RSS feeds, and for Minna's edition upcoming concerts, exhibitions, theatre, dance and film from Helsinki's [Linked Events](https://api.hel.fi/linkedevents/v1/) API (no key needed),
 3. asks Gemini to distil them into one calm page in Finnish,
-4. renders `template.html` into `index.html`, commits it and publishes it to GitHub Pages,
-5. after the morning edition, posts the link in an issue thread, which reaches you by email.
+4. renders `template.html` into the edition's `index.html`, commits it and publishes the site to GitHub Pages,
+5. after the morning edition, sends the edition's notification.
 
-If anything fails, nothing is published and the previous edition stays up. GitHub emails you about the failed run.
+If an edition fails, nothing is published for it and its previous edition stays up. GitHub emails you about the failed run, and the next look-in tries again.
 
 | File | Role |
 | --- | --- |
-| `generate.py` | Fetches the data, calls Gemini and renders the page |
+| `generate.py` | The editions' profiles; fetches the data, calls Gemini, renders the pages, sends the email |
 | `template.html` | The page: typography, layout and placeholders |
-| `.github/workflows/morning_edition.yml` | The schedule, the commit, the deploy and the notification |
-| `index.html` | The current edition, written by the workflow |
+| `email.html` | The morning email, for editions that notify by email |
+| `.github/workflows/morning_edition.yml` | The look-ins, the commit, the deploy and the notifications |
+| `index.html`, `minna/index.html` | The current editions, written by the workflow |
 
-Every edition is numbered (*N:o 1, N:o 2, …*). Each page records its own number in a hidden tag, and the next run adds one to it. Only published editions are counted, so a failed run doesn't skip a number. To start counting again from N:o 1, delete `index.html`.
+Every edition is numbered (*N:o 1, N:o 2, …*). Each page records its own number in a hidden tag, and the next run adds one to it. Only published editions are counted, so a failed run doesn't skip a number. To start an edition's count again from N:o 1, delete its `index.html`.
 
 ## Run your own
 
@@ -37,11 +43,26 @@ You need a GitHub account and a Gemini API key. It takes about five minutes.
 2. **Get a Gemini API key** at [Google AI Studio](https://aistudio.google.com/apikey). The free tier works: the script falls back to Gemini 3.8 Flash. A paid key lets it use Gemini 4 Carbon, which writes better.
 3. **Add the key as a secret.** In your fork, open *Settings → Secrets and variables → Actions → New repository secret*. Name it `GEMINI_API_KEY` and paste the key.
 4. **Turn on Pages.** Open *Settings → Pages* and set *Source* to **GitHub Actions**.
-5. **Turn on Issues.** Forks have them off by default. Open *Settings → General → Features* and tick **Issues**. The morning link is posted there.
+5. **Turn on Issues.** Forks have them off by default. Open *Settings → General → Features* and tick **Issues**. The main edition's morning link is posted there.
 6. **Turn on Actions.** Open the **Actions** tab and confirm that you want to run workflows in your fork.
-7. **Run the first edition.** On the Actions tab, choose **Morning edition → Run workflow**. It takes about two minutes.
+7. **Run the first edition.** On the Actions tab, choose **Morning edition → Run workflow**. Leave *main* as the edition, or write `main minna` for both. It takes about two minutes.
 
 Your page is now at `https://<your-username>.github.io/<repository-name>/`.
+
+The first morning edition opens an issue called *Tyyni* that @-mentions you. Every morning edition adds a comment to that thread, so you get one email a day. If you don't receive it, check that email is enabled for *Participating and @mentions* in your GitHub notification settings.
+
+### Send an edition by email
+
+Editions whose profile says `notify="email"` (Minna's) arrive as an HTML email sent from a Gmail account. Gmail needs an *app password* for this: a separate 16-character password that can only send mail and can be revoked at any time.
+
+1. Turn on 2-Step Verification for the Google account, if it isn't on yet.
+2. Open [myaccount.google.com/apppasswords](https://myaccount.google.com/apppasswords), create an app password named *Tyyni*, and copy it.
+3. Add three repository secrets:
+   - `GMAIL_USER`: the Gmail address that sends the email.
+   - `GMAIL_APP_PASSWORD`: the app password.
+   - `MINNA_EMAIL`: the recipient. **Leave this out at first**: until it is set, the email goes to `GMAIL_USER` itself, so you can check how it looks.
+
+Without the Gmail secrets the edition is still published; only the email is skipped.
 
 ### Make the timing punctual (recommended)
 
@@ -59,26 +80,25 @@ GitHub's own scheduler is best-effort. On a quiet repository it may run a schedu
    - *Advanced → Request body:* `{"event_type":"edition"}`
 3. **Test it** with the job's *Test run* button. GitHub answers `204`, and a run appears on the Actions tab.
 
-The workflow's own schedule stays on as a fallback.
-
-The first run opens an issue called *Aamun arkki* that @-mentions you. Every morning edition adds a comment to that thread, so you get one email a day. If you don't receive it, check that email is enabled for *Participating and @mentions* in your GitHub notification settings.
+The workflow's own half-hourly schedule stays on as a fallback.
 
 ## Make it yours
 
-Everything is in two files, near the top.
+Each edition is a `Profile` in `generate.py`: its sources, its editorial voice, its section labels, its edition hours and how it notifies. To add a reader, add a profile to `PROFILES`, then add its page to the commit and staging steps in the workflow.
 
 | To change | Edit |
 | --- | --- |
-| The location | `ESPOO` (latitude and longitude) in `generate.py`, and the word *Espoo* in `template.html` |
-| The news sources | `SECTIONS` in `generate.py`: up to three RSS feeds per domain |
-| The editorial voice | `SYSTEM_PROMPT` in `generate.py` |
+| The location | `OLARI` (latitude and longitude) in `generate.py`, and the word *Espoo* in `template.html` |
+| An edition's sources | `sections` in its profile: up to three RSS feeds per domain, or `events=True` |
+| An edition's voice | `reader`, `principles`, `synthesis`, `signal_why` and `reflection` in its profile |
+| An edition's hours | `editions` in its profile (and `TZ` for another time zone) |
+| The language rules, weather line and closing line | `LANGUAGE`, `ATMOSPHERE` and `ZEN` in `generate.py` |
 | The models | `MODELS` in `generate.py`, tried in order |
-| The look | The colour and font tokens at the top of `template.html` |
-| The edition times | `EDITIONS` in `generate.py` (and `TZ` for another time zone) |
+| The look | The colour and font tokens at the top of `template.html`, and the inline styles in `email.html` |
 
-GitHub's scheduler can delay or drop runs, so the workflow doesn't fire at exact times. It looks in every half hour, and `generate.py`, which knows Helsinki time including summer time, decides whether an edition is due. A look-in that finds the latest edition already on the page stops within seconds. One that finds it missing publishes it, so a lost run delays an edition by half an hour instead of skipping it. Running the workflow by hand from the Actions tab always publishes.
+The workflow doesn't fire at exact times. At every look-in, `generate.py --due` (which knows Helsinki time, including summer time) lists the editions missing from their pages, and only those are written. A look-in that finds nothing due stops within seconds; one that finds an edition missing publishes it, so a lost run delays an edition instead of skipping it. Running the workflow by hand publishes the editions you name, whatever the time.
 
-The page is written in Finnish. To change the language, rewrite the language section of `SYSTEM_PROMPT`, the labels in `template.html`, and the Finnish day and month names in `generate.py`.
+The pages are written in Finnish. To change the language, rewrite `LANGUAGE` and the profiles' prompts, the labels in `template.html` and `email.html`, and the Finnish day and month names in `generate.py`.
 
 ## Run it locally
 
@@ -87,14 +107,14 @@ pip install google-genai==3.3.0 feedparser==6.0.14
 ```
 
 ```bash
-GEMINI_API_KEY=your-key python generate.py
+GEMINI_API_KEY=your-key python generate.py --profile main
 ```
 
-Then open `index.html` in a browser.
+Then open `index.html` (or `minna/index.html` for `--profile minna`) in a browser.
 
 ## Cost and upkeep
 
 - GitHub Actions and Pages are free for public repositories.
-- Open-Meteo and the RSS feeds are free.
-- Gemini costs depend on the model: about $7–15 a month for three Gemini 4 Carbon editions a day, nothing on the free tier.
-- GitHub turns off scheduled workflows in repositories with no activity for 60 days. The daily commit of `index.html` keeps the schedule alive, so there is nothing to maintain.
+- Open-Meteo, Linked Events and the RSS feeds are free.
+- Gemini costs depend on the model. With Gemini 4 Carbon, an edition costs roughly $0.10–0.25; on the free tier, nothing.
+- GitHub turns off scheduled workflows in repositories with no activity for 60 days. The daily commits of the pages keep the schedule alive, so there is nothing to maintain.

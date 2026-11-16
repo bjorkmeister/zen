@@ -9,7 +9,7 @@
 <meta name="edition-number" content="{{ number }}">
 <meta name="edition-slot" content="{{ slot }}">
 <meta name="description" content="{{ atmosphere }}">
-<title>Aamun arkki · {{ date_short }}</title>
+<title>Tyyni · {{ date_short }}</title>
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' fill='%23F6F4EF'/%3E%3Ccircle cx='16' cy='16' r='9' fill='none' stroke='%23181818' stroke-width='1.5'/%3E%3C/svg%3E">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -222,7 +222,7 @@
 <main class="sheet">
 
   <header class="masthead">
-    <h1>Aamun arkki</h1>
+    <h1>Tyyni</h1>
     <p class="folio"><span>{{ date_long }}</span><span>Espoo · N:o {{ number }}</span></p>
   </header>
 
@@ -233,8 +233,8 @@
 
   <section class="part">
     <div class="entry">
-      <h2 class="label">Pohjavirrat</h2>
-      <p class="synthesis">{{ megatrend_synthesis }}</p>
+      <h2 class="label">{{ synthesis_label }}</h2>
+      <p class="synthesis">{{ synthesis }}</p>
     </div>
   </section>
 
@@ -252,8 +252,8 @@
 
   <section class="part">
     <div class="entry">
-      <h2 class="label">Pohdinta</h2>
-      <p class="reflection">{{ executive_reflection }}</p>
+      <h2 class="label">{{ reflection_label }}</h2>
+      <p class="reflection">{{ reflection }}</p>
     </div>
   </section>
 
