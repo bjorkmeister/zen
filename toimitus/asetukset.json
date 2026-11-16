@@ -1,0 +1,58 @@
+{
+ "profiles": {
+  "main": {
+   "knobs": {
+    "depth": 0,
+    "novelty": 0,
+    "outlook": 0,
+    "politics": 0,
+    "scope": 0,
+    "tone": 0
+   },
+   "sources": {
+    "design/Dezeen": "normaali",
+    "design/Wallpaper*": "normaali",
+    "huippu_urheilu/BBC Sport": "normaali",
+    "huippu_urheilu/The Athletic": "normaali",
+    "media/Nieman Lab": "normaali",
+    "media/The Guardian": "normaali",
+    "media/The New Yorker": "normaali",
+    "talous/Bloomberg": "normaali",
+    "talous/Financial Times": "normaali",
+    "talous/The Economist": "normaali",
+    "tekniikka/Ars Technica": "normaali",
+    "tekniikka/Hacker News": "normaali"
+   }
+  },
+  "minna": {
+   "knobs": {
+    "depth": 0,
+    "novelty": 0,
+    "outlook": 0,
+    "politics": 0,
+    "scope": 0,
+    "tone": 0
+   },
+   "sources": {
+    "design/Design Milk": "normaali",
+    "design/Dezeen": "normaali",
+    "design/Wallpaper*": "normaali",
+    "hyvinvointi/Greater Good": "normaali",
+    "hyvinvointi/Psyche": "normaali",
+    "hyvinvointi/The Guardian": "normaali",
+    "kulttuuri/Helsingin Sanomat": "normaali",
+    "kulttuuri/The Guardian": "normaali",
+    "lifestyle/Condé Nast Traveler": "normaali",
+    "lifestyle/Monocle": "normaali",
+    "lifestyle/The Guardian": "normaali",
+    "ravintolat/Eater": "normaali",
+    "ravintolat/Helsingin Sanomat": "normaali",
+    "ravintolat/The Guardian": "normaali",
+    "tapahtumat/Linked Events": "normaali",
+    "trendit/Harper's Bazaar": "normaali",
+    "trendit/The Guardian": "normaali",
+    "trendit/Vogue": "normaali"
+   }
+  }
+ }
+}

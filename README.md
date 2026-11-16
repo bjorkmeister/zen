@@ -31,6 +31,8 @@ If an edition fails, nothing is published for it and its previous edition stays 
 | `template.html` | The page: typography, layout and placeholders |
 | `email.html` | The morning email, for editions that notify by email |
 | `.github/workflows/morning_edition.yml` | The look-ins, the commit, the deploy and the notifications |
+| `.github/workflows/editor_settings.yml` | Saves the editor's desk settings from an issue |
+| `toimitus/` | The editor's desk page, its settings and each edition's log |
 | `index.html`, `minna/index.html` | The current editions, written by the workflow |
 
 Every edition is numbered (*N:o 1, N:o 2, …*). Each page records its own number in a hidden tag, and the next run adds one to it. Only published editions are counted, so a failed run doesn't skip a number. To start an edition's count again from N:o 1, delete its `index.html`.
@@ -81,6 +83,20 @@ GitHub's own scheduler is best-effort. On a quiet repository it may run a schedu
 3. **Test it** with the job's *Test run* button. GitHub answers `204`, and a run appears on the Actions tab.
 
 The workflow's own half-hourly schedule stays on as a fallback.
+
+## The editor's desk
+
+**https://bjorkmeister.github.io/zen/toimitus/** is a working page for steering the editions with data. It is not indexed by search engines, but it is public; only the repository owner can change anything.
+
+- **Data from every edition** is kept in `toimitus/main.json` and `toimitus/minna.json` (the last 120 editions each):
+  - which sources the writer saw and which it chose;
+  - why it chose each item and how many others it weighed;
+  - the model, time and tokens.
+- **A critic:** a second, cheaper model (Gemini 3.8 Flash) reviews every edition on the same axes the knobs set. It also rates how well the claims are supported by the sources and how fresh the edition is, and lists any clichés.
+- **Knobs:** tunne–fakta, vasen–oikea, huoli–toivo, paikallinen–globaali, tiivis–syvä and vakiintunut–heikot signaalit, from −2 to +2 for each edition. Each knob shows both the value set and the value the critic measured over the last seven editions, so you can see whether the writer follows. The political knob shifts emphasis only, never the facts.
+- **Source weights:** boost a source (the writer is told to prefer it) or silence it (it is not read at all).
+
+**Saving:** *Tallenna GitHubiin* opens a pre-filled issue titled *Toimitus: asetukset*; press *Submit new issue*. The *Editor's settings* workflow accepts it only from the repository owner, checks it strictly, saves it as `toimitus/asetukset.json` and closes the issue. The next edition uses the new settings.
 
 ## Make it yours
 

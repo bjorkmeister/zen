@@ -17,6 +17,7 @@ the previous edition stays up rather than a broken one going out.
     python generate.py --profile minna  write Minna's edition
     python generate.py --due            list the profiles whose latest edition is missing
     python generate.py --send minna     email Minna the edition just written
+    python generate.py --apply-settings save the editor's settings from ISSUE_BODY
 
 `--due` needs nothing beyond the standard library, which is why the
 third-party imports live inside the functions that use them.
@@ -277,6 +278,115 @@ PROFILES = {profile.key: profile for profile in (MAIN, MINNA)}
 
 
 # --------------------------------------------------------------------------
+# Editor's desk: settings that steer the editions, and a log of each edition
+# --------------------------------------------------------------------------
+
+DESK_HISTORY = 120   # editions kept in each profile's log
+CRITIC_MODELS = ("gemini-3.8-flash", "gemini-4-hydrogen")
+
+# Each knob runs from -2 to +2. 0 leaves the profile's own voice untouched;
+# the ends tell the writer what to favour, and the critic measures the same axes.
+KNOBS = {
+    "tone": ("Tunne", "Fakta",
+             "emotional resonance and lived human experience",
+             "facts, figures and verifiable detail"),
+    "politics": ("Vasen", "Oikea",
+                 "perspectives the political left tends to stress – equality, labour, public services, climate and regulation",
+                 "perspectives the political right tends to stress – markets, enterprise, security, fiscal discipline and individual responsibility"),
+    "outlook": ("Huoli", "Toivo",
+                "risks, costs and what could go wrong",
+                "progress, solutions and what is going right"),
+    "scope": ("Paikallinen", "Globaali",
+              "Finland, the Nordic countries and Europe",
+              "the wider world beyond Europe"),
+    "depth": ("Tiivis", "Syvä",
+              "concision: shorter sentences and the lower end of every length range",
+              "context and nuance: the upper end of every length range"),
+    "novelty": ("Vakiintunut", "Heikot signaalit",
+                "established, well-confirmed developments",
+                "early, weak signals and emerging ideas"),
+}
+WEIGHTS = ("korosta", "normaali", "hiljennä")   # boost, normal, silence
+
+
+def settings_file() -> Path:
+    return ROOT / "toimitus" / "asetukset.json"
+
+
+def desk_log(profile: Profile) -> Path:
+    return ROOT / "toimitus" / f"{profile.key}.json"
+
+
+def source_key(section: Section, feed: Feed | None = None) -> str:
+    return f"{section.key}/{feed.name if feed else 'Linked Events'}"
+
+
+def section_sources(section: Section) -> list[str]:
+    return ([source_key(section)] if section.events else []) + [source_key(section, f) for f in section.feeds]
+
+
+def default_settings() -> dict:
+    return {"profiles": {
+        key: {"knobs": {knob: 0 for knob in KNOBS},
+              "sources": {s: "normaali" for section in profile.sections for s in section_sources(section)}}
+        for key, profile in PROFILES.items()}}
+
+
+def validate_settings(raw) -> dict:
+    """Complete, checked settings from untrusted input; ValueError on anything unexpected."""
+    if not isinstance(raw, dict) or not isinstance(raw.get("profiles"), dict):
+        raise ValueError("settings need a 'profiles' object")
+    settings = default_settings()
+    for key, given in raw["profiles"].items():
+        if key not in PROFILES or not isinstance(given, dict):
+            raise ValueError(f"unknown profile: {key}")
+        mine = settings["profiles"][key]
+        for knob, value in (given.get("knobs") or {}).items():
+            if knob not in KNOBS:
+                raise ValueError(f"unknown knob: {knob}")
+            if not isinstance(value, int) or isinstance(value, bool) or not -2 <= value <= 2:
+                raise ValueError(f"{key}/{knob} must be a whole number from -2 to 2")
+            mine["knobs"][knob] = value
+        for source, weight in (given.get("sources") or {}).items():
+            if source not in mine["sources"]:
+                raise ValueError(f"unknown source: {key}/{source}")
+            if weight not in WEIGHTS:
+                raise ValueError(f"{key}/{source} must be one of {', '.join(WEIGHTS)}")
+            mine["sources"][source] = weight
+        for section in PROFILES[key].sections:
+            if all(mine["sources"][s] == "hiljennä" for s in section_sources(section)):
+                raise ValueError(f"{key}: every source of {section.key} is silenced")
+    return settings
+
+
+def load_settings() -> dict:
+    try:
+        return validate_settings(json.loads(settings_file().read_text(encoding="utf-8")))
+    except FileNotFoundError:
+        return default_settings()
+    except (ValueError, json.JSONDecodeError) as error:
+        print(f"  ! editor's settings ignored: {error}", file=sys.stderr)
+        return default_settings()
+
+
+def knob_instructions(knobs: dict[str, int]) -> list[str]:
+    lines = []
+    for knob, value in knobs.items():
+        if not value:
+            continue
+        low, high = KNOBS[knob][2], KNOBS[knob][3]
+        strength = "Slightly" if abs(value) == 1 else "Clearly"
+        aim = low if value < 0 else high
+        if knob == "depth":
+            lines.append(f"- {strength} favour {aim}.")
+        else:
+            lines.append(f"- {strength} favour {aim} when choosing items and in how you frame them.")
+        if knob == "politics":
+            lines[-1] += " This shifts emphasis only: facts, fairness and accuracy stay exactly as they are."
+    return lines
+
+
+# --------------------------------------------------------------------------
 # Fetching
 # --------------------------------------------------------------------------
 
@@ -372,6 +482,8 @@ class Item:
     when: str      # "5 h" for news, "ti 18.11. klo 19.00" for events
     url: str = ""
     paywalled: bool = False
+    feed: str = ""        # source key, e.g. "design/Dezeen"
+    boosted: bool = False
 
 
 TAG = re.compile(r"<[^>]+>")
@@ -505,28 +617,33 @@ def read_events(now: datetime) -> list[dict]:
     return entries[:MAX_EVENTS]
 
 
-def fetch_news(profile: Profile) -> dict[str, list[Item]]:
+def fetch_news(profile: Profile, weights: dict[str, str] | None = None) -> dict[str, list[Item]]:
+    """The profile's material by section. Silenced sources are not read at all;
+    items from boosted sources are marked for the writer."""
+    weights = weights or {}
     now_ts, now = time.time(), datetime.now(TZ)
-    jobs: list[tuple[Section, Callable[[], list[dict]]]] = []
+    jobs: list[tuple[Section, str, Callable[[], list[dict]]]] = []
     for section in profile.sections:
         if section.events:
-            jobs.append((section, lambda: read_events(now)))
+            jobs.append((section, source_key(section), lambda: read_events(now)))
         for feed in section.feeds:
-            jobs.append((section, lambda feed=feed: read_feed(feed, now_ts, profile.window_hours)))
+            jobs.append((section, source_key(section, feed),
+                         lambda feed=feed: read_feed(feed, now_ts, profile.window_hours)))
+    jobs = [job for job in jobs if weights.get(job[1]) != "hiljennä"]
     with ThreadPoolExecutor(max_workers=len(jobs)) as pool:
-        results = list(pool.map(lambda job: job[1](), jobs))
+        results = list(pool.map(lambda job: job[2](), jobs))
 
     news: dict[str, list[Item]] = {section.key: [] for section in profile.sections}
     seen: set[str] = set()
-    for (section, _), entries in zip(jobs, results):
+    for (section, key, _), entries in zip(jobs, results):
         for entry in entries:
             fingerprint = re.sub(r"\W+", "", entry["title"].lower())
             if fingerprint in seen:
                 continue
             seen.add(fingerprint)
             bucket = news[section.key]
-            bucket.append(Item(id=f"{section.key[:2].upper()}{len(bucket) + 1}",
-                               section=section.key, **entry))
+            bucket.append(Item(id=f"{section.key[:2].upper()}{len(bucket) + 1}", section=section.key,
+                               feed=key, boosted=weights.get(key) == "korosta", **entry))
     return news
 
 
@@ -604,7 +721,7 @@ ZEN = """\
 zen_anchor: exactly one sentence, at most 20 words. Timeless, quiet and concrete; it may draw on today's season or light in Espoo. It restores perspective and gently turns the reader toward the rest of their real day – or, in an evening edition, toward rest – without mentioning screens, news, reading or this page, and without quotations, attributed sayings or familiar aphorisms."""
 
 
-def system_prompt(profile: Profile) -> str:
+def system_prompt(profile: Profile, settings: dict | None = None) -> str:
     keys = ", ".join(section.key for section in profile.sections)
     example = f"{profile.sections[0].key[:2].upper()}3"
     signals = (
@@ -613,14 +730,23 @@ def system_prompt(profile: Profile) -> str:
         "- title: a short Finnish headline, at most 8 words, sentence case, no full stop.\n"
         f"- body: exactly two sentences. First, what happened, concretely and with the actor named. Second, {profile.signal_why}. "
         "Objective; no praise words.\n"
+        "- why: one Finnish sentence for the editor's log, never printed: why this item rather than the others.\n"
+        "- considered: the ids of up to three other items you weighed for this domain.\n"
         "If a domain's material is thin, choose its least trivial item and state plainly why it matters. Never pad."
     )
     if profile.signal_notes:
         signals += "\n" + profile.signal_notes
+    editor = knob_instructions((settings or {}).get("knobs", {}))
+    if any(weight == "korosta" for weight in (settings or {}).get("sources", {}).values()):
+        editor.append("- Items marked ★ come from sources the editor wants to see more of: prefer them when "
+                      "they are about as worthwhile as the alternatives.")
+    principles = profile.principles + "\n" + SHARED_PRINCIPLES
+    if editor:
+        principles += "\n\nThe managing editor's current guidance\n" + "\n".join(editor)
     return "\n\n".join((
         profile.reader,
         LANGUAGE,
-        "Editorial principles\n" + profile.principles + "\n" + SHARED_PRINCIPLES,
+        "Editorial principles\n" + principles,
         "Fields",
         ATMOSPHERE,
         "synthesis: " + profile.synthesis,
@@ -637,8 +763,10 @@ def edition_schema(profile: Profile) -> dict:
             "source_id": {"type": "string"},
             "title": {"type": "string"},
             "body": {"type": "string"},
+            "why": {"type": "string"},
+            "considered": {"type": "array", "items": {"type": "string"}},
         },
-        "required": ["source_id", "title", "body"],
+        "required": ["source_id", "title", "body", "why", "considered"],
         "additionalProperties": False,
     }
     keys = [section.key for section in profile.sections]
@@ -686,15 +814,16 @@ def briefing(profile: Profile, today: datetime, edition_hour: int, weather: Weat
         if not items:
             lines.append("(ei aineistoa tänään)")
         for item in items:
-            text = f"[{item.id}] {item.source} · {item.when} – {item.title}"
+            text = f"{'★ ' if item.boosted else ''}[{item.id}] {item.source} · {item.when} – {item.title}"
             if item.summary:
                 text += f" – {item.summary}"
             lines.append(text)
     return "\n".join(lines)
 
 
-def compose(profile: Profile, prompt: str) -> dict:
-    """Ask each model in turn until one returns a complete edition."""
+def compose(profile: Profile, prompt: str, settings: dict | None = None) -> tuple[dict, dict]:
+    """Ask each model in turn until one returns a complete edition. Returns the
+    edition and the facts of the run (model, time, tokens) for the editor's log."""
     from google import genai
     from google.genai import errors, types
 
@@ -705,7 +834,7 @@ def compose(profile: Profile, prompt: str) -> dict:
         retry_options=types.HttpRetryOptions(attempts=1),
     ))
     config = types.GenerateContentConfig(
-        system_instruction=system_prompt(profile),
+        system_instruction=system_prompt(profile, settings),
         response_mime_type="application/json",
         response_json_schema=edition_schema(profile),
         # Thinking counts against max_output_tokens, so leave ample room for both.
@@ -735,7 +864,13 @@ def compose(profile: Profile, prompt: str) -> dict:
             print(f"  ! {model}: response was not valid JSON", file=sys.stderr)
             continue
         if complete(profile, edition):
-            return edition
+            return edition, {
+                "model": model,
+                "seconds": round(time.monotonic() - started),
+                "tokens": {"in": getattr(usage, "prompt_token_count", None),
+                           "out": getattr(usage, "candidates_token_count", None),
+                           "thinking": getattr(usage, "thoughts_token_count", None)},
+            }
         print(f"  ! {model}: edition is missing fields", file=sys.stderr)
     raise RuntimeError("no model produced an edition")
 
@@ -903,6 +1038,169 @@ def send_email(profile: Profile) -> int:
 
 
 # --------------------------------------------------------------------------
+# The critic and the editor's log
+# --------------------------------------------------------------------------
+
+CRITIC_PROMPT = """\
+You are the managing editor of Tyyni, a calm one-page digest in Finnish. Review the finished edition below with a neutral, exact eye. Judge only what is on the page and the source material shown.
+
+Score each axis with a whole number from -2 to +2:
+- tone: -2 emotional … +2 factual
+- politics: -2 leans left … 0 balanced or apolitical … +2 leans right
+- outlook: -2 worried … +2 hopeful
+- scope: -2 local (Finland, the Nordics, Europe) … +2 global
+- depth: -2 terse … +2 deep
+- novelty: -2 established … +2 early, weak signals
+Also give:
+- factuality: 1–10, how well every claim is supported by the source material (10 = fully supported, nothing invented).
+- freshness: 1–10, how little it repeats the previous edition's headlines (10 = nothing repeated).
+- cliches: up to five stock phrases or clichés found in the edition, quoted exactly; none if there are none.
+- regions: how many of the chosen items concern Finland, the rest of Europe, North America, and elsewhere.
+- critique: one sentence in Finnish naming the single most useful improvement for the next edition."""
+
+CRITIC_AXES = tuple(KNOBS)
+
+
+def critic_schema() -> dict:
+    axis = {"type": "integer"}
+    regions = {k: {"type": "integer"} for k in ("finland", "europe", "north_america", "elsewhere")}
+    return {
+        "type": "object",
+        "properties": {
+            **{name: axis for name in CRITIC_AXES},
+            "factuality": {"type": "integer"},
+            "freshness": {"type": "integer"},
+            "cliches": {"type": "array", "items": {"type": "string"}},
+            "regions": {"type": "object", "properties": regions, "required": list(regions),
+                        "additionalProperties": False},
+            "critique": {"type": "string"},
+        },
+        "required": [*CRITIC_AXES, "factuality", "freshness", "cliches", "regions", "critique"],
+        "additionalProperties": False,
+    }
+
+
+def critic_material(page: dict[str, str], signals: list[dict[str, str]], chosen: list[Item | None],
+                    previous_titles: list[str]) -> str:
+    lines = ["EDITION", page["atmosphere"], "", page["synthesis"], ""]
+    for signal in signals:
+        lines.append(f"{signal['signal_label']}: {signal['signal_title']}. {signal['signal_body']}")
+    lines += ["", page["reflection"], "", page["zen_anchor"], "", "SOURCE MATERIAL BEHIND THE SIGNALS"]
+    for item in chosen:
+        if item:
+            lines.append(f"- {item.source}: {item.title} – {item.summary or '(no summary)'}")
+    lines += ["", "PREVIOUS EDITION'S HEADLINES"] + [f"- {t}" for t in previous_titles or ["(none)"]]
+    return "\n".join(lines)
+
+
+def critique(material: str) -> dict | None:
+    """A second, cheaper model's review of the edition. Never stops a publication."""
+    try:
+        from google import genai
+        from google.genai import types
+        client = genai.Client(http_options=types.HttpOptions(
+            timeout=120_000, retry_options=types.HttpRetryOptions(attempts=1)))
+        config = types.GenerateContentConfig(
+            system_instruction=CRITIC_PROMPT,
+            response_mime_type="application/json",
+            response_json_schema=critic_schema(),
+            thinking_config=types.ThinkingConfig(thinking_level=types.ThinkingLevel.LOW),
+            max_output_tokens=8192,
+        )
+    except Exception as error:
+        print(f"  ! critic unavailable: {error}", file=sys.stderr)
+        return None
+    for model in CRITIC_MODELS:
+        try:
+            response = client.models.generate_content(model=model, contents=material, config=config)
+            review = json.loads(response.text or "")
+        except Exception as error:
+            print(f"  ! critic {model}: {type(error).__name__}: {error}", file=sys.stderr)
+            continue
+        clamp = lambda value, low, high: max(low, min(high, int(value))) if isinstance(value, (int, float)) else None
+        review.update({name: clamp(review.get(name), -2, 2) for name in CRITIC_AXES})
+        review["factuality"] = clamp(review.get("factuality"), 1, 10)
+        review["freshness"] = clamp(review.get("freshness"), 1, 10)
+        review["cliches"] = [str(c)[:120] for c in (review.get("cliches") or [])][:5]
+        review["critique"] = str(review.get("critique", ""))[:400]
+        review["model"] = model
+        print(f"  critic {model}: factuality {review['factuality']}, "
+              + ", ".join(f"{a} {review[a]:+d}" for a in CRITIC_AXES if review[a] is not None))
+        return review
+    return None
+
+
+def read_log(profile: Profile) -> dict:
+    try:
+        log = json.loads(desk_log(profile).read_text(encoding="utf-8"))
+        if isinstance(log, dict) and isinstance(log.get("editions"), list):
+            return log
+    except (FileNotFoundError, json.JSONDecodeError):
+        pass
+    return {"profile": profile.key, "editions": []}
+
+
+def log_edition(profile: Profile, record: dict) -> None:
+    log = read_log(profile)
+    log["editions"] = (log["editions"] + [record])[-DESK_HISTORY:]
+    desk_log(profile).parent.mkdir(parents=True, exist_ok=True)
+    desk_log(profile).write_text(json.dumps(log, ensure_ascii=False, indent=1), encoding="utf-8")
+
+
+def edition_record(profile: Profile, page: dict[str, str], current: datetime, news: dict[str, list[Item]],
+                   edition: dict, meta: dict, knobs: dict[str, int], review: dict | None) -> dict:
+    items = {item.id: item for bucket in news.values() for item in bucket}
+    seen: dict[str, int] = {}
+    for item in items.values():
+        seen[item.feed] = seen.get(item.feed, 0) + 1
+    chosen = []
+    for section in profile.sections:
+        signal = edition["signals"][section.key]
+        item = items.get(str(signal.get("source_id", "")).strip())
+        chosen.append({
+            "section": section.key,
+            "label": section.label,
+            "feed": item.feed if item else "",
+            "source": item.source if item else "",
+            "title": tidy(signal["title"]).rstrip("."),
+            "url": item.url if item else "",
+            "why": SPACE.sub(" ", str(signal.get("why", ""))).strip(),
+            "considered": len([c for c in signal.get("considered") or [] if c in items]),
+            "available": len(news[section.key]),
+        })
+    return {
+        "number": int(page["number"]),
+        "slot": slot_id(current),
+        "written": datetime.now(TZ).strftime("%Y-%m-%dT%H:%M"),
+        **meta,
+        "knobs": dict(knobs),
+        "seen": dict(sorted(seen.items())),
+        "chosen": chosen,
+        "critique": review,
+    }
+
+
+def apply_settings() -> int:
+    """Save the editor's settings from the body of a GitHub issue (ISSUE_BODY).
+    Only a JSON block is read; anything that does not validate is rejected."""
+    body = os.environ.get("ISSUE_BODY", "")
+    block = re.search(r"```(?:json)?\s*(\{.*?\})\s*```", body, re.S)
+    try:
+        settings = validate_settings(json.loads(block.group(1) if block else body))
+    except (ValueError, json.JSONDecodeError) as error:
+        print(f"::error::Settings not saved: {error}")
+        return 1
+    settings_file().parent.mkdir(parents=True, exist_ok=True)
+    settings_file().write_text(json.dumps(settings, ensure_ascii=False, indent=1, sort_keys=True) + "\n",
+                               encoding="utf-8")
+    for key, mine in settings["profiles"].items():
+        knobs = ", ".join(f"{k} {v:+d}" for k, v in mine["knobs"].items() if v) or "neutral"
+        changed = [f"{s} {w}" for s, w in mine["sources"].items() if w != "normaali"]
+        print(f"{key}: knobs {knobs}; sources {', '.join(changed) or 'all normal'}")
+    return 0
+
+
+# --------------------------------------------------------------------------
 # Commands
 # --------------------------------------------------------------------------
 
@@ -932,17 +1230,25 @@ def publish(profile: Profile) -> int:
     weather = fetch_weather()
     print(f"  weather {degrees(weather.now)}, {weather.condition}")
 
-    news = fetch_news(profile)
+    settings = load_settings()["profiles"][profile.key]
+    news = fetch_news(profile, settings["sources"])
     for section in profile.sections:
         print(f"  {section.key:<15} {len(news[section.key]):>3} items")
     if sum(1 for items in news.values() if items) < profile.min_sections:
         raise RuntimeError("too few sources answered; keeping the previous edition")
 
-    edition = compose(profile, briefing(profile, today, current.hour, weather, news))
+    edition, meta = compose(profile, briefing(profile, today, current.hour, weather, news), settings)
     page, signals = build_page(profile, today, current, upcoming, edition_number(profile),
                                weather, news, edition)
     profile.output.parent.mkdir(parents=True, exist_ok=True)
     profile.output.write_text(render(template, page, signals), encoding="utf-8")
+
+    items = {item.id: item for bucket in news.values() for item in bucket}
+    chosen = [items.get(str(edition["signals"][s.key].get("source_id", "")).strip()) for s in profile.sections]
+    previous = read_log(profile)["editions"][-1:]
+    previous_titles = [c["title"] for c in previous[0]["chosen"]] if previous else []
+    review = critique(critic_material(page, signals, chosen, previous_titles))
+    log_edition(profile, edition_record(profile, page, current, news, edition, meta, settings["knobs"], review))
     morning = current.hour == min(profile.editions)
     if profile.notify == "email":
         profile.mail_data.write_text(json.dumps({"page": page, "signals": signals}, ensure_ascii=False),
@@ -963,9 +1269,12 @@ def main(argv: list[str] | None = None) -> int:
     group.add_argument("--profile", choices=PROFILES, default="main", help="write this profile's edition")
     group.add_argument("--due", action="store_true", help="list the profiles whose latest edition is missing")
     group.add_argument("--send", choices=PROFILES, help="email this profile's latest edition")
+    group.add_argument("--apply-settings", action="store_true", help="save the editor's settings from ISSUE_BODY")
     args = parser.parse_args(argv)
     if args.due:
         return check_due()
+    if args.apply_settings:
+        return apply_settings()
     if args.send:
         return send_email(PROFILES[args.send])
     return publish(PROFILES[args.profile])

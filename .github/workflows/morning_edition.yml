@@ -95,7 +95,7 @@ jobs:
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          for page in index.html minna/index.html; do
+          for page in index.html minna/index.html toimitus/*.json; do
             if [ -f "$page" ]; then git add "$page"; fi
           done
           if git diff --cached --quiet; then
@@ -115,6 +115,7 @@ jobs:
           mkdir -p _site
           cp index.html _site/index.html
           if [ -f minna/index.html ]; then mkdir -p _site/minna && cp minna/index.html _site/minna/index.html; fi
+          mkdir -p _site/toimitus && cp toimitus/index.html toimitus/*.json _site/toimitus/
 
       - uses: actions/upload-pages-artifact@v4
         if: steps.generate.outputs.written != ''

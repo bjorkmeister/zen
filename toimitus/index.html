@@ -1,0 +1,496 @@
+<!doctype html>
+<html lang="fi">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="color-scheme" content="light">
+<meta name="theme-color" content="#F6F4EF">
+<meta name="robots" content="noindex, nofollow">
+<title>Toimitus · Tyyni</title>
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' fill='%23F6F4EF'/%3E%3Ccircle cx='16' cy='16' r='9' fill='none' stroke='%23181818' stroke-width='1.5'/%3E%3Ccircle cx='16' cy='16' r='2' fill='%23181818'/%3E%3C/svg%3E">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Plus+Jakarta+Sans:wght@400;500;600&display=swap">
+<style>
+  :root {
+    --paper: #F6F4EF;
+    --ink: #181818;
+    --stone: #76726A;
+    --rule: #E2DFD7;
+    --mark: #B4573E;      /* the measured value: a quiet terracotta, the only colour on the desk */
+    --serif: "Instrument Serif", Georgia, serif;
+    --sans: "Plus Jakarta Sans", "Helvetica Neue", Helvetica, Arial, sans-serif;
+    --gutter: clamp(16px, 5vw, 40px);
+  }
+  *, *::before, *::after { box-sizing: border-box; }
+  html { background: var(--paper); -webkit-text-size-adjust: 100%; }
+  body { margin: 0; background: var(--paper); color: var(--ink); font: 400 0.95rem/1.6 var(--sans);
+         -webkit-font-smoothing: antialiased; }
+  h1, h2, h3, p { margin: 0; font-weight: 400; }
+  a { color: inherit; text-decoration-color: var(--rule); text-underline-offset: 3px; }
+  a:hover { text-decoration-color: var(--ink); }
+  button { font: inherit; color: inherit; }
+
+  .desk { width: min(940px, 100% - 2 * var(--gutter)); margin: 0 auto; padding: 48px 0 140px; }
+
+  header { display: flex; flex-wrap: wrap; align-items: baseline; justify-content: space-between; gap: 16px 24px;
+           padding-bottom: 20px; border-bottom: 1px solid var(--rule); }
+  header h1 { font: 400 clamp(2.4rem, 7vw, 3.4rem)/1 var(--serif); }
+  header h1 span { color: var(--stone); font-style: italic; }
+  .tabs { display: flex; gap: 6px; }
+  .tabs button { border: 1px solid var(--rule); background: transparent; padding: 7px 16px; border-radius: 999px;
+                 cursor: pointer; font-size: 0.8rem; letter-spacing: 0.04em; }
+  .tabs button[aria-selected="true"] { background: var(--ink); border-color: var(--ink); color: var(--paper); }
+
+  .label { color: var(--stone); font: 500 0.6875rem/1.6 var(--sans); letter-spacing: 0.14em; text-transform: uppercase; }
+  section { padding: 36px 0; border-bottom: 1px solid var(--rule); }
+  section > .label { margin-bottom: 18px; }
+  .note { color: var(--stone); font-size: 0.82rem; }
+  .serif { font-family: var(--serif); }
+  .num { font-variant-numeric: tabular-nums; }
+
+  /* Latest edition ---------------------------------------------------- */
+  .latest { display: grid; grid-template-columns: minmax(0, 1.6fr) minmax(0, 1fr); gap: 28px; }
+  .verdict { font: italic 400 clamp(1.35rem, 3.4vw, 1.7rem)/1.35 var(--serif); }
+  .facts { display: grid; grid-template-columns: auto 1fr; gap: 4px 16px; font-size: 0.85rem; align-content: start; }
+  .facts dt { color: var(--stone); }
+  .facts dd { margin: 0; }
+  .score { font: 400 2.2rem/1 var(--serif); }
+  .scores { display: flex; gap: 28px; margin-top: 18px; }
+
+  /* Knobs -------------------------------------------------------------- */
+  .knob { display: grid; grid-template-columns: 8.5rem minmax(0, 1fr) 8.5rem; align-items: center; gap: 4px 16px;
+          padding: 14px 0; }
+  .knob + .knob { border-top: 1px solid var(--rule); }
+  .pole { font-size: 0.85rem; }
+  .pole.right { text-align: right; }
+  .track { position: relative; height: 34px; }
+  .track input { position: absolute; inset: 0; width: 100%; margin: 0; background: transparent; -webkit-appearance: none;
+                 appearance: none; cursor: pointer; z-index: 2; }
+  .track input:focus-visible { outline: 1px solid var(--stone); outline-offset: 4px; }
+  .track input::-webkit-slider-runnable-track { height: 34px; background: transparent; }
+  .track input::-moz-range-track { height: 34px; background: transparent; }
+  .track input::-webkit-slider-thumb { -webkit-appearance: none; width: 18px; height: 18px; margin-top: 8px;
+                                       border-radius: 50%; background: var(--ink); border: 3px solid var(--paper);
+                                       box-shadow: 0 0 0 1px var(--ink); }
+  .track input::-moz-range-thumb { width: 14px; height: 14px; border-radius: 50%; background: var(--ink);
+                                   border: 3px solid var(--paper); box-shadow: 0 0 0 1px var(--ink); }
+  .rail { position: absolute; left: 9px; right: 9px; top: 16px; height: 1px; background: var(--rule); }
+  .tick { position: absolute; top: 12px; width: 1px; height: 9px; background: var(--rule); transform: translateX(-0.5px); }
+  .tick.zero { background: var(--stone); }
+  .measured { position: absolute; top: 9px; width: 2px; height: 15px; background: var(--mark); transform: translateX(-1px);
+              border-radius: 1px; }
+  .reading { grid-column: 2; font-size: 0.78rem; color: var(--stone); display: flex; justify-content: space-between; gap: 12px; }
+  .reading b { color: var(--ink); font-weight: 500; }
+  .reading .m { color: var(--mark); }
+  .legend { display: flex; gap: 22px; margin-top: 14px; font-size: 0.78rem; color: var(--stone); }
+  .legend i { display: inline-block; vertical-align: middle; margin-right: 6px; }
+  .legend .dot { width: 10px; height: 10px; border-radius: 50%; background: var(--ink); }
+  .legend .bar { width: 2px; height: 12px; background: var(--mark); }
+
+  /* Trends ------------------------------------------------------------- */
+  .trends { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 22px 28px; }
+  .trend .label { margin-bottom: 6px; }
+  .trend svg { display: block; width: 100%; height: 56px; overflow: visible; }
+  .trend .now { font-size: 0.8rem; color: var(--stone); margin-top: 4px; }
+
+  /* Tables ------------------------------------------------------------- */
+  table { width: 100%; border-collapse: collapse; font-size: 0.85rem; }
+  th { text-align: left; font: 500 0.6875rem/1.6 var(--sans); letter-spacing: 0.12em; text-transform: uppercase;
+       color: var(--stone); padding: 0 12px 10px 0; border-bottom: 1px solid var(--rule); white-space: nowrap; }
+  td { padding: 10px 12px 10px 0; border-bottom: 1px solid var(--rule); vertical-align: top; }
+  td.num, th.num { text-align: right; }
+  .scroll { overflow-x: auto; }
+  .dimmed td:not(:last-child) { color: var(--stone); }
+  .share { display: inline-block; height: 6px; background: var(--ink); vertical-align: middle; margin-right: 8px; border-radius: 1px; }
+  .weights { display: inline-flex; border: 1px solid var(--rule); border-radius: 999px; overflow: hidden; }
+  .weights label { position: relative; padding: 4px 10px; font-size: 0.75rem; cursor: pointer; white-space: nowrap; }
+  .weights label + label { border-left: 1px solid var(--rule); }
+  .weights input { position: absolute; opacity: 0; pointer-events: none; }
+  .weights input:checked + span { font-weight: 600; }
+  .weights label:has(input:checked) { background: var(--ink); color: var(--paper); }
+  .weights label:has(input:focus-visible) { outline: 1px solid var(--stone); outline-offset: -3px; }
+
+  /* Decisions ---------------------------------------------------------- */
+  .decision { display: grid; grid-template-columns: 8.5rem minmax(0, 1fr); gap: 4px 20px; padding: 14px 0; }
+  .decision + .decision { border-top: 1px solid var(--rule); }
+  .decision h3 { font: 400 1.25rem/1.25 var(--serif); }
+  .decision .why { margin-top: 4px; }
+  .cliches { display: flex; flex-wrap: wrap; gap: 8px; }
+  .cliches span { border: 1px solid var(--rule); border-radius: 999px; padding: 3px 12px; font-size: 0.82rem; }
+
+  /* Save bar ----------------------------------------------------------- */
+  .savebar { position: fixed; left: 0; right: 0; bottom: 0; background: var(--ink); color: var(--paper);
+             transform: translateY(110%); transition: transform 0.25s ease; z-index: 10; }
+  .savebar.open { transform: none; }
+  .savebar:not(.open) { visibility: hidden; transition: transform 0.25s ease, visibility 0s 0.25s; }
+  .savebar div { width: min(940px, 100% - 2 * var(--gutter)); margin: 0 auto; padding: 14px 0 calc(14px + env(safe-area-inset-bottom));
+                 display: flex; flex-wrap: wrap; gap: 10px 20px; align-items: center; justify-content: space-between; }
+  .savebar p { font-size: 0.85rem; }
+  .savebar .actions { display: flex; gap: 10px; }
+  .savebar button { border: 1px solid var(--paper); background: transparent; color: var(--paper); padding: 8px 16px;
+                    border-radius: 999px; cursor: pointer; font-size: 0.82rem; }
+  .savebar button.primary { background: var(--paper); color: var(--ink); }
+
+  .empty { color: var(--stone); font-style: italic; font-family: var(--serif); font-size: 1.1rem; }
+  footer { padding-top: 28px; }
+
+  @media (max-width: 680px) {
+    .latest { grid-template-columns: 1fr; }
+    .knob { grid-template-columns: 1fr 1fr; }
+    .knob .track { grid-column: 1 / -1; grid-row: 2; }
+    .reading { grid-column: 1 / -1; }
+    .decision { grid-template-columns: 1fr; }
+  }
+  @media (prefers-reduced-motion: reduce) { .savebar { transition: none; } }
+</style>
+</head>
+<body>
+<main class="desk">
+  <header>
+    <h1>Toimitus <span>· Tyyni</span></h1>
+    <nav class="tabs" role="tablist" aria-label="Lehti" id="tabs"></nav>
+  </header>
+
+  <section aria-labelledby="h-latest">
+    <h2 class="label" id="h-latest">Viimeisin numero</h2>
+    <div id="latest"><p class="empty">Ladataan…</p></div>
+  </section>
+
+  <section aria-labelledby="h-knobs">
+    <h2 class="label" id="h-knobs">Vivut</h2>
+    <div id="knobs"></div>
+    <p class="legend"><span><i class="dot"></i>asetettu</span><span><i class="bar"></i>mitattu, seitsemän viimeisimmän numeron keskiarvo</span></p>
+  </section>
+
+  <section aria-labelledby="h-trends">
+    <h2 class="label" id="h-trends">Kehitys · 30 viimeisintä numeroa</h2>
+    <div class="trends" id="trends"></div>
+  </section>
+
+  <section aria-labelledby="h-sources">
+    <h2 class="label" id="h-sources">Lähteet · 30 viimeisintä numeroa</h2>
+    <div class="scroll"><table id="sources"></table></div>
+    <p class="note" style="margin-top:12px">Korostettu lähde merkitään kirjoittajalle suositeltavaksi. Hiljennettyä ei lueta lainkaan.</p>
+  </section>
+
+  <section aria-labelledby="h-decisions">
+    <h2 class="label" id="h-decisions">Päätökset · viimeisin numero</h2>
+    <div id="decisions"></div>
+  </section>
+
+  <section aria-labelledby="h-cliches">
+    <h2 class="label" id="h-cliches">Kriitikon löytämät kliseet · 14 viimeisintä numeroa</h2>
+    <div class="cliches" id="cliches"></div>
+  </section>
+
+  <section aria-labelledby="h-runs">
+    <h2 class="label" id="h-runs">Toiminta</h2>
+    <div class="scroll"><table id="runs"></table></div>
+    <p class="note" style="margin-top:12px">Hinta-arvio koskee vain kirjoittavaa mallia; kriitikko käyttää Flashia.</p>
+  </section>
+
+  <footer class="note" id="footer"></footer>
+</main>
+
+<div class="savebar" id="savebar" role="region" aria-label="Tallentamattomat muutokset">
+  <div>
+    <p id="dirty"></p>
+    <div class="actions">
+      <button type="button" id="reset">Peru</button>
+      <button type="button" class="primary" id="save">Tallenna GitHubiin</button>
+    </div>
+  </div>
+</div>
+
+<script>
+"use strict";
+// The knobs and their poles mirror KNOBS in generate.py.
+const KNOBS = [
+  ["tone", "Tunne", "Fakta"],
+  ["politics", "Vasen", "Oikea"],
+  ["outlook", "Huoli", "Toivo"],
+  ["scope", "Paikallinen", "Globaali"],
+  ["depth", "Tiivis", "Syvä"],
+  ["novelty", "Vakiintunut", "Heikot signaalit"],
+];
+const PROFILES = [["main", "Tyyni"], ["minna", "Minnan Tyyni"]];
+const WEIGHTS = [["korosta", "Korosta"], ["normaali", "Normaali"], ["hiljennä", "Hiljennä"]];
+const SECTION_NAMES = {};
+// USD per million tokens (input, output incl. thinking); Carbon doubles on 1.12.2026.
+const PRICES = {
+  "gemini-4-carbon": (day) => day >= "2026-12-01" ? [4, 20] : [2, 10],
+  "gemini-3.8-flash": () => [0.75, 3.75],
+  "gemini-4-hydrogen": () => [0, 0],
+};
+
+// Where the data lives: the repository itself (fresh), else the copy deployed with the site.
+const host = location.hostname, parts = location.pathname.split("/").filter(Boolean);
+const owner = host.endsWith(".github.io") ? host.split(".")[0] : "";
+const repo = owner ? (parts[0] && parts[0] !== "toimitus" ? parts[0] : `${owner}.github.io`) : "";
+const RAW = owner ? `https://raw.githubusercontent.com/${owner}/${repo}/main/toimitus/` : "";
+
+async function load(name) {
+  for (const base of [RAW, "./"].filter(Boolean)) {
+    try {
+      const response = await fetch(base + name + "?t=" + Date.now(), { cache: "no-store" });
+      if (response.ok) return await response.json();
+    } catch (error) { /* try the next copy */ }
+  }
+  return null;
+}
+
+const $ = (id) => document.getElementById(id);
+const el = (tag, attrs = {}, ...children) => {
+  const node = document.createElement(tag);
+  for (const [k, v] of Object.entries(attrs)) {
+    if (k === "class") node.className = v;
+    else if (k === "text") node.textContent = v;
+    else node.setAttribute(k, v);
+  }
+  for (const child of children) node.append(child);
+  return node;
+};
+const fmt = (x, digits = 1) => (x > 0 ? "+" : x < 0 ? "−" : "±") + Math.abs(x).toFixed(digits).replace(".", ",");
+const mean = (xs) => xs.length ? xs.reduce((a, b) => a + b, 0) / xs.length : null;
+const words = (v) => ({ "-2": "selvästi", "-1": "hieman", "0": "neutraali", "1": "hieman", "2": "selvästi" })[v];
+
+let saved = null, settings = null, logs = {}, active = "main";
+
+function knobText(knob, value) {
+  const [, low, high] = KNOBS.find((k) => k[0] === knob);
+  if (!value) return "neutraali";
+  return `${words(value)} ${(value < 0 ? low : high).toLowerCase()}`;
+}
+
+function changes() {
+  const out = [];
+  for (const [key, label] of PROFILES) {
+    const a = saved.profiles[key], b = settings.profiles[key];
+    for (const [knob] of KNOBS) if (a.knobs[knob] !== b.knobs[knob]) out.push(`${label}: ${knob}`);
+    for (const source of Object.keys(b.sources)) if (a.sources[source] !== b.sources[source]) out.push(`${label}: ${source}`);
+  }
+  return out;
+}
+
+function refreshSavebar() {
+  const list = changes();
+  $("savebar").classList.toggle("open", list.length > 0);
+  $("dirty").textContent = list.length === 1 ? "1 tallentamaton muutos" : `${list.length} tallentamatonta muutosta`;
+}
+
+function renderTabs() {
+  const nav = $("tabs");
+  nav.replaceChildren(...PROFILES.map(([key, label]) => {
+    const button = el("button", { type: "button", role: "tab", "aria-selected": String(key === active), text: label });
+    button.addEventListener("click", () => { active = key; render(); });
+    return button;
+  }));
+}
+
+function editions() { return (logs[active] && logs[active].editions) || []; }
+function reviewed(n) { return editions().filter((e) => e.critique).slice(-n); }
+
+function renderLatest() {
+  const box = $("latest"), last = editions().at(-1);
+  if (!last) { box.replaceChildren(el("p", { class: "empty", text: "Tästä lehdestä ei ole vielä lokia. Ensimmäinen numero täyttää sivun." })); return; }
+  const c = last.critique;
+  const left = el("div", {},
+    el("p", { class: "verdict", text: c ? c.critique : "Kriitikko ei arvioinut tätä numeroa." }),
+    el("div", { class: "scores" },
+      el("div", {}, el("p", { class: "label", text: "Faktapohja" }), el("p", { class: "score num", text: c && c.factuality ? `${c.factuality}/10` : "–" })),
+      el("div", {}, el("p", { class: "label", text: "Tuoreus" }), el("p", { class: "score num", text: c && c.freshness ? `${c.freshness}/10` : "–" }))));
+  const facts = el("dl", { class: "facts" });
+  const t = last.tokens || {};
+  for (const [k, v] of [
+    ["Numero", `N:o ${last.number}`],
+    ["Painos", last.slot.replace("T", " klo ").replace(/:(\d\d)$/, ".$1")],
+    ["Kirjoitettu", last.written ? last.written.slice(11).replace(":", ".") : "–"],
+    ["Malli", last.model || "–"],
+    ["Kesto", last.seconds != null ? `${last.seconds} s` : "–"],
+    ["Tokenit", t.in ? `${t.in} sisään · ${t.out ?? "?"} ulos · ${t.thinking ?? "?"} ajattelua` : "–"],
+  ]) facts.append(el("dt", { text: k }), el("dd", { class: "num", text: v }));
+  box.replaceChildren(el("div", { class: "latest" }, left, facts));
+}
+
+function renderKnobs() {
+  const box = $("knobs"), mine = settings.profiles[active].knobs, recent = reviewed(7);
+  box.replaceChildren(...KNOBS.map(([knob, low, high]) => {
+    const value = mine[knob];
+    const measured = mean(recent.map((e) => e.critique[knob]).filter((x) => x != null));
+    const input = el("input", { type: "range", min: "-2", max: "2", step: "1", value: String(value),
+                                "aria-label": `${low} – ${high}` });
+    const track = el("div", { class: "track" }, el("div", { class: "rail" }));
+    for (let i = -2; i <= 2; i++) {
+      const tick = el("div", { class: "tick" + (i === 0 ? " zero" : "") });
+      tick.style.left = `calc(9px + (100% - 18px) * ${(i + 2) / 4})`;
+      track.append(tick);
+    }
+    if (measured != null) {
+      const mark = el("div", { class: "measured", title: `Mitattu ${fmt(measured)}` });
+      mark.style.left = `calc(9px + (100% - 18px) * ${(measured + 2) / 4})`;
+      track.append(mark);
+    }
+    track.append(input);
+    const set = el("b", { text: knobText(knob, value) });
+    const reading = el("div", { class: "reading" },
+      el("span", {}, "Asetettu: ", set),
+      el("span", { class: "m", text: measured == null ? "ei mittauksia vielä" : `mitattu ${fmt(measured)}` }));
+    input.addEventListener("input", () => {
+      mine[knob] = Number(input.value);
+      set.textContent = knobText(knob, mine[knob]);
+      refreshSavebar();
+    });
+    return el("div", { class: "knob" }, el("span", { class: "pole", text: low }), track,
+              el("span", { class: "pole right", text: high }), reading);
+  }));
+}
+
+function sparkline(values, low, high) {
+  const w = 200, h = 56, n = values.length;
+  const ns = "http://www.w3.org/2000/svg";
+  const svg = document.createElementNS(ns, "svg");
+  svg.setAttribute("viewBox", `0 0 ${w} ${h}`);
+  svg.setAttribute("preserveAspectRatio", "none");
+  const y = (v) => h - 4 - ((v - low) / (high - low)) * (h - 8);
+  const mid = document.createElementNS(ns, "line");
+  Object.entries({ x1: 0, x2: w, y1: y((low + high) / 2), y2: y((low + high) / 2), stroke: "#E2DFD7", "stroke-width": 1,
+                   "vector-effect": "non-scaling-stroke" }).forEach(([k, v]) => mid.setAttribute(k, v));
+  svg.append(mid);
+  const points = values.map((v, i) => v == null ? null : [n === 1 ? w / 2 : (i / (n - 1)) * w, y(v)]).filter(Boolean);
+  if (points.length > 1) {
+    const line = document.createElementNS(ns, "polyline");
+    line.setAttribute("points", points.map((p) => p.join(",")).join(" "));
+    Object.entries({ fill: "none", stroke: "#181818", "stroke-width": 1.5, "stroke-linejoin": "round",
+                     "vector-effect": "non-scaling-stroke" }).forEach(([k, v]) => line.setAttribute(k, v));
+    svg.append(line);
+  }
+  const lastPoint = points.at(-1);
+  if (lastPoint) {
+    const dot = document.createElementNS(ns, "circle");
+    Object.entries({ cx: lastPoint[0], cy: lastPoint[1], r: 3, fill: "#B4573E" }).forEach(([k, v]) => dot.setAttribute(k, v));
+    svg.append(dot);
+  }
+  return svg;
+}
+
+function renderTrends() {
+  const list = reviewed(30);
+  if (!list.length) { $("trends").replaceChildren(el("p", { class: "empty", text: "Kehitys näkyy, kun kriitikko on arvioinut numeroita." })); return; }
+  const series = [
+    ...KNOBS.map(([knob, low, high]) => [`${low} – ${high}`, list.map((e) => e.critique[knob]), -2, 2, (v) => fmt(v, 0)]),
+    ["Faktapohja", list.map((e) => e.critique.factuality), 1, 10, (v) => `${v}/10`],
+    ["Tuoreus", list.map((e) => e.critique.freshness), 1, 10, (v) => `${v}/10`],
+  ];
+  $("trends").replaceChildren(...series.map(([label, values, low, high, show]) => {
+    const latest = values.filter((v) => v != null).at(-1);
+    return el("div", { class: "trend" }, el("p", { class: "label", text: label }), sparkline(values, low, high),
+              el("p", { class: "now num", text: latest == null ? "–" : `viimeisin ${show(latest)}` }));
+  }));
+}
+
+function renderSources() {
+  const recent = editions().slice(-30), mine = settings.profiles[active].sources;
+  const seen = {}, chosen = {};
+  for (const e of recent) {
+    for (const [k, n] of Object.entries(e.seen || {})) seen[k] = (seen[k] || 0) + n;
+    for (const c of e.chosen || []) if (c.feed) chosen[c.feed] = (chosen[c.feed] || 0) + 1;
+  }
+  const most = Math.max(1, ...Object.values(chosen));
+  const head = el("tr", {}, el("th", { text: "Lähde" }), el("th", { text: "Osio" }),
+                  el("th", { class: "num", text: "Nähty / nro" }), el("th", { text: "Valittu" }), el("th", { text: "Painotus" }));
+  const rows = Object.keys(mine).map((key) => {
+    const [section, name] = key.split(/\/(.+)/);
+    const picks = chosen[key] || 0;
+    const bar = el("span", { class: "share" });
+    bar.style.width = `${Math.round((picks / most) * 64)}px`;
+    const weights = el("span", { class: "weights", role: "radiogroup", "aria-label": `${name}: painotus` });
+    for (const [value, text] of WEIGHTS) {
+      const input = el("input", { type: "radio", name: `w-${active}-${key}`, value });
+      input.checked = mine[key] === value;
+      input.addEventListener("change", () => { mine[key] = value; row.classList.toggle("dimmed", value === "hiljennä"); refreshSavebar(); });
+      weights.append(el("label", {}, input, el("span", { text })));
+    }
+    const row = el("tr", { class: mine[key] === "hiljennä" ? "dimmed" : "" },
+      el("td", { text: name }), el("td", { text: SECTION_NAMES[section] || section }),
+      el("td", { class: "num", text: recent.length ? (seen[key] ? (seen[key] / recent.length).toFixed(1).replace(".", ",") : "0") : "–" }),
+      el("td", { class: "num" }, bar, String(picks)), el("td", {}, weights));
+    return row;
+  });
+  $("sources").replaceChildren(el("thead", {}, head), el("tbody", {}, ...rows));
+}
+
+function renderDecisions() {
+  const last = editions().at(-1);
+  if (!last) { $("decisions").replaceChildren(el("p", { class: "empty", text: "Ei vielä päätöksiä." })); return; }
+  $("decisions").replaceChildren(...last.chosen.map((c) => {
+    const title = c.url ? el("a", { href: c.url, target: "_blank", rel: "noopener", text: c.title }) : c.title;
+    return el("div", { class: "decision" },
+      el("div", {}, el("p", { class: "label", text: c.label }), el("p", { class: "note", text: c.source || "" })),
+      el("div", {}, el("h3", {}, title),
+         el("p", { class: "why", text: c.why || "Ei perustelua." }),
+         el("p", { class: "note num", text: `Harkitsi ${c.considered} muuta · tarjolla ${c.available}` })));
+  }));
+}
+
+function renderCliches() {
+  const counts = {};
+  for (const e of reviewed(14)) for (const c of e.critique.cliches || []) counts[c] = (counts[c] || 0) + 1;
+  const list = Object.entries(counts).sort((a, b) => b[1] - a[1]);
+  $("cliches").replaceChildren(...(list.length
+    ? list.map(([c, n]) => el("span", { text: n > 1 ? `”${c}” ×${n}` : `”${c}”` }))
+    : [el("p", { class: "empty", text: "Ei löydettyjä kliseitä." })]));
+}
+
+function renderRuns() {
+  const list = editions().slice(-12).reverse();
+  const head = el("tr", {}, ...["N:o", "Painos", "Valmis", "Malli", "Kesto", "Tokenit", "Arvio"].map((t, i) =>
+    el("th", { class: i >= 4 ? "num" : "", text: t })));
+  const rows = list.map((e) => {
+    const t = e.tokens || {}, price = PRICES[e.model];
+    let cost = "–";
+    if (price && t.in != null) {
+      const [pin, pout] = price(e.slot.slice(0, 10));
+      cost = "$" + ((t.in * pin + ((t.out || 0) + (t.thinking || 0)) * pout) / 1e6).toFixed(3).replace(".", ",");
+    }
+    const late = e.written && e.written > e.slot ? (Date.parse(e.written) - Date.parse(e.slot)) / 60000 : 0;
+    return el("tr", {},
+      el("td", { class: "num", text: e.number }),
+      el("td", { class: "num", text: e.slot.slice(5).replace("T", " ").replace(/^(\d\d)-(\d\d)/, "$2.$1.") }),
+      el("td", { class: "num", text: e.written ? e.written.slice(11) + (late > 30 ? ` (+${Math.round(late)} min)` : "") : "–" }),
+      el("td", { text: (e.model || "–").replace("gemini-", "") }),
+      el("td", { class: "num", text: e.seconds != null ? `${e.seconds} s` : "–" }),
+      el("td", { class: "num", text: t.in != null ? `${((t.in + (t.out || 0) + (t.thinking || 0)) / 1000).toFixed(1).replace(".", ",")} k` : "–" }),
+      el("td", { class: "num", text: cost }));
+  });
+  $("runs").replaceChildren(el("thead", {}, head), el("tbody", {}, ...rows));
+}
+
+function render() {
+  renderTabs(); renderLatest(); renderKnobs(); renderTrends(); renderSources(); renderDecisions(); renderCliches(); renderRuns();
+}
+
+$("reset").addEventListener("click", () => { settings = structuredClone(saved); render(); refreshSavebar(); });
+$("save").addEventListener("click", () => {
+  if (!owner) { alert("Tallennus toimii, kun sivu avataan GitHub Pagesista."); return; }
+  const body = "```json\n" + JSON.stringify(settings, null, 1) + "\n```\n\n" +
+    "Paina **Submit new issue**. Asetukset tallentuvat, ja ne ovat käytössä seuraavasta numerosta alkaen.\n\n" +
+    "Muutokset: " + changes().join(", ");
+  const url = `https://github.com/${owner}/${repo}/issues/new?title=${encodeURIComponent("Toimitus: asetukset")}` +
+              `&body=${encodeURIComponent(body)}`;
+  window.open(url, "_blank", "noopener");
+  $("dirty").textContent = "GitHub avautui uuteen välilehteen: paina siellä Submit new issue.";
+});
+
+(async () => {
+  const [s, main, minna] = await Promise.all([load("asetukset.json"), load("main.json"), load("minna.json")]);
+  logs = { main, minna };
+  for (const log of [main, minna]) for (const e of (log && log.editions) || []) for (const c of e.chosen || []) SECTION_NAMES[c.section] = c.label;
+  if (!s) { $("latest").replaceChildren(el("p", { class: "empty", text: "Asetuksia ei voitu ladata." })); return; }
+  saved = s; settings = structuredClone(s);
+  render();
+  $("footer").textContent = RAW ? "Asetukset ja lokit luetaan suoraan reposta; tallennus avaa valmiiksi täytetyn issuen, jonka vain repon omistaja voi hyväksyä." : "";
+})();
+</script>
+</body>
+</html>

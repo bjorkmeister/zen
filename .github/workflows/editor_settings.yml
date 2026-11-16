@@ -1,0 +1,56 @@
+name: Editor's settings
+
+# The editor's desk (toimitus/index.html) saves its knobs and source weights
+# by opening a pre-filled issue titled "Toimitus: asetukset". This workflow
+# reads the JSON in it, checks it strictly, saves it as toimitus/asetukset.json
+# and closes the issue. Only issues opened by the repository owner are read.
+on:
+  issues:
+    types: [opened]
+
+permissions:
+  contents: write
+  issues: write
+
+concurrency:
+  group: editor-settings
+  cancel-in-progress: false
+
+jobs:
+  apply:
+    if: "github.event.issue.user.login == github.repository_owner && startsWith(github.event.issue.title, 'Toimitus: asetukset')"
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v5
+
+      - id: apply
+        env:
+          ISSUE_BODY: ${{ github.event.issue.body }}
+        run: python3 generate.py --apply-settings
+
+      - name: Commit the settings
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add toimitus/asetukset.json
+          if git diff --cached --quiet; then
+            echo "The settings did not change."
+          else
+            git commit --quiet -m "Toimitus: asetukset päivitetty"
+            git pull --rebase --quiet
+            git push --quiet
+          fi
+
+      - name: Close the issue
+        if: always()
+        env:
+          GH_TOKEN: ${{ github.token }}
+          GH_REPO: ${{ github.repository }}
+          NUMBER: ${{ github.event.issue.number }}
+          OUTCOME: ${{ steps.apply.outcome }}
+        run: |
+          if [ "$OUTCOME" = "success" ]; then
+            gh issue close "$NUMBER" --reason completed --comment "Tallennettu. Asetukset ovat käytössä seuraavasta numerosta alkaen."
+          else
+            gh issue comment "$NUMBER" --body "Asetuksia ei tallennettu: ne eivät läpäisseet tarkistusta. Syy näkyy Actions-välilehden ajossa *Editor's settings*."
+          fi
