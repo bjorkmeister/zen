@@ -237,7 +237,7 @@
 
   <section class="weather" aria-label="Sää">
     <p class="atmosphere">{{ atmosphere }}</p>
-    <p class="almanac"><span>Nyt {{ temp_now }}</span><span>Ylin {{ temp_high }}</span><span>Aurinko {{ sun }}</span><span>Valoa {{ daylight }} ({{ daylight_change }})</span></p>
+    <p class="almanac"><!-- if temp_now --><span>Nyt {{ temp_now }}</span><span>Ylin {{ temp_high }}</span><!-- /if --><span>Aurinko {{ sun }}</span><span>Valoa {{ daylight }} ({{ daylight_change }})</span></p>
   </section>
 
   <section class="part">

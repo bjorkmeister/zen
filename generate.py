@@ -32,6 +32,7 @@ import argparse
 import calendar
 import html
 import json
+import math
 import os
 import re
 import smtplib
@@ -41,7 +42,7 @@ import urllib.parse
 import urllib.request
 from concurrent.futures import ThreadPoolExecutor
 from dataclasses import dataclass
-from datetime import date, datetime, timedelta
+from datetime import date, datetime, timedelta, timezone
 from email.message import EmailMessage
 from email.utils import formataddr
 from pathlib import Path
@@ -389,9 +390,9 @@ def knob_instructions(knobs: dict[str, int]) -> list[str]:
 # Fetching
 # --------------------------------------------------------------------------
 
-def fetch(url: str, attempts: int = 3, timeout: float = 20.0) -> bytes:
+def fetch(url: str, attempts: int = 3, timeout: float = 20.0, agent: str = "") -> bytes:
     """GET a URL, retrying transient failures with a short backoff."""
-    request = urllib.request.Request(url, headers={"User-Agent": USER_AGENT})
+    request = urllib.request.Request(url, headers={"User-Agent": agent or USER_AGENT})
     for attempt in range(1, attempts + 1):
         try:
             with urllib.request.urlopen(request, timeout=timeout) as response:
@@ -405,18 +406,44 @@ def fetch(url: str, attempts: int = 3, timeout: float = 20.0) -> bytes:
 
 @dataclass(frozen=True)
 class Weather:
-    now: float
-    feels_like: float
-    high: float
-    low: float
-    condition: str
-    wind_ms: float
-    precipitation_mm: float
-    precipitation_chance: int | None
+    """Today's weather in Olari. The sun is always known (it is calculated);
+    the rest is None when no weather service answered."""
     sunrise: datetime
     sunset: datetime
     daylight_s: float
     daylight_change_s: float
+    now: float | None = None
+    feels_like: float | None = None
+    high: float | None = None
+    low: float | None = None
+    condition: str | None = None
+    wind_ms: float | None = None
+    precipitation_mm: float | None = None
+    precipitation_chance: int | None = None
+    source: str = ""
+
+
+def sun_times(day: date) -> tuple[datetime, datetime]:
+    """Sunrise and sunset in Olari, from NOAA's solar equations (within a
+    few minutes of the published times), so daylight never depends on a service."""
+    lat, lon = math.radians(OLARI["latitude"]), OLARI["longitude"]
+    g = 2 * math.pi / 365 * (day.timetuple().tm_yday - 1)
+    eqtime = 229.18 * (0.000075 + 0.001868 * math.cos(g) - 0.032077 * math.sin(g)
+                       - 0.014615 * math.cos(2 * g) - 0.040849 * math.sin(2 * g))
+    decl = (0.006918 - 0.399912 * math.cos(g) + 0.070257 * math.sin(g) - 0.006758 * math.cos(2 * g)
+            + 0.000907 * math.sin(2 * g) - 0.002697 * math.cos(3 * g) + 0.00148 * math.sin(3 * g))
+    cos_ha = (math.cos(math.radians(90.833)) / (math.cos(lat) * math.cos(decl))
+              - math.tan(lat) * math.tan(decl))
+    ha = math.degrees(math.acos(max(-1.0, min(1.0, cos_ha))))
+    midnight = datetime(day.year, day.month, day.day, tzinfo=timezone.utc)
+    rise = midnight + timedelta(minutes=720 - 4 * (lon + ha) - eqtime)
+    set_ = midnight + timedelta(minutes=720 - 4 * (lon - ha) - eqtime)
+    return rise.astimezone(TZ), set_.astimezone(TZ)
+
+
+def daylight(day: date) -> float:
+    rise, set_ = sun_times(day)
+    return (set_ - rise).total_seconds()
 
 
 # WMO weather interpretation codes, as used by Open-Meteo.
@@ -434,41 +461,88 @@ WMO_FI = {
     95: "ukkosta", 96: "ukkosta ja raetta", 99: "voimakasta ukkosta ja raetta",
 }
 
+# MET Norway symbol codes, without their _day/_night/_polartwilight suffix.
+MET_FI = {
+    "clearsky": "selkeää", "fair": "enimmäkseen selkeää", "partlycloudy": "puolipilvistä",
+    "cloudy": "pilvistä", "fog": "sumua",
+    "lightrain": "heikkoa vesisadetta", "rain": "vesisadetta", "heavyrain": "voimakasta vesisadetta",
+    "lightrainshowers": "heikkoja sadekuuroja", "rainshowers": "sadekuuroja", "heavyrainshowers": "rankkoja sadekuuroja",
+    "lightsleet": "heikkoa räntäsadetta", "sleet": "räntäsadetta", "heavysleet": "voimakasta räntäsadetta",
+    "lightsleetshowers": "heikkoja räntäkuuroja", "sleetshowers": "räntäkuuroja", "heavysleetshowers": "voimakkaita räntäkuuroja",
+    "lightsnow": "heikkoa lumisadetta", "snow": "lumisadetta", "heavysnow": "voimakasta lumisadetta",
+    "lightsnowshowers": "heikkoja lumikuuroja", "snowshowers": "lumikuuroja", "heavysnowshowers": "voimakkaita lumikuuroja",
+}
 
-def fetch_weather() -> Weather:
+
+def wind_chill(temp: float, wind_ms: float) -> float:
+    """The Finnish Meteorological Institute's feels-like temperature."""
+    if temp > 10 or wind_ms < 1.3:
+        return temp
+    v = (wind_ms * 3.6) ** 0.16
+    return 13.12 + 0.6215 * temp - 11.37 * v + 0.3965 * temp * v
+
+
+def open_meteo() -> dict:
     params = {
         **OLARI,
         "timezone": "Europe/Helsinki",
         "wind_speed_unit": "ms",
-        "past_days": 1,       # yesterday's daylight, for the change in day length
         "forecast_days": 1,
         "current": "temperature_2m,apparent_temperature,weather_code,wind_speed_10m",
-        "daily": ",".join((
-            "weather_code", "temperature_2m_max", "temperature_2m_min",
-            "sunrise", "sunset", "daylight_duration",
-            "precipitation_sum", "precipitation_probability_max", "wind_speed_10m_max",
-        )),
+        "daily": "weather_code,temperature_2m_max,temperature_2m_min,precipitation_sum,"
+                 "precipitation_probability_max,wind_speed_10m_max",
     }
     url = "https://api.open-meteo.com/v1/forecast?" + urllib.parse.urlencode(params)
-    # Open-Meteo occasionally stalls on the TLS handshake from GitHub's runners;
-    # a patient retry (about a minute in all) nearly always gets through.
-    data = json.loads(fetch(url, attempts=5, timeout=30.0))
+    data = json.loads(fetch(url, attempts=2, timeout=15.0))
     current, daily = data["current"], data["daily"]
-    today = -1  # daily arrays are [yesterday, today]
-    return Weather(
-        now=current["temperature_2m"],
-        feels_like=current["apparent_temperature"],
-        high=daily["temperature_2m_max"][today],
-        low=daily["temperature_2m_min"][today],
-        condition=WMO_FI.get(daily["weather_code"][today], "vaihtelevaa säätä"),
-        wind_ms=daily["wind_speed_10m_max"][today],
-        precipitation_mm=daily["precipitation_sum"][today] or 0.0,
-        precipitation_chance=daily["precipitation_probability_max"][today],
-        sunrise=datetime.fromisoformat(daily["sunrise"][today]),
-        sunset=datetime.fromisoformat(daily["sunset"][today]),
-        daylight_s=daily["daylight_duration"][today],
-        daylight_change_s=daily["daylight_duration"][today] - daily["daylight_duration"][0],
-    )
+    return {
+        "now": current["temperature_2m"], "feels_like": current["apparent_temperature"],
+        "high": daily["temperature_2m_max"][0], "low": daily["temperature_2m_min"][0],
+        "condition": WMO_FI.get(daily["weather_code"][0], "vaihtelevaa säätä"),
+        "wind_ms": daily["wind_speed_10m_max"][0], "precipitation_mm": daily["precipitation_sum"][0] or 0.0,
+        "precipitation_chance": daily["precipitation_probability_max"][0], "source": "Open-Meteo",
+    }
+
+
+def met_norway(today: date) -> dict:
+    url = ("https://api.met.no/weatherapi/locationforecast/2.0/compact?"
+           + urllib.parse.urlencode({"lat": OLARI["latitude"], "lon": OLARI["longitude"]}))
+    # MET Norway asks every client to identify itself rather than pose as a browser.
+    data = json.loads(fetch(url, attempts=2, timeout=15.0, agent="Tyyni/1.0 personal daily digest"))
+    series = data["properties"]["timeseries"]
+    first = series[0]["data"]
+    now, wind = first["instant"]["details"]["air_temperature"], first["instant"]["details"]["wind_speed"]
+    today_entries = [t for t in series
+                     if datetime.fromisoformat(t["time"].replace("Z", "+00:00")).astimezone(TZ).date() == today]
+    temps = [t["data"]["instant"]["details"]["air_temperature"] for t in today_entries] or [now]
+    winds = [t["data"]["instant"]["details"]["wind_speed"] for t in today_entries] or [wind]
+    rain = sum(t["data"].get("next_1_hours", {}).get("details", {}).get("precipitation_amount", 0.0)
+               for t in today_entries)
+    summary = first.get("next_1_hours") or first.get("next_6_hours") or {}
+    symbol = summary.get("summary", {}).get("symbol_code", "").split("_")[0]
+    condition = MET_FI.get(symbol) or ("ukkosta" if "thunder" in symbol else "vaihtelevaa säätä")
+    return {
+        "now": now, "feels_like": wind_chill(now, wind), "high": max(temps), "low": min(temps),
+        "condition": condition, "wind_ms": max(winds), "precipitation_mm": round(rain, 1),
+        "precipitation_chance": None, "source": "MET Norway",
+    }
+
+
+def fetch_weather() -> Weather:
+    """Today's weather: Open-Meteo, else MET Norway, else only the sun. Open-Meteo
+    has stalled on GitHub's shared runners more than once; an edition should
+    never wait on a weather service."""
+    today = datetime.now(TZ).date()
+    sunrise, sunset = sun_times(today)
+    sky: dict = {}
+    for name, source in (("Open-Meteo", open_meteo), ("MET Norway", lambda: met_norway(today))):
+        try:
+            sky = source()
+            break
+        except Exception as error:
+            print(f"  ! weather from {name}: {type(error).__name__}: {error}", file=sys.stderr, flush=True)
+    return Weather(sunrise=sunrise, sunset=sunset, daylight_s=daylight(today),
+                   daylight_change_s=daylight(today) - daylight(today - timedelta(days=1)), **sky)
 
 
 @dataclass(frozen=True)
@@ -714,7 +788,7 @@ SHARED_PRINCIPLES = """\
 - Calm and exact. No hype, no alarm, no exclamation marks, no emoji, no markdown, no rhetorical questions."""
 
 ATMOSPHERE = """\
-atmosphere: exactly one sentence, at most 30 words. The weather in Espoo as it stands at this edition's hour and the rhythm of daylight, including the current temperature from the data. Evocative but concrete, true to the data; no stock phrases."""
+atmosphere: exactly one sentence, at most 30 words. The weather in Espoo as it stands at this edition's hour and the rhythm of daylight, including the current temperature from the data. Evocative but concrete, true to the data; no stock phrases. If the briefing says the weather services did not answer, describe only the light and the season, with no temperature or rain."""
 
 ZEN = """\
 zen_anchor: exactly one sentence, at most 20 words. Timeless, quiet and concrete; it may draw on today's season or light in Espoo. It restores perspective and gently turns the reader toward the rest of their real day – or, in an evening edition, toward rest – without mentioning screens, news, reading or this page, and without quotations, attributed sayings or familiar aphorisms."""
@@ -790,17 +864,23 @@ def edition_schema(profile: Profile) -> dict:
 
 def briefing(profile: Profile, today: datetime, edition_hour: int, weather: Weather,
              news: dict[str, list[Item]]) -> str:
-    rain = f"{weather.precipitation_mm:.1f} mm".replace(".", ",")
-    if weather.precipitation_chance is not None:
-        rain += f", todennäköisyys {weather.precipitation_chance} %"
+    if weather.now is None:
+        sky = ["- sääpalvelut eivät vastanneet: kuvaa vain valoa ja vuodenaikaa, älä mainitse lämpötilaa tai sadetta"]
+    else:
+        rain = f"{weather.precipitation_mm or 0:.1f} mm".replace(".", ",")
+        if weather.precipitation_chance is not None:
+            rain += f", todennäköisyys {weather.precipitation_chance} %"
+        sky = [
+            f"- nyt {degrees(weather.now)}, tuntuu kuin {degrees(weather.feels_like)}",
+            f"- päivän ylin {degrees(weather.high)}, alin {degrees(weather.low)}; {weather.condition}",
+            f"- sade {rain}; tuuli enimmillään {round(weather.wind_ms or 0)} m/s",
+        ]
     lines = [
         f"Päivä: {long_date(today)}, vuoden {today.timetuple().tm_yday}. päivä.",
         f"Painos: {profile.editions[edition_hour]}, luetaan noin kello {edition_hour}.00.",
         "",
-        "Sää Olarissa, Espoossa tänään (Open-Meteo):",
-        f"- nyt {degrees(weather.now)}, tuntuu kuin {degrees(weather.feels_like)}",
-        f"- päivän ylin {degrees(weather.high)}, alin {degrees(weather.low)}; {weather.condition}",
-        f"- sade {rain}; tuuli enimmillään {round(weather.wind_ms)} m/s",
+        f"Sää Olarissa, Espoossa tänään{f' ({weather.source})' if weather.source else ''}:",
+        *sky,
         f"- aurinko nousee {clock(weather.sunrise)} ja laskee {clock(weather.sunset)}",
         f"- valoisaa {duration(weather.daylight_s)} ({daylight_change(weather.daylight_change_s)} eiliseen)",
         "",
@@ -928,12 +1008,13 @@ def build_page(profile: Profile, today: datetime, current: datetime, upcoming: d
     page = {
         **{name: getattr(profile.palette, name) for name in ("paper", "ink", "stone", "rule")},
         "slot": slot_id(current),
+        "weather_source": weather.source,
         "next_edition": next_edition_text(today, upcoming),
         "date_long": long_date(today),
         "date_short": short_date(today),
         "number": str(number),
-        "temp_now": degrees(weather.now),
-        "temp_high": degrees(weather.high),
+        "temp_now": degrees(weather.now) if weather.now is not None else "",
+        "temp_high": degrees(weather.high) if weather.high is not None else "",
         "sun": f"{clock(weather.sunrise)}–{clock(weather.sunset)}",
         "daylight": duration(weather.daylight_s),
         "daylight_change": daylight_change(weather.daylight_change_s),
@@ -1170,6 +1251,7 @@ def edition_record(profile: Profile, page: dict[str, str], current: datetime, ne
     return {
         "number": int(page["number"]),
         "slot": slot_id(current),
+        "weather": page.get("weather_source", ""),
         "written": datetime.now(TZ).strftime("%Y-%m-%dT%H:%M"),
         **meta,
         "knobs": dict(knobs),
@@ -1227,7 +1309,8 @@ def publish(profile: Profile) -> int:
 
     template = TEMPLATE.read_text(encoding="utf-8")
     weather = fetch_weather()
-    print(f"  weather {degrees(weather.now)}, {weather.condition}")
+    print(f"  weather: {weather.source or 'none (sun only)'}"
+          + (f", {degrees(weather.now)}, {weather.condition}" if weather.now is not None else ""))
 
     settings = load_settings()["profiles"][profile.key]
     news = fetch_news(profile, settings["sources"])
