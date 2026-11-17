@@ -6,7 +6,7 @@ It comes in more than one edition, one per reader:
 
 | Edition | Page | Content | Appears | Notification |
 | --- | --- | --- | --- | --- |
-| Main | **https://bjorkmeister.github.io/zen/** | Technology, economy, design, media, sport | 06.00, 14.00, 20.00 | GitHub issue thread, after the 06.00 edition |
+| Main | **https://bjorkmeister.github.io/zen/** | Technology, economy, design, media, sport | 06.00 | GitHub issue thread |
 | Minna | **https://bjorkmeister.github.io/zen/minna/** | Design, lifestyle, wellbeing, restaurants, trends, culture, events in Helsinki and Espoo | 06.00 | An HTML email |
 
 <p align="center">
@@ -76,7 +76,8 @@ GitHub's own scheduler is best-effort. On a quiet repository it may run a schedu
    - *Expiration:* the longest available. Put a reminder in your calendar to renew it.
 2. **Create a cron job** at [cron-job.org](https://cron-job.org) (free account):
    - *URL:* `https://api.github.com/repos/<your-username>/<repository-name>/dispatches`
-   - *Schedule:* custom. Every day, hours **5, 6, 13, 14, 19, 20**, minutes **20, 50**, time zone **Europe/Helsinki**.
+   - *Schedule:* **Every day at 5:50**, time zone **Europe/Helsinki**. Check that *Next executions* lists the coming runs before saving.
+   - *Backup (recommended):* clone the job (*Actions → Clone*) and set the copy to **Every day at 6:20**. If the edition is already out, the backup does nothing.
    - *Advanced → Request method:* **POST**
    - *Advanced → Headers:* `Authorization: Bearer <your token>` and `Accept: application/vnd.github+json`
    - *Advanced → Request body:* `{"event_type":"edition"}`

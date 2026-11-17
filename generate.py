@@ -133,7 +133,7 @@ class Profile:
 MAIN = Profile(
     key="main",
     folder="",
-    editions={6: "aamupainos", 14: "iltapäiväpainos", 20: "iltapainos"},
+    editions={6: "aamupainos"},
     notify="github",
     window_hours=36,  # "yesterday", with slack for time zones and late publishing
     min_sections=4,
@@ -164,10 +164,9 @@ MAIN = Profile(
     reader=(
         "You are the sole editor of Tyyni (\"still, calm\"), a one-page broadsheet with exactly one reader: "
         "a senior Finnish leader in Espoo who works where technology, organisations and strategy meet. "
-        "The sheet appears three times a day – morning (6.00), afternoon (14.00) and evening (20.00) – and the "
-        "reader reads each edition once, slowly, and then closes the screen. The briefing says which edition "
-        "this is; let the atmosphere and the zen anchor fit that hour of the day. Your task is to give them "
-        "clarity and calm: the few things that matter, why they matter, and nothing else."
+        "The sheet appears once a day, at 6.00; the reader reads it once, slowly, with their first coffee, and "
+        "then closes the screen. Your task is to give them clarity and calm: the few things that matter, why "
+        "they matter, and nothing else."
     ),
     principles=(
         "- Signal over noise. Choose events with structural consequence: shifts in incentives, capital, "

@@ -1,7 +1,7 @@
 name: Morning edition
 
 # Tyyni has more than one reader. Each profile in generate.py has its own
-# edition hours (the main edition at 6.00, 14.00 and 20.00, Minna's at 6.00).
+# edition hours (both appear once a day, at 6.00).
 # Every look-in asks generate.py which profiles' latest edition is missing
 # from their page and publishes only those, so extra look-ins are harmless and
 # a lost one costs nothing. A look-in that finds nothing due takes seconds.
@@ -12,7 +12,7 @@ name: Morning edition
 # stays as a fallback.
 on:
   repository_dispatch:
-    types: [edition]   # external cron at 5.50, 6.20, 13.50, 14.20, 19.50, 20.20
+    types: [edition]   # external cron every day at 5.50, with a backup at 6.20
   schedule:
     - cron: "20,50 * * * *"
   push:
