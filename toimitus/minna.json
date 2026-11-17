@@ -1,0 +1,149 @@
+{
+ "profile": "minna",
+ "editions": [
+  {
+   "number": 5,
+   "slot": "2026-11-17T06:00",
+   "weather": "Open-Meteo",
+   "written": "2026-11-17T07:45",
+   "model": "gemini-3.8-flash",
+   "seconds": 54,
+   "tokens": {
+    "in": 12284,
+    "out": 1819,
+    "thinking": 4774
+   },
+   "knobs": {
+    "tone": 0,
+    "politics": 0,
+    "outlook": 0,
+    "scope": 0,
+    "depth": 0,
+    "novelty": 0
+   },
+   "seen": {
+    "design/Design Milk": 3,
+    "design/Dezeen": 10,
+    "design/Wallpaper*": 10,
+    "hyvinvointi/Greater Good": 1,
+    "hyvinvointi/Psyche": 2,
+    "hyvinvointi/The Guardian": 3,
+    "kulttuuri/Helsingin Sanomat": 10,
+    "kulttuuri/The Guardian": 10,
+    "lifestyle/Condé Nast Traveler": 10,
+    "lifestyle/Monocle": 2,
+    "lifestyle/The Guardian": 10,
+    "ravintolat/Eater": 2,
+    "ravintolat/Helsingin Sanomat": 2,
+    "ravintolat/The Guardian": 4,
+    "tapahtumat/Linked Events": 35,
+    "trendit/Harper's Bazaar": 10,
+    "trendit/The Guardian": 2,
+    "trendit/Vogue": 10
+   },
+   "chosen": [
+    {
+     "section": "design",
+     "label": "Design",
+     "feed": "design/Wallpaper*",
+     "source": "Wallpaper*",
+     "title": "Hanasaaren voimalaitoksen uusi elämä ratkeaa arkkitehtuurikilpailussa",
+     "url": "https://www.wallpaper.com/architecture/hanasaari-power-plant-development-finland",
+     "why": "Valitsin kotimaisen ja poikkeuksellisen mittavan kaupunkitilauutisen kansainvälisten palkintolistojen sijaan.",
+     "considered": 3,
+     "available": 23
+    },
+    {
+     "section": "lifestyle",
+     "label": "Lifestyle",
+     "feed": "lifestyle/The Guardian",
+     "source": "The Guardian",
+     "title": "Ricottamykyt valmistuvat vaivattomasti arki-illan salviavoihin",
+     "url": "https://www.theguardian.com/food/2026/nov/16/ricotta-dumplings-sage-butter-rocket-lemon-recipe-jess-elliott-dennison",
+     "why": "Kausiluontoinen, selkeä ja arkeen helposti sovellettava ruoka-annos ohitti joululahjalistat ja pintapuoliset tavarapoiminnat.",
+     "considered": 3,
+     "available": 22
+    },
+    {
+     "section": "hyvinvointi",
+     "label": "Hyvinvointi",
+     "feed": "hyvinvointi/Greater Good",
+     "source": "Greater Good",
+     "title": "Surun ja kiitollisuuden yhteys kirkastuu puutarhassa",
+     "url": "https://greatergood.berkeley.edu/article/item/the_surprising_connection_between_grief_and_gratitude",
+     "why": "Teksti tarjoaa lohdullisen ja psykologisesti syvällisen näkökulman luopumiseen sortumatta helppoihin self help -oppeihin.",
+     "considered": 2,
+     "available": 6
+    },
+    {
+     "section": "ravintolat",
+     "label": "Ravintolat",
+     "feed": "ravintolat/Helsingin Sanomat",
+     "source": "Helsingin Sanomat",
+     "title": "Kahvila Tove tuo valoa Tennispalatsiin",
+     "url": "https://www.hs.fi/ruoka/art-2000012378512.html",
+     "why": "Tuore helsinkiläinen kahvila-arvio nostaa esiin tilan arkkitehtuurin ja laadukkaan rauhoittumisen keskellä kaupunkia.",
+     "considered": 2,
+     "available": 8
+    },
+    {
+     "section": "trendit",
+     "label": "Trendit",
+     "feed": "trendit/Vogue",
+     "source": "Vogue",
+     "title": "Muotitalot vaihtavat tekoälyn käsin piirrettyyn kuvitukseen",
+     "url": "https://www.vogue.com/article/can-luxurys-hand-drawn-holiday-campaigns-really-rebuff-ai",
+     "why": "Havainto kertoo aidosta ja laajemmasta esteettisestä vastareaktiosta tekoälykuvaston geneerisyyttä vastaan.",
+     "considered": 2,
+     "available": 22
+    },
+    {
+     "section": "kulttuuri",
+     "label": "Kulttuuri",
+     "feed": "kulttuuri/Helsingin Sanomat",
+     "source": "Helsingin Sanomat",
+     "title": "Alma Pöysti loistaa Espoon teatterin näyttämöllä",
+     "url": "https://www.hs.fi/kulttuuri/art-2000012307598.html",
+     "why": "Kotikaupungissa esitettävä viiden tähden teatteritapaus on lukijalle kauden merkittävin kulttuurielämys.",
+     "considered": 3,
+     "available": 20
+    },
+    {
+     "section": "tapahtumat",
+     "label": "Tapahtumat",
+     "feed": "tapahtumat/Linked Events",
+     "source": "Galleria GAo ShAn",
+     "title": "Mari Paikkarin keramiikka kohtaa historian Punavuoressa",
+     "url": "https://www.gaoshanhelsinki.com/",
+     "why": "Tiistaina avautuva korkeatasoinen keramiikkanäyttely käsittelee sukupolvien taitoa ja sopii täydellisesti lukijan makuun.",
+     "considered": 3,
+     "available": 35
+    }
+   ],
+   "critique": {
+    "tone": 1,
+    "politics": 0,
+    "outlook": 1,
+    "scope": -1,
+    "depth": 0,
+    "novelty": 0,
+    "factuality": 10,
+    "freshness": 10,
+    "cliches": [
+     "tuo valoa",
+     "vilinän keskellä",
+     "loistaa",
+     "pysähtymisen äärelle"
+    ],
+    "regions": {
+     "finland": 4,
+     "europe": 2,
+     "north_america": 1,
+     "elsewhere": 0
+    },
+    "critique": "Otsikoissa ja välikappaleissa kannattaa karsia toistuvia tunnelmakliseitä kuten 'valon tuomista' tai 'vilinän keskellä rauhoittumista' omaperäisemmän ilmaisun tieltä.",
+    "model": "gemini-3.8-flash"
+   }
+  }
+ ]
+}

@@ -109,6 +109,119 @@
     "critique": "Mukaan kannattaa valita myös suoraan Suomea tai Pohjoismaita koskeva signaali pelkän sääraamin sijaan.",
     "model": "gemini-3.8-flash"
    }
+  },
+  {
+   "number": 11,
+   "slot": "2026-11-17T06:00",
+   "weather": "Open-Meteo",
+   "written": "2026-11-17T07:40",
+   "model": "gemini-4-carbon",
+   "seconds": 69,
+   "tokens": {
+    "in": 7863,
+    "out": 1601,
+    "thinking": 2856
+   },
+   "knobs": {
+    "tone": 0,
+    "politics": 0,
+    "outlook": 0,
+    "scope": 0,
+    "depth": 0,
+    "novelty": 0
+   },
+   "seen": {
+    "design/Dezeen": 10,
+    "design/Wallpaper*": 10,
+    "huippu_urheilu/BBC Sport": 10,
+    "huippu_urheilu/The Athletic": 10,
+    "media/Nieman Lab": 2,
+    "media/The Guardian": 6,
+    "media/The New Yorker": 6,
+    "talous/Bloomberg": 10,
+    "talous/Financial Times": 9,
+    "talous/The Economist": 1,
+    "tekniikka/Ars Technica": 10,
+    "tekniikka/Hacker News": 10
+   },
+   "chosen": [
+    {
+     "section": "tekniikka",
+     "label": "Tekniikka",
+     "feed": "tekniikka/Ars Technica",
+     "source": "Ars Technica",
+     "title": "Yhdysvallat rajoittaa Kiinan etäpääsyä tekoälysiruille",
+     "url": "https://arstechnica.com/tech-policy/2026/11/us-moves-to-cut-chinas-remote-access-to-ai-chips/",
+     "why": "Etäkäytön sulkeminen muuttaa vientivalvonnan luonnetta tavarakaupasta globaalien pilvialustojen valvontaan, mikä on rakenteellisesti merkittävämpää kuin yksittäiset käyttökatkot tai yhtiöriidat.",
+     "considered": 3,
+     "available": 20
+    },
+    {
+     "section": "talous",
+     "label": "Talous",
+     "feed": "talous/Financial Times",
+     "source": "Financial Times",
+     "title": "Pankit keventävät tekoälyhankkeiden luottoriskejä taseistaan",
+     "url": "https://www.ft.com/content/2351d9db-e938-4102-a449-318b1037765a?syn-25a6b1a6=1",
+     "why": "Luottoriskin uudelleenhinnoittelu paljastaa tekoälyinvestointien siirtymisen pääomamarkkinoiden euforiasta fyysisen toteutusriskin arviointiin.",
+     "considered": 3,
+     "available": 20
+    },
+    {
+     "section": "design",
+     "label": "Design",
+     "feed": "design/Wallpaper*",
+     "source": "Wallpaper*",
+     "title": "Helsinki avasi suunnittelukilpailun Hanasaaren voimala-alueesta",
+     "url": "https://www.wallpaper.com/architecture/hanasaari-power-plant-development-finland",
+     "why": "Hanasaaren muutos kytkee arkkitehtuurin suoraan energiamurrokseen ja pääkaupunkiseudun pitkän aikavälin maankäyttöön toisin kuin palkintogaalat tai yksittäiset luksustuotteet.",
+     "considered": 3,
+     "available": 20
+    },
+    {
+     "section": "media",
+     "label": "Media",
+     "feed": "media/The Guardian",
+     "source": "The Guardian",
+     "title": "Tšekissä puolustettiin suurmielenosoituksella yleisradion lupamaksua",
+     "url": "https://www.theguardian.com/world/2026/nov/15/czechia-protest-prague-media-freedom",
+     "why": "Tapaus osoittaa poikkeuksellisen selkeästi, kuinka rahoitusarkkitehtuuri määrittää tiedonvälityksen riippumattomuuden.",
+     "considered": 3,
+     "available": 14
+    },
+    {
+     "section": "huippu_urheilu",
+     "label": "Huippu-urheilu",
+     "feed": "huippu_urheilu/The Athletic",
+     "source": "The Athletic",
+     "title": "Kansalliset jalkapallosarjat peräävät rajoja ottelumäärille ja vallankäytölle",
+     "url": "https://www.nytimes.com/athletic/7781099/2026/11/17/football-is-becoming-wealthier-but-we-cannot-let-the-game-itself-become-poorer-wlas-luigi-de-siervo/",
+     "why": "Viidenkymmenen sarjan yhteinen puheenvuoro koskee huippu-urheilun taloudellista ja hallinnollista perusrakennetta yksittäisten ottelutulosten sijaan.",
+     "considered": 3,
+     "available": 20
+    }
+   ],
+   "critique": {
+    "tone": 2,
+    "politics": 0,
+    "outlook": -1,
+    "scope": 0,
+    "depth": 1,
+    "novelty": 0,
+    "factuality": 10,
+    "freshness": 7,
+    "cliches": [
+     "sulkea hanan"
+    ],
+    "regions": {
+     "finland": 1,
+     "europe": 2,
+     "north_america": 2,
+     "elsewhere": 0
+    },
+    "critique": "Tšekin yleisradiomielenosoitusta ei tulisi toistaa pääuutisena kahtena peräkkäisenä päivänä, jotta uutisvirran tuoreus säilyy.",
+    "model": "gemini-3.8-flash"
+   }
   }
  ]
 }
