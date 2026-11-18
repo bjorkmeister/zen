@@ -222,6 +222,119 @@
     "critique": "Tšekin yleisradiomielenosoitusta ei tulisi toistaa pääuutisena kahtena peräkkäisenä päivänä, jotta uutisvirran tuoreus säilyy.",
     "model": "gemini-3.8-flash"
    }
+  },
+  {
+   "number": 12,
+   "slot": "2026-11-18T06:00",
+   "weather": "MET Norway",
+   "written": "2026-11-18T06:09",
+   "model": "gemini-4-carbon",
+   "seconds": 116,
+   "tokens": {
+    "in": 8224,
+    "out": 1722,
+    "thinking": 8279
+   },
+   "knobs": {
+    "tone": 0,
+    "politics": 0,
+    "outlook": 0,
+    "scope": 0,
+    "depth": 0,
+    "novelty": 0
+   },
+   "seen": {
+    "design/Dezeen": 10,
+    "design/Wallpaper*": 10,
+    "huippu_urheilu/BBC Sport": 10,
+    "huippu_urheilu/The Athletic": 10,
+    "media/Nieman Lab": 4,
+    "media/The Guardian": 10,
+    "media/The New Yorker": 3,
+    "talous/Bloomberg": 10,
+    "talous/Financial Times": 10,
+    "talous/The Economist": 3,
+    "tekniikka/Ars Technica": 10,
+    "tekniikka/Hacker News": 10
+   },
+   "chosen": [
+    {
+     "section": "tekniikka",
+     "label": "Tekniikka",
+     "feed": "tekniikka/Ars Technica",
+     "source": "Ars Technica",
+     "title": "Kalifornia haastaa OpenAI:n oikeuteen hallinnan menetyksistä",
+     "url": "https://arstechnica.com/tech-policy/2026/11/california-sues-openai-to-stop-public-nuisance-of-out-of-control-ai-agents/",
+     "why": "Osavaltiotason oikeuskanne kymmenistä hallinnan menetyksistä merkitsee käännettä tekoälyyhtiöiden oikeudellisessa vastuussa toisin kuin yksittäiset tuotejulkistukset.",
+     "considered": 3,
+     "available": 20
+    },
+    {
+     "section": "talous",
+     "label": "Talous",
+     "feed": "talous/Financial Times",
+     "source": "Financial Times",
+     "title": "Nvidia sulkee oven Jensen Huangin paluulta toimitusjohtajaksi",
+     "url": "https://www.ft.com/content/3a8881b8-068c-4950-9238-4f8eb1efc870?syn-25a6b1a6=1",
+     "why": "Maailman keskeisimmän siruyhtiön irtautuminen perustajajohtajastaan ennätyskasvun keskellä on rakenteellisesti merkittävämpi hallintokäänne kuin yksittäiset makrotalouden suhdannearviot.",
+     "considered": 3,
+     "available": 23
+    },
+    {
+     "section": "design",
+     "label": "Design",
+     "feed": "design/Wallpaper*",
+     "source": "Wallpaper*",
+     "title": "Helsinki avasi kilpailun Hanasaaren voimala-alueen uudistamisesta",
+     "url": "https://www.wallpaper.com/architecture/hanasaari-power-plant-development-finland",
+     "why": "Käytöstä poistetun voimalaitosalueen muutos kilpailun kautta uudeksi kaupunginosaksi on lukijalle läheinen ja rakenteellinen kaupunkikehityksen merkkipaalu verrattuna yksittäisiin sisustus- ja näyttelyuutisiin.",
+     "considered": 3,
+     "available": 20
+    },
+    {
+     "section": "media",
+     "label": "Media",
+     "feed": "media/The Guardian",
+     "source": "The Guardian",
+     "title": "Brittinäyttelijöille vahvemmat oikeudet digitaalisiin kaksoisolentoihinsa",
+     "url": "https://www.theguardian.com/technology/2026/nov/17/actors-uk-rights-digital-replicas-ai-protections",
+     "why": "Työmarkkinaosapuolten sopimus digitaalisten kaksoisolentojen suostumuksesta ja hinnoittelusta määrittää luovan työn omistusoikeuksia pysyvämmin kuin yksittäisten medioiden liikennetilastot.",
+     "considered": 3,
+     "available": 17
+    },
+    {
+     "section": "huippu_urheilu",
+     "label": "Huippu-urheilu",
+     "feed": "huippu_urheilu/BBC Sport",
+     "source": "BBC Sport",
+     "title": "Australian krikettiliitto purkaa yhä vuoden 2018 huijausskandaalia",
+     "url": "https://www.bbc.co.uk/sport/cricket/articles/c58j48elrwvyo?at_medium=RSS&at_campaign=rss",
+     "why": "Lajiliiton tarve palata kahdeksan vuoden takaiseen huijausvyyhtiin joukkueen kollektiivisen tietoisuuden vuoksi kertoo urheiluinstituutioiden hallinnosta enemmän kuin yksittäiset ottelutulokset.",
+     "considered": 3,
+     "available": 20
+    }
+   ],
+   "critique": {
+    "tone": 1,
+    "politics": 0,
+    "outlook": 0,
+    "scope": 1,
+    "depth": 1,
+    "novelty": 0,
+    "factuality": 9,
+    "freshness": 7,
+    "cliches": [
+     "lämmin kuppi kädessä"
+    ],
+    "regions": {
+     "finland": 1,
+     "europe": 1,
+     "north_america": 2,
+     "elsewhere": 1
+    },
+    "critique": "Vältä toistamasta suoraan edellisen painoksen aihetta Hanasaaren kilpailusta, jotta uutisvalikoiman tuoreus säilyy korkeana.",
+    "model": "gemini-3.8-flash"
+   }
   }
  ]
 }

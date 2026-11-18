@@ -144,6 +144,145 @@
     "critique": "Otsikoissa ja välikappaleissa kannattaa karsia toistuvia tunnelmakliseitä kuten 'valon tuomista' tai 'vilinän keskellä rauhoittumista' omaperäisemmän ilmaisun tieltä.",
     "model": "gemini-3.8-flash"
    }
+  },
+  {
+   "number": 6,
+   "slot": "2026-11-18T06:00",
+   "weather": "MET Norway",
+   "written": "2026-11-18T06:12",
+   "model": "gemini-4-carbon",
+   "seconds": 131,
+   "tokens": {
+    "in": 14596,
+    "out": 1773,
+    "thinking": 8540
+   },
+   "knobs": {
+    "tone": 0,
+    "politics": 0,
+    "outlook": 0,
+    "scope": 0,
+    "depth": 0,
+    "novelty": 0
+   },
+   "seen": {
+    "design/Design Milk": 4,
+    "design/Dezeen": 10,
+    "design/Wallpaper*": 10,
+    "hyvinvointi/Greater Good": 2,
+    "hyvinvointi/Psyche": 3,
+    "hyvinvointi/The Guardian": 5,
+    "kulttuuri/Helsingin Sanomat": 10,
+    "kulttuuri/The Guardian": 9,
+    "lifestyle/Condé Nast Traveler": 10,
+    "lifestyle/Monocle": 3,
+    "lifestyle/The Guardian": 10,
+    "ravintolat/Eater": 8,
+    "ravintolat/Helsingin Sanomat": 1,
+    "ravintolat/The Guardian": 5,
+    "tapahtumat/Linked Events": 40,
+    "trendit/Harper's Bazaar": 10,
+    "trendit/The Guardian": 1,
+    "trendit/Vogue": 10
+   },
+   "chosen": [
+    {
+     "section": "design",
+     "label": "Design",
+     "feed": "design/Wallpaper*",
+     "source": "Wallpaper*",
+     "title": "Helsingin Hanasaaren voimalaitosalueelle etsitään uutta muotoa",
+     "url": "https://www.wallpaper.com/architecture/hanasaari-power-plant-development-finland",
+     "why": "Paikallinen ja mittakaavaltaan merkittävä kaupunkikehityshanke on lukijalle läheisempi kuin kansainväliset yksityiskodit.",
+     "considered": 3,
+     "available": 24
+    },
+    {
+     "section": "lifestyle",
+     "label": "Lifestyle",
+     "feed": "lifestyle/The Guardian",
+     "source": "The Guardian",
+     "title": "Kasvisruoka palaa teollisista korvikkeista vanhoihin perinteisiin",
+     "url": "https://www.theguardian.com/commentisfree/2026/nov/17/corporate-boom-vegan-food-plant-based-cooking-restaurants",
+     "why": "Aihe erottaa lyhytikäisen ruokatrendin kestävästä ruokakulttuurista ilman terveys- tai dieettipuhetta.",
+     "considered": 3,
+     "available": 23
+    },
+    {
+     "section": "hyvinvointi",
+     "label": "Hyvinvointi",
+     "feed": "hyvinvointi/Psyche",
+     "source": "Psyche",
+     "title": "Kodin tilaratkaisut tekevät kulttuuriset tottumukset näkyviksi",
+     "url": "https://psyche.co/ideas/the-cultural-rules-that-define-us-take-shape-in-our-homes",
+     "why": "Kodin tilaa ja asumisen kulttuuria pohtiva essee yhdistää hyvinvoinnin ja sisustusarkkitehtuurin luontevasti.",
+     "considered": 3,
+     "available": 10
+    },
+    {
+     "section": "ravintolat",
+     "label": "Ravintolat",
+     "feed": "ravintolat/Helsingin Sanomat",
+     "source": "Helsingin Sanomat",
+     "title": "Tennispalatsin lasikulmaan avautui museokahvila Tove",
+     "url": "https://www.hs.fi/ruoka/art-2000012378512.html",
+     "why": "Helsingin keskustan uusi, arkkitehtonisesti kiinnostavaan tilaan avattu kahvila palvelee suoraan lukijan arkea.",
+     "considered": 3,
+     "available": 14
+    },
+    {
+     "section": "trendit",
+     "label": "Trendit",
+     "feed": "trendit/Harper's Bazaar",
+     "source": "Harper's Bazaar",
+     "title": "Uusissa vaatteissa haetaan nyt menneiden vuosikymmenten tuntua",
+     "url": "https://www.harpersbazaar.com/fashion/a74444351/spring-2027-runway-trend-dressing-like-you-wear-vintage/",
+     "why": "Aikakausien kerrostamista käsittelevä juttu oli ainoa aidosti pukeutumisen estetiikkaa avaava teksti ostoslistojen ja juhla-asujen joukossa.",
+     "considered": 3,
+     "available": 21
+    },
+    {
+     "section": "kulttuuri",
+     "label": "Kulttuuri",
+     "feed": "kulttuuri/Helsingin Sanomat",
+     "source": "Helsingin Sanomat",
+     "title": "Oulun kulttuurivuoden huipennus löytyi spektaakkelin reunalta",
+     "url": "https://www.hs.fi/popkulttuuri/art-2000012393704.html",
+     "why": "Kotimaisen kulttuurivuoden päähetkeä tarkasteleva reportaasi tarjoaa rehellisen huomion taide-elämysten mittakaavasta.",
+     "considered": 3,
+     "available": 19
+    },
+    {
+     "section": "tapahtumat",
+     "label": "Tapahtumat",
+     "feed": "tapahtumat/Linked Events",
+     "source": "Helsinki Contemporary",
+     "title": "Ikebanaa ja lasiveistoksia Helsinki Contemporaryssa",
+     "url": "https://helsinkicontemporary.com/exhibitions/mitate",
+     "why": "Lasitaiteen ja japanilaisen kukka-asettelun vuoropuhelu on estetiikaltaan ja käsityötaidoltaan päivän tapahtumatarjonnan kärkeä.",
+     "considered": 3,
+     "available": 40
+    }
+   ],
+   "critique": {
+    "tone": 1,
+    "politics": 0,
+    "outlook": 1,
+    "scope": -1,
+    "depth": 0,
+    "novelty": 0,
+    "factuality": 9,
+    "freshness": 7,
+    "cliches": [],
+    "regions": {
+     "finland": 4,
+     "europe": 2,
+     "north_america": 1,
+     "elsewhere": 0
+    },
+    "critique": "Vältä toistamasta suoraan edellisen numeron aiheita, kuten Hanasaaren kilpailua ja kahvila Tovea, jotta uutiskirje säilyttää uutisarvonsa ja tuoreutensa.",
+    "model": "gemini-3.8-flash"
+   }
   }
  ]
 }
