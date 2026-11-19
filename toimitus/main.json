@@ -335,6 +335,119 @@
     "critique": "Vältä toistamasta suoraan edellisen painoksen aihetta Hanasaaren kilpailusta, jotta uutisvalikoiman tuoreus säilyy korkeana.",
     "model": "gemini-3.8-flash"
    }
+  },
+  {
+   "number": 13,
+   "slot": "2026-11-19T06:00",
+   "weather": "Open-Meteo",
+   "written": "2026-11-19T06:34",
+   "model": "gemini-4-carbon",
+   "seconds": 168,
+   "tokens": {
+    "in": 8005,
+    "out": 1759,
+    "thinking": 10586
+   },
+   "knobs": {
+    "tone": 0,
+    "politics": 0,
+    "outlook": 0,
+    "scope": 0,
+    "depth": 0,
+    "novelty": 0
+   },
+   "seen": {
+    "design/Dezeen": 10,
+    "design/Wallpaper*": 10,
+    "huippu_urheilu/BBC Sport": 10,
+    "huippu_urheilu/The Athletic": 10,
+    "media/Nieman Lab": 3,
+    "media/The Guardian": 6,
+    "media/The New Yorker": 7,
+    "talous/Bloomberg": 10,
+    "talous/Financial Times": 10,
+    "talous/The Economist": 3,
+    "tekniikka/Ars Technica": 10,
+    "tekniikka/Hacker News": 10
+   },
+   "chosen": [
+    {
+     "section": "tekniikka",
+     "label": "Tekniikka",
+     "feed": "tekniikka/Ars Technica",
+     "source": "Ars Technica",
+     "title": "Ukraina ohitti Starlinkin rajoitukset omilla relelennokeillaan",
+     "url": "https://arstechnica.com/gadgets/2026/11/ukraine-blew-up-putins-bridge-using-relay-drones-to-bypass-starlink-limits/",
+     "why": "Tapaus osoittaa konkreettisesti yksityisen alustainfrastruktuurin rajat valtiollisessa kriisissä, toisin kuin tulevien ohjelmistoversioiden ennakkotiedot tai yksittäiset nimityskiistat.",
+     "considered": 3,
+     "available": 20
+    },
+    {
+     "section": "talous",
+     "label": "Talous",
+     "feed": "talous/Financial Times",
+     "source": "Financial Times",
+     "title": "Anthropic keräsi ennätykselliset 81 miljardia dollaria listautumisannissa",
+     "url": "https://www.ft.com/content/62c0510b-ca65-441e-9baf-675b93903b9e?syn-25a6b1a6=1",
+     "why": "Maailmanhistorian suurin pörssilistautuminen muuttaa pääomamarkkinoiden ja tekoälysektorin voimasuhteita syvemmin kuin yksittäiset korkokommentit tai yhtiökokouskiistat.",
+     "considered": 3,
+     "available": 23
+    },
+    {
+     "section": "design",
+     "label": "Design",
+     "feed": "design/Dezeen",
+     "source": "Dezeen",
+     "title": "Arkkitehdit haastavat Melbournen sosiaalisen asuntokannan purkupäätöksen",
+     "url": "https://www.dezeen.com/2026/11/17/office-simon-robinson-public-housing-melbourne-australia/",
+     "why": "Julkisen asuntokannan purkamisen ja peruskorjaamisen välinen periaatekiista on aineiston ainoa rakenteellisesti merkittävä aihe tuotejulkistusten ja näyttelyesittelyjen joukossa.",
+     "considered": 3,
+     "available": 20
+    },
+    {
+     "section": "media",
+     "label": "Media",
+     "feed": "media/Nieman Lab",
+     "source": "Nieman Lab",
+     "title": "Sanomalehtiketju McClatchy korvaa paikallisjournalismin malliaan tekoälyllä",
+     "url": "https://www.niemanlab.org/2026/11/after-gutting-newsrooms-mcclatchy-plans-to-rebuild-itself-around-ai/",
+     "why": "Suuren paikallismediaketjun avoin luopuminen perinteisestä journalismista tekoälyn hyväksi paljastaa media-alan rakennemuutoksen selkeämmin kuin urheiluoikeuksien tarjouskilpailu.",
+     "considered": 3,
+     "available": 16
+    },
+    {
+     "section": "huippu_urheilu",
+     "label": "Huippu-urheilu",
+     "feed": "huippu_urheilu/BBC Sport",
+     "source": "BBC Sport",
+     "title": "Englannin jalkapalloliitto luopui aikeesta haastaa Infantinon jatkokausi",
+     "url": "https://www.bbc.co.uk/sport/football/articles/cm3eg1w4ypz5o?at_medium=RSS&at_campaign=rss",
+     "why": "Fifan valtarakenteita ja johtajiston toimikausirajoja koskeva institutionaalinen arvio on painoarvoltaan merkittävämpi kuin yksittäiset ottelutulokset tai pelaajasopimukset.",
+     "considered": 3,
+     "available": 20
+    }
+   ],
+   "critique": {
+    "tone": 2,
+    "politics": 0,
+    "outlook": -1,
+    "scope": 1,
+    "depth": 1,
+    "novelty": 0,
+    "factuality": 10,
+    "freshness": 10,
+    "cliches": [
+     "tulleen tiensä päähän"
+    ],
+    "regions": {
+     "finland": 0,
+     "europe": 2,
+     "north_america": 2,
+     "elsewhere": 1
+    },
+    "critique": "Katsaukseen kannattaa valita myös suoria kotimaisia tai pohjoismaisia uutistapahtumia tasapainottamaan globaaleja teknologia- ja instituutioaiheita.",
+    "model": "gemini-3.8-flash"
+   }
   }
  ]
 }

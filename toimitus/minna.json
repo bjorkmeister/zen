@@ -283,6 +283,148 @@
     "critique": "Vältä toistamasta suoraan edellisen numeron aiheita, kuten Hanasaaren kilpailua ja kahvila Tovea, jotta uutiskirje säilyttää uutisarvonsa ja tuoreutensa.",
     "model": "gemini-3.8-flash"
    }
+  },
+  {
+   "number": 7,
+   "slot": "2026-11-19T06:00",
+   "weather": "Open-Meteo",
+   "written": "2026-11-19T06:37",
+   "model": "gemini-4-carbon",
+   "seconds": 197,
+   "tokens": {
+    "in": 15401,
+    "out": 1910,
+    "thinking": 12896
+   },
+   "knobs": {
+    "tone": 0,
+    "politics": 0,
+    "outlook": 0,
+    "scope": 0,
+    "depth": 0,
+    "novelty": 0
+   },
+   "seen": {
+    "design/Design Milk": 7,
+    "design/Dezeen": 10,
+    "design/Wallpaper*": 10,
+    "hyvinvointi/Greater Good": 3,
+    "hyvinvointi/Psyche": 4,
+    "hyvinvointi/The Guardian": 4,
+    "kulttuuri/Helsingin Sanomat": 10,
+    "kulttuuri/The Guardian": 10,
+    "lifestyle/Condé Nast Traveler": 10,
+    "lifestyle/Monocle": 4,
+    "lifestyle/The Guardian": 10,
+    "ravintolat/Eater": 10,
+    "ravintolat/Helsingin Sanomat": 3,
+    "ravintolat/The Guardian": 5,
+    "tapahtumat/Linked Events": 40,
+    "trendit/Harper's Bazaar": 10,
+    "trendit/The Guardian": 1,
+    "trendit/Vogue": 10
+   },
+   "chosen": [
+    {
+     "section": "design",
+     "label": "Design",
+     "feed": "design/Design Milk",
+     "source": "Design Milk",
+     "title": "OMA rakensi myymälän käsityön ja kierron varaan",
+     "url": "https://design-milk.com/oma-good-times-general-store-potato-head-bali/",
+     "why": "Valitsin OMA:n suunnitteleman kiertotalous- ja käsityötilan, koska se tarjoaa arkkitehtonisesti painavimman näkökulman materiaalien käyttöön verrattuna pienempiin tuotejulkistuksiin ja juhlavuosijuttuihin.",
+     "considered": 3,
+     "available": 27
+    },
+    {
+     "section": "lifestyle",
+     "label": "Lifestyle",
+     "feed": "lifestyle/The Guardian",
+     "source": "The Guardian",
+     "title": "Satunnaistoisto opetti mielen hyppimään jo vuosikymmeniä sitten",
+     "url": "https://www.theguardian.com/commentisfree/2026/nov/18/instant-gratification-is-ruining-our-lives-and-for-me-it-started-with-my-cd-players-shuffle-button",
+     "why": "Chilesin essee tarkkaavaisuuden murenemisesta on ajatuksellisesti kestävämpi kuin aineiston lahjalistat, alennuskoodit ja politiikan huippukokoukset.",
+     "considered": 3,
+     "available": 24
+    },
+    {
+     "section": "hyvinvointi",
+     "label": "Hyvinvointi",
+     "feed": "hyvinvointi/Psyche",
+     "source": "Psyche",
+     "title": "Kodin tilaratkaisut paljastavat kirjoittamattomat kulttuuriset säännöt",
+     "url": "https://psyche.co/ideas/the-cultural-rules-that-define-us-take-shape-in-our-homes",
+     "why": "Kodin fyysisen tilan ja elämäntavan suhdetta pohtiva essee puhuttelee sisustuksesta kiinnostunutta lukijaa suoremmin kuin vakuutuskiistat tai yksittäiset muistelmat.",
+     "considered": 3,
+     "available": 11
+    },
+    {
+     "section": "ravintolat",
+     "label": "Ravintolat",
+     "feed": "ravintolat/Helsingin Sanomat",
+     "source": "Helsingin Sanomat",
+     "title": "Basbasin neljäs ravintola palvelee Siltasaaressa aamusta yöhön",
+     "url": "https://www.hs.fi/ruoka/art-2000012347758.html",
+     "why": "Paikallinen uutinen tunnetun helsinkiläisen ravintolatoimijan uudesta koko päivän paikasta on lukijalle selvästi hyödyllisempi kuin ulkomaiset juhlareseptilistat.",
+     "considered": 3,
+     "available": 18
+    },
+    {
+     "section": "trendit",
+     "label": "Trendit",
+     "feed": "trendit/The Guardian",
+     "source": "The Guardian",
+     "title": "Näyttely kokoaa muotikuvaaja David Simsin pitkän uran",
+     "url": "https://www.theguardian.com/artanddesign/gallery/2026/nov/18/david-sims-kate-moss-kurt-cobain-in-pictures",
+     "why": "Valokuvaaja David Simsin uraa luotaava näyttelyjuttu on osion ainoa visuaaliseen kulttuuriin syventyvä aihe ostoslistojen ja julkkisseurannan joukossa.",
+     "considered": 3,
+     "available": 21
+    },
+    {
+     "section": "kulttuuri",
+     "label": "Kulttuuri",
+     "feed": "kulttuuri/Helsingin Sanomat",
+     "source": "Helsingin Sanomat",
+     "title": "Nuoret lukijat etsivät nyt Cormac McCarthyn romaaneja",
+     "url": "https://www.hs.fi/kulttuuri/art-2000012398371.html",
+     "why": "Klassikkokirjallisuuden uusi lukijapolvi Suomessa on kestävämpi ja läheisempi kulttuuri-ilmiö kuin suurpelin julkaisuhumu tai elokuvaroolituksen spekulaatiot.",
+     "considered": 3,
+     "available": 20
+    },
+    {
+     "section": "tapahtumat",
+     "label": "Tapahtumat",
+     "feed": "tapahtumat/Linked Events",
+     "source": "Helsinki Contemporary",
+     "title": "Lasiveistokset ja ikebana kohtaavat Helsinki Contemporaryssa",
+     "url": "https://helsinkicontemporary.com/exhibitions/mitate",
+     "why": "Laitisen lasiveistosten ja japanilaisen asetelmataiteen vuoropuhelu sopii lukijan muotoilu- ja taidemakuun täsmällisemmin kuin kirjastojen päivänäytökset tai lastentapahtumat.",
+     "considered": 3,
+     "available": 40
+    }
+   ],
+   "critique": {
+    "tone": 1,
+    "politics": 0,
+    "outlook": 0,
+    "scope": 0,
+    "depth": 0,
+    "novelty": -1,
+    "factuality": 10,
+    "freshness": 6,
+    "cliches": [
+     "tuorein silmin",
+     "rauhallisen pysähdyspaikan"
+    ],
+    "regions": {
+     "finland": 3,
+     "europe": 2,
+     "north_america": 1,
+     "elsewhere": 1
+    },
+    "critique": "Karsi toistuvat aiheet tiukemmin edelliseen numeroon verrattuna, sillä sekä kodin tilaratkaisut että Helsinki Contemporaryn näyttely olivat mukana jo eilen.",
+    "model": "gemini-3.8-flash"
+   }
   }
  ]
 }
