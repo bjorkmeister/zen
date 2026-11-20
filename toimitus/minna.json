@@ -425,6 +425,149 @@
     "critique": "Karsi toistuvat aiheet tiukemmin edelliseen numeroon verrattuna, sillä sekä kodin tilaratkaisut että Helsinki Contemporaryn näyttely olivat mukana jo eilen.",
     "model": "gemini-3.8-flash"
    }
+  },
+  {
+   "number": 8,
+   "slot": "2026-11-20T06:00",
+   "weather": "Open-Meteo",
+   "written": "2026-11-20T06:36",
+   "model": "gemini-4-carbon",
+   "seconds": 90,
+   "tokens": {
+    "in": 15100,
+    "out": 1707,
+    "thinking": 6374
+   },
+   "knobs": {
+    "tone": 0,
+    "politics": 0,
+    "outlook": 0,
+    "scope": 0,
+    "depth": 0,
+    "novelty": 0
+   },
+   "seen": {
+    "design/Design Milk": 6,
+    "design/Dezeen": 10,
+    "design/Wallpaper*": 10,
+    "hyvinvointi/Greater Good": 3,
+    "hyvinvointi/Psyche": 2,
+    "hyvinvointi/The Guardian": 3,
+    "kulttuuri/Helsingin Sanomat": 10,
+    "kulttuuri/The Guardian": 10,
+    "lifestyle/Condé Nast Traveler": 10,
+    "lifestyle/Monocle": 5,
+    "lifestyle/The Guardian": 10,
+    "ravintolat/Eater": 10,
+    "ravintolat/Helsingin Sanomat": 3,
+    "ravintolat/The Guardian": 5,
+    "tapahtumat/Linked Events": 40,
+    "trendit/Harper's Bazaar": 10,
+    "trendit/The Guardian": 2,
+    "trendit/Vogue": 10
+   },
+   "chosen": [
+    {
+     "section": "design",
+     "label": "Design",
+     "feed": "design/Wallpaper*",
+     "source": "Wallpaper*",
+     "title": "Turun uusi musiikkitalo Fuuga avautuu kaupunkilaisille",
+     "url": "https://www.wallpaper.com/architecture/turku-music-centre-fuuga-finland",
+     "why": "Kotimainen julkisen arkkitehtuurin uutuus nousee esiin kansainvälisessä muotoilujulkaisussa.",
+     "considered": 3,
+     "available": 26
+    },
+    {
+     "section": "lifestyle",
+     "label": "Lifestyle",
+     "feed": "lifestyle/The Guardian",
+     "source": "The Guardian",
+     "title": "Luumu tuo syvyyttä tuliseen pastakastikkeeseen",
+     "url": "https://www.theguardian.com/food/2026/nov/19/pasta-all-arrabbiata-red-onion-plums-recipe-rachel-roddy",
+     "why": "Konkreettinen ja sesonkiin sopiva oivallus kotikeittiöön ilman turhaa listausjournalismia.",
+     "considered": 3,
+     "available": 25
+    },
+    {
+     "section": "hyvinvointi",
+     "label": "Hyvinvointi",
+     "feed": "hyvinvointi/Psyche",
+     "source": "Psyche",
+     "title": "Kodin tilajako paljastaa opitut kulttuuriset säännöt",
+     "url": "https://psyche.co/ideas/the-cultural-rules-that-define-us-take-shape-in-our-homes",
+     "why": "Arkkitehtuuria ja kulttuurintutkimusta yhdistävä näkökulma tuo syvyyttä asumisen pohtimiseen.",
+     "considered": 2,
+     "available": 8
+    },
+    {
+     "section": "ravintolat",
+     "label": "Ravintolat",
+     "feed": "ravintolat/Helsingin Sanomat",
+     "source": "Helsingin Sanomat",
+     "title": "Basbas avasi aamusta yöhön palvelevan ravintolan Siltasaareen",
+     "url": "https://www.hs.fi/ruoka/art-2000012347758.html",
+     "why": "Paikallinen helsinkiläinen ravintolauutinen tunnetulta ja huolelliselta toimijalta.",
+     "considered": 3,
+     "available": 18
+    },
+    {
+     "section": "trendit",
+     "label": "Trendit",
+     "feed": "trendit/Vogue",
+     "source": "Vogue",
+     "title": "Alkuperäiskansojen perinteet ohjaavat rauhallisen kodin rakentamista",
+     "url": "https://www.vogue.com/article/native-home-the-ancestral-art-of-creating-healing-spaces-chelsey-luger-book-interview",
+     "why": "Muodin sesonkilistojen sijaan teos käsittelee kestävää ja merkityksellistä tapaa asua.",
+     "considered": 3,
+     "available": 22
+    },
+    {
+     "section": "kulttuuri",
+     "label": "Kulttuuri",
+     "feed": "kulttuuri/Helsingin Sanomat",
+     "source": "Helsingin Sanomat",
+     "title": "Tapiola Sinfonietta tarkastelee klassisen musiikin kaanonia",
+     "url": "https://www.hs.fi/kulttuuri/art-2000012293912.html",
+     "why": "Kotikaupungissa järjestettävä orkesteritapahtuma avaa tuoreen näkökulman esitettävään taidemusiikkiin.",
+     "considered": 2,
+     "available": 20
+    },
+    {
+     "section": "tapahtumat",
+     "label": "Tapahtumat",
+     "feed": "tapahtumat/Linked Events",
+     "source": "Helsinki Contemporary",
+     "title": "Ikebana ja lasiveistokset kohtaavat Helsinki Contemporaryssa",
+     "url": "https://helsinkicontemporary.com/exhibitions/mitate",
+     "why": "Japanilaisen kasvien asettelun ja suomalaisen lasiveistoksen yhteisnäyttely tarjoaa poikkeuksellisen hienovireisen taidekokemuksen.",
+     "considered": 3,
+     "available": 40
+    }
+   ],
+   "critique": {
+    "tone": 1,
+    "politics": 0,
+    "outlook": 1,
+    "scope": -1,
+    "depth": 0,
+    "novelty": -1,
+    "factuality": 10,
+    "freshness": 4,
+    "cliches": [
+     "tuorein silmin",
+     "käyvät vuoropuhelua",
+     "kupin lämpö"
+    ],
+    "regions": {
+     "finland": 4,
+     "europe": 2,
+     "north_america": 1,
+     "elsewhere": 0
+    },
+    "critique": "Vältä toistamasta edellisen numeron aiheita, sillä kolme seitsemästä signaalista oli mukana jo eilen.",
+    "model": "gemini-3.8-flash"
+   }
   }
  ]
 }
