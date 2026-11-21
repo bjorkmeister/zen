@@ -559,6 +559,116 @@
     "critique": "Vältä toistamasta samaa aihetta peräkkäisissä numeroissa, sillä McClatchyn tekoälysiirtymä käsiteltiin jo edellisessä painoksessa.",
     "model": "gemini-3.8-flash"
    }
+  },
+  {
+   "number": 15,
+   "slot": "2026-11-21T06:00",
+   "weather": "Open-Meteo",
+   "written": "2026-11-21T06:21",
+   "model": "gemini-4-carbon",
+   "seconds": 150,
+   "tokens": {
+    "in": 7724,
+    "out": 1720,
+    "thinking": 10817
+   },
+   "knobs": {
+    "tone": 0,
+    "politics": 0,
+    "outlook": 0,
+    "scope": 0,
+    "depth": 0,
+    "novelty": 0
+   },
+   "seen": {
+    "design/Dezeen": 10,
+    "design/Wallpaper*": 10,
+    "huippu_urheilu/BBC Sport": 8,
+    "huippu_urheilu/The Athletic": 10,
+    "media/Nieman Lab": 2,
+    "media/The Guardian": 6,
+    "media/The New Yorker": 9,
+    "talous/Bloomberg": 10,
+    "talous/Financial Times": 10,
+    "tekniikka/Ars Technica": 10,
+    "tekniikka/Hacker News": 10
+   },
+   "chosen": [
+    {
+     "section": "tekniikka",
+     "label": "Tekniikka",
+     "feed": "tekniikka/Ars Technica",
+     "source": "Ars Technica",
+     "title": "Meta arvioi uudelleen vuoden 2030 ilmastotavoitteensa",
+     "url": "https://arstechnica.com/ai/2026/11/meta-reconsiders-2030-net-zero-goal-amid-record-emissions-from-ai-data-centers/",
+     "why": "Ilmastotavoitteen uudelleenarviointi paljastaa tekoälyinfrastruktuurin fyysiset reunaehdot selkeämmin kuin yksittäiset hakukonepäivitykset tai tietoturvatestit.",
+     "considered": 3,
+     "available": 20
+    },
+    {
+     "section": "talous",
+     "label": "Talous",
+     "feed": "talous/Financial Times",
+     "source": "Financial Times",
+     "title": "Yhdysvaltain teknologiaosakkeet vajosivat laskumarkkinaan",
+     "url": "https://www.ft.com/content/9f3c6ed6-c08f-4710-9683-ee2f5eb25841?syn-25a6b1a6=1",
+     "why": "Laaja markkinakäänne kokoaa yhteen pääoman hinnan ja tekoälyinvestointien kestävyyden kattavammin kuin yksittäinen viranomaistutkinta tai verouhkaus.",
+     "considered": 3,
+     "available": 20
+    },
+    {
+     "section": "design",
+     "label": "Design",
+     "feed": "design/Dezeen",
+     "source": "Dezeen",
+     "title": "Toimitilojen kalustehävikki ohjaa sisustusta kohti palvelumalleja",
+     "url": "https://www.dezeen.com/2026/11/20/framerys-flexible-office-pod-subscription-office-needs/",
+     "why": "Kalustamisen siirtyminen omistamisesta palveluksi kuvaa toimitilamarkkinan taloudellista rakennetta paremmin kuin yksittäiset arkkitehtuurikohteet tai näyttelyt.",
+     "considered": 3,
+     "available": 20
+    },
+    {
+     "section": "media",
+     "label": "Media",
+     "feed": "media/The Guardian",
+     "source": "The Guardian",
+     "title": "Liittovaltion tuomari päästi Trumpin mediakanteen etenemään",
+     "url": "https://www.theguardian.com/us-news/2026/nov/19/trump-lawsuit-new-york-times",
+     "why": "Istuvan presidentin 15 miljardin dollarin kanteen eteneminen muuttaa mediatalojen oikeudellista toimintaympäristöä konkreettisemmin kuin julkisen rahoituksen jatkopohdinnat.",
+     "considered": 3,
+     "available": 17
+    },
+    {
+     "section": "huippu_urheilu",
+     "label": "Huippu-urheilu",
+     "feed": "huippu_urheilu/BBC Sport",
+     "source": "BBC Sport",
+     "title": "Manchester Unitedin valmentajavaihdosten kulut lähestyvät sataa miljoonaa puntaa",
+     "url": "https://www.bbc.co.uk/sport/football/articles/cwd01n9z23x5o?at_medium=RSS&at_campaign=rss",
+     "why": "Velkarahalla rahoitettu valmentajavaihdos ja sataan miljoonaan puntaan nousevat kumulatiiviset kulut paljastavat urheilujohtamisen hallinnollisen kitkan paremmin kuin yksittäiset ottelutulokset tai rengassäännöt.",
+     "considered": 3,
+     "available": 18
+    }
+   ],
+   "critique": {
+    "tone": 2,
+    "politics": 0,
+    "outlook": -1,
+    "scope": 1,
+    "depth": 1,
+    "novelty": 0,
+    "factuality": 10,
+    "freshness": 10,
+    "cliches": [],
+    "regions": {
+     "finland": 1,
+     "europe": 1,
+     "north_america": 3,
+     "elsewhere": 0
+    },
+    "critique": "Painopistettä voisi seuraavassa numerossa siirtää hieman pois Yhdysvaltain suuryhtiöistä ja politiikasta kohti laajempaa eurooppalaista tai kotimaista näkökulmaa.",
+    "model": "gemini-3.8-flash"
+   }
   }
  ]
 }

@@ -568,6 +568,149 @@
     "critique": "Vältä toistamasta edellisen numeron aiheita, sillä kolme seitsemästä signaalista oli mukana jo eilen.",
     "model": "gemini-3.8-flash"
    }
+  },
+  {
+   "number": 9,
+   "slot": "2026-11-21T06:00",
+   "weather": "Open-Meteo",
+   "written": "2026-11-21T06:24",
+   "model": "gemini-4-carbon",
+   "seconds": 125,
+   "tokens": {
+    "in": 15106,
+    "out": 1708,
+    "thinking": 8747
+   },
+   "knobs": {
+    "tone": 0,
+    "politics": 0,
+    "outlook": 0,
+    "scope": 0,
+    "depth": 0,
+    "novelty": 0
+   },
+   "seen": {
+    "design/Design Milk": 8,
+    "design/Dezeen": 10,
+    "design/Wallpaper*": 10,
+    "hyvinvointi/Greater Good": 2,
+    "hyvinvointi/Psyche": 2,
+    "hyvinvointi/The Guardian": 3,
+    "kulttuuri/Helsingin Sanomat": 10,
+    "kulttuuri/The Guardian": 10,
+    "lifestyle/Condé Nast Traveler": 10,
+    "lifestyle/Monocle": 4,
+    "lifestyle/The Guardian": 10,
+    "ravintolat/Eater": 5,
+    "ravintolat/Helsingin Sanomat": 5,
+    "ravintolat/The Guardian": 6,
+    "tapahtumat/Linked Events": 40,
+    "trendit/Harper's Bazaar": 10,
+    "trendit/The Guardian": 3,
+    "trendit/Vogue": 10
+   },
+   "chosen": [
+    {
+     "section": "design",
+     "label": "Design",
+     "feed": "design/Design Milk",
+     "source": "Design Milk",
+     "title": "Kynttilänjalan monet muodot brooklynilaisessa galleriassa",
+     "url": "https://design-milk.com/candelabra-palaver-piscina/",
+     "why": "Valitsin näyttelyn, koska se tarkastelee marraskuun arkeen kuuluvaa pientä esinettä käsityön ja muotoilun näkökulmasta.",
+     "considered": 3,
+     "available": 28
+    },
+    {
+     "section": "lifestyle",
+     "label": "Lifestyle",
+     "feed": "lifestyle/The Guardian",
+     "source": "The Guardian",
+     "title": "Kattovalon sammuttaminen muuttaa talvikodin tunnelman",
+     "url": "https://www.theguardian.com/lifeandstyle/2026/nov/20/interiors-hacks-for-cosy-winter-home",
+     "why": "Aihe liittyy suoraan pohjoisen marraskuun asumiseen ja tarjoaa käytännöllisen näkökulman kodin ilmapiiriin ilman ostokehotuksia.",
+     "considered": 3,
+     "available": 24
+    },
+    {
+     "section": "hyvinvointi",
+     "label": "Hyvinvointi",
+     "feed": "hyvinvointi/Greater Good",
+     "source": "Greater Good",
+     "title": "Vanhemmuus muovaa muistoja omasta lapsuudesta",
+     "url": "https://greatergood.berkeley.edu/article/item/how_becoming_a_parent_can_change_your_memories_of_your_own_parents",
+     "why": "Artikkeli käsittelee ihmissuhteita ja muistia psykologisesti kestävältä pohjalta muita vaihtoehtoja syvällisemmin.",
+     "considered": 3,
+     "available": 7
+    },
+    {
+     "section": "ravintolat",
+     "label": "Ravintolat",
+     "feed": "ravintolat/Helsingin Sanomat",
+     "source": "Helsingin Sanomat",
+     "title": "Basbasin neljäs ravintola avautui Siltasaareen",
+     "url": "https://www.hs.fi/ruoka/art-2000012347758.html",
+     "why": "Paikallinen ravintolauutinen tunnetulta helsinkiläiseltä tekijältä on lukijalle välittömimmin hyödyllinen.",
+     "considered": 3,
+     "available": 16
+    },
+    {
+     "section": "trendit",
+     "label": "Trendit",
+     "feed": "trendit/The Guardian",
+     "source": "The Guardian",
+     "title": "Perhosaihe palasi muotiin ajan hengen tulkkina",
+     "url": "https://www.theguardian.com/fashion/2026/nov/19/beautiful-insects-how-the-butterfly-became-a-symbol-of-gen-z-girlhood-defiance-and-anxiety",
+     "why": "Juttu erottuu ostoslistojen joukosta analysoimalla pukeutumisen kulttuurihistoriaa ja symboliikkaa.",
+     "considered": 3,
+     "available": 23
+    },
+    {
+     "section": "kulttuuri",
+     "label": "Kulttuuri",
+     "feed": "kulttuuri/Helsingin Sanomat",
+     "source": "Helsingin Sanomat",
+     "title": "Vuosisadan takainen matkakirja katsoo Budapestia uteliaasti",
+     "url": "https://www.hs.fi/kulttuuri/art-2000012332373.html",
+     "why": "Unkarilaisen klassikkokirjailijan esittely tuo painokseen kirjallista syvyyttä ja rauhallisen vastapainon uutisvirralle.",
+     "considered": 3,
+     "available": 20
+    },
+    {
+     "section": "tapahtumat",
+     "label": "Tapahtumat",
+     "feed": "tapahtumat/Linked Events",
+     "source": "Helsinki Contemporary",
+     "title": "Lasiveistoksia ja ikebanaa Helsinki Contemporaryssa",
+     "url": "https://helsinkicontemporary.com/exhibitions/mitate",
+     "why": "Lasitaiteen ja japanilaisen asetelmaperinteen kohtaaminen vastaa suoraan lukijan kiinnostukseen muotoa, materiaaleja ja kuvataidetta kohtaan.",
+     "considered": 3,
+     "available": 40
+    }
+   ],
+   "critique": {
+    "tone": 2,
+    "politics": 0,
+    "outlook": 1,
+    "scope": 0,
+    "depth": 0,
+    "novelty": -1,
+    "factuality": 10,
+    "freshness": 6,
+    "cliches": [
+     "tuorein silmin",
+     "ajan hengen tulkkina",
+     "nykyhetken tuntojen peiliksi"
+    ],
+    "regions": {
+     "finland": 2,
+     "europe": 2,
+     "north_america": 2,
+     "elsewhere": 1
+    },
+    "critique": "Vältä toistamasta edellisen numeron aiheita, sillä Basbasin uusi ravintola ja Helsinki Contemporaryn näyttely olivat mukana jo eilen.",
+    "model": "gemini-3.8-flash"
+   }
   }
  ]
 }
