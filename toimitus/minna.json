@@ -852,6 +852,166 @@
     "critique": "Vältä toistamasta edellisen numeron aiheita, kuten Brooklynin kynttilänjalkoja ja Helsinki Contemporaryn näyttelyä, jotta katsaus pysyy aidosti tuoreena.",
     "model": "gemini-3.8-flash"
    }
+  },
+  {
+   "number": 11,
+   "slot": "2026-11-22T06:00",
+   "weather": "Open-Meteo",
+   "written": "2026-11-22T20:47",
+   "model": "gemini-4-carbon",
+   "seconds": 175,
+   "tokens": {
+    "in": 15610,
+    "out": 2083,
+    "thinking": 12711
+   },
+   "knobs": {
+    "tone": 0,
+    "politics": 0,
+    "outlook": 0,
+    "scope": 0,
+    "depth": 0,
+    "novelty": 0
+   },
+   "seen": {
+    "design/Design Milk": 3,
+    "design/Dezeen": 10,
+    "design/Wallpaper*": 10,
+    "hyvinvointi/The Guardian": 1,
+    "hyvinvointi/The New York Times": 7,
+    "kauneus/Allure": 10,
+    "kauneus/The Guardian": 5,
+    "kauneus/Vogue": 7,
+    "kulttuuri/Helsingin Sanomat": 10,
+    "kulttuuri/The Guardian": 10,
+    "lifestyle/Condé Nast Traveler": 10,
+    "lifestyle/Monocle": 3,
+    "lifestyle/The Guardian": 10,
+    "ravintolat/Eater": 1,
+    "ravintolat/Helsingin Sanomat": 3,
+    "ravintolat/The Guardian": 6,
+    "tapahtumat/Linked Events": 35,
+    "tyyli/AnOther": 2,
+    "tyyli/The Guardian": 2,
+    "tyyli/Vogue": 10
+   },
+   "chosen": [
+    {
+     "section": "tyyli",
+     "label": "Tyyli",
+     "feed": "tyyli/AnOther",
+     "source": "AnOther",
+     "title": "Matthieu Blazy tulkitsee uudelleen Chanelin klassikkolaukun",
+     "item_title": "AnOther Loves: A Party Purse",
+     "url": "https://www.anothermag.com/fashion-beauty/17646/another-loves-a-party-purse-chanel",
+     "why": "Chanelin klassikkolaukun materiaalinen uudelleentulkinta edustaa selkeää suunnittelijanäkemystä ja käsityötaitoa ilman ostokehotuksia tai punaisen maton kohinaa.",
+     "considered": 3,
+     "available": 14
+    },
+    {
+     "section": "kauneus",
+     "label": "Kauneus",
+     "feed": "kauneus/Allure",
+     "source": "Allure",
+     "title": "Kaksoispuhdistus siirtyy kasvoilta vartalon iholle",
+     "item_title": "Should You Double-Cleanse Your Body? Pros Weigh In.",
+     "url": "https://www.allure.com/story/should-i-double-cleanse-body",
+     "why": "Aineiston ainoa aidosti hoitotekniikkaan ja raaka-aineiden yhteispeliin keskittyvä aihe tarjousalennusten ja julkkisjuorujen joukossa.",
+     "considered": 3,
+     "available": 22
+    },
+    {
+     "section": "design",
+     "label": "Design",
+     "feed": "design/Wallpaper*",
+     "source": "Wallpaper*",
+     "title": "Augusta Hoffman sisusti Danielle Frankelin uuden lippulaivatilan",
+     "item_title": "At Danielle Frankel's breathtaking new bridal flagship, vows come with wows",
+     "url": "https://www.wallpaper.com/design-interiors/interior-design/danielle-frankel-new-york",
+     "why": "Kohde yhdistää sisustusarkkitehtuurin, historiallisen rakennusperinnön ja vaatesuunnittelun tavalla, joka puhuttelee lukijan makua suoraan.",
+     "considered": 3,
+     "available": 23
+    },
+    {
+     "section": "lifestyle",
+     "label": "Lifestyle",
+     "feed": "lifestyle/The Guardian",
+     "source": "The Guardian",
+     "title": "Vuosikymmenten esineistö punnitsee sukupolvien suhteen tavaraan",
+     "item_title": "Sorting through my mother-in-law’s belongings was heartbreaking. One generation’s treasure is the next’s trash | Emma Beddington",
+     "url": "https://www.theguardian.com/commentisfree/2026/nov/22/sorting-through-mother-in-laws-belongings",
+     "why": "Ajatuksia herättävä ja konkreettinen essee kodin esineistä ja sukupolvien välisestä mausta sopii sunnuntaiaamuun paremmin kuin matkalistat tai alennusoppaat.",
+     "considered": 3,
+     "available": 23
+    },
+    {
+     "section": "hyvinvointi",
+     "label": "Hyvinvointi",
+     "feed": "hyvinvointi/The New York Times",
+     "source": "The New York Times",
+     "title": "Lyhyt lihasharjoitus tukee niskan ryhtiä arjessa",
+     "item_title": "A Short Workout to Strengthen Your Neck",
+     "url": "https://www.nytimes.com/2026/11/21/well/move/neck-strengthening-workout.html",
+     "why": "Käytännöllinen ja fysiologiaan nojaava arjen harjoitus nousee selvästi esiin terveyspolitiikan ja ulkonäköväitteiden keskeltä.",
+     "considered": 2,
+     "available": 8
+    },
+    {
+     "section": "ravintolat",
+     "label": "Ravintolat",
+     "feed": "ravintolat/Helsingin Sanomat",
+     "source": "Helsingin Sanomat",
+     "title": "Arkinen makaronilaatikko muuntuu kolmeksi kotiruoan versioksi",
+     "item_title": "Kotiruoka | Kolme tapaa tehdä hyvä makaronilaatikko",
+     "url": "https://www.hs.fi/ruoka/art-2000012188068.html",
+     "why": "Kotimainen, huolella tehtyyn arkiruokaan keskittyvä juttu palvelee lukijaa suoremmin kuin ulkomaiset matkaoppaat tai alan näpistelyuutiset.",
+     "considered": 3,
+     "available": 10
+    },
+    {
+     "section": "kulttuuri",
+     "label": "Kulttuuri",
+     "feed": "kulttuuri/Helsingin Sanomat",
+     "source": "Helsingin Sanomat",
+     "title": "Lilli Paasikiven festivaali ja Klaus Mäkelä palkittiin",
+     "item_title": "Musiikki | Kansainvälinen ooppera­palkinto Lilli Paasi­kiven festivaalille",
+     "url": "https://www.hs.fi/kulttuuri/art-2000012428643.html",
+     "why": "Merkittävä kansainvälinen kulttuuriuutinen, jolla on vahva suomalainen kytkös ja korkea taiteellinen painoarvo.",
+     "considered": 3,
+     "available": 20
+    },
+    {
+     "section": "tapahtumat",
+     "label": "Tapahtumat",
+     "feed": "tapahtumat/Linked Events",
+     "source": "Musiikkitalo",
+     "title": "Sebastian Fagerlundin urkukonserton kantaesitys soi Musiikkitalossa",
+     "item_title": "HKO - Ad Spiram",
+     "url": "https://helsinginkaupunginorkesteri.fi/fi/node/4302",
+     "why": "Kotimaisen eturivin säveltäjän urkukonserton kantaesitys huippusolistin tulkitsemana on tulevan viikon taiteellisesti painavin tapahtuma Helsingissä.",
+     "considered": 3,
+     "available": 35
+    }
+   ],
+   "critique": {
+    "tone": 2,
+    "politics": 0,
+    "outlook": 1,
+    "scope": 0,
+    "depth": 0,
+    "novelty": -1,
+    "factuality": 10,
+    "freshness": 10,
+    "cliches": [],
+    "regions": {
+     "finland": 3,
+     "europe": 3,
+     "north_america": 2,
+     "elsewhere": 0
+    },
+    "critique": "Ravintolat-otsikon alla esitelty kotiruoka-artikkeli kannattaa jatkossa nimetä osuvammin vaikkapa Ruoka-kategoriaksi, jotta otsikko vastaa suoraan uutisen sisältöä.",
+    "model": "gemini-3.8-flash"
+   }
   }
  ]
 }
