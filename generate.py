@@ -41,7 +41,7 @@ import time
 import urllib.parse
 import urllib.request
 from concurrent.futures import ThreadPoolExecutor
-from dataclasses import dataclass
+from dataclasses import dataclass, replace
 from datetime import date, datetime, timedelta, timezone
 from email.message import EmailMessage
 from email.utils import formataddr
@@ -202,33 +202,33 @@ MINNA = Profile(
     email_to_env="MINNA_EMAIL",
     palette=ROSA,
     links=True,
-    window_hours=72,  # design, food and culture do not go stale overnight
+    window_hours=72,  # style, design, food and culture do not go stale overnight
     min_sections=5,
     sections=(
+        Section("tyyli", "Tyyli", (
+            Feed("Vogue", "https://www.vogue.com/feed/fashion/rss"),
+            Feed("The Guardian", "https://www.theguardian.com/fashion/rss"),
+            Feed("AnOther", "https://www.anothermag.com/rss"),
+        )),
+        Section("kauneus", "Kauneus", (
+            Feed("Vogue", "https://www.vogue.com/feed/beauty/rss"),
+            Feed("Allure", "https://www.allure.com/feed/rss"),
+            Feed("The Guardian", "https://www.theguardian.com/fashion/beauty/rss"),
+        )),
         Section("design", "Design", (
             Feed("Dezeen", "https://www.dezeen.com/feed/"),
             Feed("Wallpaper*", "https://www.wallpaper.com/rss"),
             Feed("Design Milk", "https://design-milk.com/feed/"),
         )),
-        Section("lifestyle", "Lifestyle", (
-            Feed("Monocle", "https://monocle.com/feed/"),
-            Feed("The Guardian", "https://www.theguardian.com/lifeandstyle/rss"),
-            Feed("Condé Nast Traveler", "https://www.cntraveler.com/feed/rss"),
-        )),
         Section("hyvinvointi", "Hyvinvointi", (
             Feed("Psyche", "https://psyche.co/feed"),
-            Feed("Greater Good", "https://greatergood.berkeley.edu/site/rss/articles"),
+            Feed("The New York Times", "https://rss.nytimes.com/services/xml/rss/nyt/Well.xml", paywalled=True),
             Feed("The Guardian", "https://www.theguardian.com/lifeandstyle/health-and-wellbeing/rss"),
         )),
         Section("ravintolat", "Ravintolat", (
             Feed("Helsingin Sanomat", "https://www.hs.fi/rss/ruoka.xml", paywalled=True),
             Feed("Eater", "https://www.eater.com/rss/index.xml"),
             Feed("The Guardian", "https://www.theguardian.com/food/rss"),
-        )),
-        Section("trendit", "Trendit", (
-            Feed("Vogue", "https://www.vogue.com/feed/rss"),
-            Feed("The Guardian", "https://www.theguardian.com/fashion/rss"),
-            Feed("Harper's Bazaar", "https://www.harpersbazaar.com/rss/all.xml/"),
         )),
         Section("kulttuuri", "Kulttuuri", (
             Feed("Helsingin Sanomat", "https://www.hs.fi/rss/kulttuuri.xml", paywalled=True),
@@ -238,17 +238,22 @@ MINNA = Profile(
     ),
     reader=(
         "You are the sole editor of Tyyni (\"still, calm\"), a one-page sheet with exactly one reader: a woman in "
-        "Olari, Espoo, with a refined eye for design, interiors, food, wellbeing and culture. The sheet appears "
-        "once a day, at 6.00; she reads it once, slowly, with her first coffee, and then closes the screen. Your "
-        "task is to bring her beauty, inspiration and calm: a handful of things worth her attention today, and why."
+        "Olari, Espoo, who loves beauty and style above all – fashion, beauty, interiors and design – and cares "
+        "about food, wellbeing and culture. The sheet appears once a day, at 6.00; she reads it once, slowly, "
+        "with her first coffee, and then closes the screen. Your task is to bring her beauty, style, inspiration "
+        "and calm: a handful of things worth her attention today, and why."
     ),
     principles=(
+        "- Beauty and style are the heart of this sheet. In fashion and beauty, choose what has an idea behind it: "
+        "a designer's or maker's vision, craft and materials, a new collection or atelier, ingredients and "
+        "technique, a ritual, or a real shift in taste – described for what it is, never as something to buy. "
+        "Let the synthesis, the reflection and the closing line carry the same eye for beauty.\n"
         "- Beauty and substance over noise. Choose what is genuinely well made, thoughtful, new or useful: "
         "architecture, interiors and objects with craft; restaurants and food made with care; wellbeing grounded "
         "in research; culture worth leaving the house for; trends that say something about how people want to live.\n"
         "- Leave out entirely: war, politics, economy, markets, technology business, crime, disasters and health "
         "scares. Leave out too: celebrity gossip, red carpets, shopping lists and gift guides, sales pressure, "
-        "diet culture, body ideals and influencer hype.\n"
+        "diet culture, body ideals, anti-ageing pressure and influencer hype.\n"
         "- Prefer what is near: Helsinki and Espoo first when the material allows, then the Nordic countries, then the world.\n"
         "- Write to her as an equal: no clichés about women, no \"hemmottele itseäsi\", no self-care jargon."
     ),
@@ -260,7 +265,9 @@ MINNA = Profile(
     ),
     signal_why="why it is worth her attention – what makes it beautiful, interesting or useful in her own life",
     signal_notes=(
-        "For ravintolat, prefer restaurant and food news from Helsinki or Espoo when there is any. For tapahtumat, "
+        "For tyyli and kauneus, write with a stylist's precision: name the house, the designer or the ingredient, "
+        "the colour, the cut, the texture. For ravintolat, prefer restaurant and food news from Helsinki or Espoo "
+        "when there is any. For tapahtumat, "
         "choose the one event in Helsinki or Espoo that a person with her taste would most enjoy, and name the "
         "venue and the day and time in the first sentence."
     ),
@@ -332,14 +339,18 @@ def default_settings() -> dict:
         for key, profile in PROFILES.items()}}
 
 
-def validate_settings(raw) -> dict:
-    """Complete, checked settings from untrusted input; ValueError on anything unexpected."""
+def validate_settings(raw, strict: bool = True) -> dict:
+    """Complete, checked settings from untrusted input; ValueError on anything
+    unexpected. Not strict, sources and profiles that no longer exist (a feed
+    was dropped) are skipped instead, so an old file keeps its other choices."""
     if not isinstance(raw, dict) or not isinstance(raw.get("profiles"), dict):
         raise ValueError("settings need a 'profiles' object")
     settings = default_settings()
     for key, given in raw["profiles"].items():
         if key not in PROFILES or not isinstance(given, dict):
-            raise ValueError(f"unknown profile: {key}")
+            if strict:
+                raise ValueError(f"unknown profile: {key}")
+            continue
         mine = settings["profiles"][key]
         for knob, value in (given.get("knobs") or {}).items():
             if knob not in KNOBS:
@@ -349,7 +360,9 @@ def validate_settings(raw) -> dict:
             mine["knobs"][knob] = value
         for source, weight in (given.get("sources") or {}).items():
             if source not in mine["sources"]:
-                raise ValueError(f"unknown source: {key}/{source}")
+                if strict:
+                    raise ValueError(f"unknown source: {key}/{source}")
+                continue
             if weight not in WEIGHTS:
                 raise ValueError(f"{key}/{source} must be one of {', '.join(WEIGHTS)}")
             mine["sources"][source] = weight
@@ -361,7 +374,7 @@ def validate_settings(raw) -> dict:
 
 def load_settings() -> dict:
     try:
-        return validate_settings(json.loads(settings_file().read_text(encoding="utf-8")))
+        return validate_settings(json.loads(settings_file().read_text(encoding="utf-8")), strict=False)
     except FileNotFoundError:
         return default_settings()
     except (ValueError, json.JSONDecodeError) as error:
@@ -557,6 +570,7 @@ class Item:
     paywalled: bool = False
     feed: str = ""        # source key, e.g. "design/Dezeen"
     boosted: bool = False
+    repeat: bool = False  # already published in a recent edition
 
 
 TAG = re.compile(r"<[^>]+>")
@@ -784,6 +798,7 @@ Language
 Write every field in Finnish: natural, precise, contemporary written Finnish of the kind the best Finnish long-form editors produce. Use Finnish syntax, not translated English. Prefer a good Finnish word to an anglicism, an active verb to a stack of nouns, and avoid officialese such as "toimesta", "omata", "suorittaa" used as a filler verb, or "tulee olemaan". Keep proper names in their original form. Use Finnish typography: ”lainausmerkit”, ajatusviiva (–), kellonajat pisteellä (8.06), desimaalipilkku, miinusmerkki (−3°)."""
 
 SHARED_PRINCIPLES = """\
+- Never retell a story a recent edition already told: the briefing lists their headlines. Items marked (julkaistu jo) have appeared before; choose one only if its domain offers nothing else, and then say what is new about it.
 - Use only the material provided for events. Never invent facts, figures, quotes or outcomes. Widely known background may frame an item, but must not add new news. If an item is thin, write less rather than guess.
 - Calm and exact. No hype, no alarm, no exclamation marks, no emoji, no markdown, no rhetorical questions."""
 
@@ -863,7 +878,7 @@ def edition_schema(profile: Profile) -> dict:
 
 
 def briefing(profile: Profile, today: datetime, edition_hour: int, weather: Weather,
-             news: dict[str, list[Item]]) -> str:
+             news: dict[str, list[Item]], recent_headlines: list[str] | None = None) -> str:
     if weather.now is None:
         sky = ["- sääpalvelut eivät vastanneet: kuvaa vain valoa ja vuodenaikaa, älä mainitse lämpötilaa tai sadetta"]
     else:
@@ -894,9 +909,14 @@ def briefing(profile: Profile, today: datetime, edition_hour: int, weather: Weat
             lines.append("(ei aineistoa tänään)")
         for item in items:
             text = f"{'★ ' if item.boosted else ''}[{item.id}] {item.source} · {item.when} – {item.title}"
+            if item.repeat:
+                text += " (julkaistu jo)"
             if item.summary:
                 text += f" – {item.summary}"
             lines.append(text)
+    if recent_headlines:
+        lines += ["", "Viimeaikaisten numeroiden otsikot – älä kerro näitä aiheita uudelleen:"]
+        lines += [f"- {headline}" for headline in recent_headlines]
     return "\n".join(lines)
 
 
@@ -1220,6 +1240,34 @@ def read_log(profile: Profile) -> dict:
     return {"profile": profile.key, "editions": []}
 
 
+RECENT_EDITIONS = 14   # a story chosen within this many editions is not offered again
+
+
+def fingerprint(title: str) -> str:
+    return re.sub(r"\W+", "", title.lower())
+
+
+def recent_stories(profile: Profile) -> tuple[set[str], set[str], list[str]]:
+    """Links and titles of stories chosen in recent editions, and the latest
+    editions' headlines, from the editor's log."""
+    editions = read_log(profile)["editions"][-RECENT_EDITIONS:]
+    urls = {c["url"] for e in editions for c in e.get("chosen", []) if c.get("url")}
+    titles = {fingerprint(c["item_title"]) for e in editions for c in e.get("chosen", []) if c.get("item_title")}
+    headlines = [c["title"] for e in editions[-5:] for c in e.get("chosen", []) if c.get("title")]
+    return urls, titles, headlines
+
+
+def set_aside_repeats(news: dict[str, list[Item]], urls: set[str], titles: set[str]) -> dict[str, list[Item]]:
+    """Drop stories recent editions already told. A domain left with nothing new
+    keeps its old items, marked, so the writer still has something to stand on."""
+    fresh_news = {}
+    for key, items in news.items():
+        seen = [i for i in items if (i.url and i.url in urls) or fingerprint(i.title) in titles]
+        fresh = [i for i in items if i not in seen]
+        fresh_news[key] = fresh or [replace(i, repeat=True) for i in seen]
+    return fresh_news
+
+
 def log_edition(profile: Profile, record: dict) -> None:
     log = read_log(profile)
     log["editions"] = (log["editions"] + [record])[-DESK_HISTORY:]
@@ -1243,6 +1291,7 @@ def edition_record(profile: Profile, page: dict[str, str], current: datetime, ne
             "feed": item.feed if item else "",
             "source": item.source if item else "",
             "title": tidy(signal["title"]).rstrip("."),
+            "item_title": item.title if item else "",
             "url": item.url if item else "",
             "why": SPACE.sub(" ", str(signal.get("why", ""))).strip(),
             "considered": len([c for c in signal.get("considered") or [] if c in items]),
@@ -1314,12 +1363,17 @@ def publish(profile: Profile) -> int:
 
     settings = load_settings()["profiles"][profile.key]
     news = fetch_news(profile, settings["sources"])
+    urls, titles, headlines = recent_stories(profile)
+    offered = sum(len(items) for items in news.values())
+    news = set_aside_repeats(news, urls, titles)
+    print(f"  {offered - sum(len(items) for items in news.values())} stories set aside as already told")
     for section in profile.sections:
-        print(f"  {section.key:<15} {len(news[section.key]):>3} items")
+        print(f"  {section.key:<15} {len(news[section.key]):>3} items"
+              + (" (all already told)" if any(i.repeat for i in news[section.key]) else ""))
     if sum(1 for items in news.values() if items) < profile.min_sections:
         raise RuntimeError("too few sources answered; keeping the previous edition")
 
-    edition, meta = compose(profile, briefing(profile, today, current.hour, weather, news), settings)
+    edition, meta = compose(profile, briefing(profile, today, current.hour, weather, news, headlines), settings)
     page, signals = build_page(profile, today, current, upcoming, edition_number(profile),
                                weather, news, edition)
     profile.output.parent.mkdir(parents=True, exist_ok=True)

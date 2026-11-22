@@ -7,7 +7,7 @@ It comes in more than one edition, one per reader:
 | Edition | Page | Content | Appears | Notification |
 | --- | --- | --- | --- | --- |
 | Main | **https://bjorkmeister.github.io/zen/** | Technology, economy, design, media, sport | 06.00 | GitHub issue thread |
-| Minna | **https://bjorkmeister.github.io/zen/minna/** | Design, lifestyle, wellbeing, restaurants, trends, culture, events in Helsinki and Espoo | 06.00 | An HTML email |
+| Minna | **https://bjorkmeister.github.io/zen/minna/** | Style, beauty, design, wellbeing, restaurants, culture, events in Helsinki and Espoo | 06.00 | An HTML email |
 
 <p align="center">
   <img width="400" alt="An edition of Tyyni" src="https://github.com/user-attachments/assets/92652652-fe40-4539-972b-14fbdcf9d1a0" />
@@ -34,6 +34,8 @@ If an edition fails, nothing is published for it and its previous edition stays 
 | `.github/workflows/editor_settings.yml` | Saves the editor's desk settings from an issue |
 | `toimitus/` | The editor's desk page, its settings and each edition's log |
 | `index.html`, `minna/index.html` | The current editions, written by the workflow |
+
+A story told in either edition is not offered again for two weeks: each run sets aside the links and titles the editor's log shows were chosen recently, and gives the writer the latest headlines to avoid.
 
 Every edition is numbered (*N:o 1, N:o 2, …*). Each page records its own number in a hidden tag, and the next run adds one to it. Only published editions are counted, so a failed run doesn't skip a number. To start an edition's count again from N:o 1, delete its `index.html`.
 

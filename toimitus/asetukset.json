@@ -37,21 +37,21 @@
     "design/Design Milk": "normaali",
     "design/Dezeen": "normaali",
     "design/Wallpaper*": "normaali",
-    "hyvinvointi/Greater Good": "normaali",
     "hyvinvointi/Psyche": "normaali",
     "hyvinvointi/The Guardian": "normaali",
+    "hyvinvointi/The New York Times": "normaali",
+    "kauneus/Allure": "normaali",
+    "kauneus/The Guardian": "normaali",
+    "kauneus/Vogue": "normaali",
     "kulttuuri/Helsingin Sanomat": "normaali",
     "kulttuuri/The Guardian": "normaali",
-    "lifestyle/Condé Nast Traveler": "normaali",
-    "lifestyle/Monocle": "normaali",
-    "lifestyle/The Guardian": "normaali",
     "ravintolat/Eater": "normaali",
     "ravintolat/Helsingin Sanomat": "normaali",
     "ravintolat/The Guardian": "normaali",
     "tapahtumat/Linked Events": "normaali",
-    "trendit/Harper's Bazaar": "normaali",
-    "trendit/The Guardian": "normaali",
-    "trendit/Vogue": "normaali"
+    "tyyli/AnOther": "normaali",
+    "tyyli/The Guardian": "normaali",
+    "tyyli/Vogue": "normaali"
    }
   }
  }
