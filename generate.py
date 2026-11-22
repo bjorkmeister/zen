@@ -220,6 +220,11 @@ MINNA = Profile(
             Feed("Wallpaper*", "https://www.wallpaper.com/rss"),
             Feed("Design Milk", "https://design-milk.com/feed/"),
         )),
+        Section("lifestyle", "Lifestyle", (
+            Feed("Monocle", "https://monocle.com/feed/"),
+            Feed("The Guardian", "https://www.theguardian.com/lifeandstyle/rss"),
+            Feed("Condé Nast Traveler", "https://www.cntraveler.com/feed/rss"),
+        )),
         Section("hyvinvointi", "Hyvinvointi", (
             Feed("Psyche", "https://psyche.co/feed"),
             Feed("The New York Times", "https://rss.nytimes.com/services/xml/rss/nyt/Well.xml", paywalled=True),

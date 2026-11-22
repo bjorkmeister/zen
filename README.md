@@ -7,7 +7,7 @@ It comes in more than one edition, one per reader:
 | Edition | Page | Content | Appears | Notification |
 | --- | --- | --- | --- | --- |
 | Main | **https://bjorkmeister.github.io/zen/** | Technology, economy, design, media, sport | 06.00 | GitHub issue thread |
-| Minna | **https://bjorkmeister.github.io/zen/minna/** | Style, beauty, design, wellbeing, restaurants, culture, events in Helsinki and Espoo | 06.00 | An HTML email |
+| Minna | **https://bjorkmeister.github.io/zen/minna/** | Style, beauty, design, lifestyle, wellbeing, restaurants, culture, events in Helsinki and Espoo | 06.00 | An HTML email |
 
 <p align="center">
   <img width="400" alt="An edition of Tyyni" src="https://github.com/user-attachments/assets/92652652-fe40-4539-972b-14fbdcf9d1a0" />
