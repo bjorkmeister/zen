@@ -711,6 +711,147 @@
     "critique": "Vältä toistamasta edellisen numeron aiheita, sillä Basbasin uusi ravintola ja Helsinki Contemporaryn näyttely olivat mukana jo eilen.",
     "model": "gemini-3.8-flash"
    }
+  },
+  {
+   "number": 10,
+   "slot": "2026-11-22T06:00",
+   "weather": "Open-Meteo",
+   "written": "2026-11-22T06:35",
+   "model": "gemini-4-carbon",
+   "seconds": 151,
+   "tokens": {
+    "in": 14723,
+    "out": 1903,
+    "thinking": 9930
+   },
+   "knobs": {
+    "tone": 0,
+    "politics": 0,
+    "outlook": 0,
+    "scope": 0,
+    "depth": 0,
+    "novelty": 0
+   },
+   "seen": {
+    "design/Design Milk": 5,
+    "design/Dezeen": 10,
+    "design/Wallpaper*": 10,
+    "hyvinvointi/Greater Good": 1,
+    "hyvinvointi/Psyche": 1,
+    "hyvinvointi/The Guardian": 2,
+    "kulttuuri/Helsingin Sanomat": 10,
+    "kulttuuri/The Guardian": 10,
+    "lifestyle/Condé Nast Traveler": 10,
+    "lifestyle/Monocle": 3,
+    "lifestyle/The Guardian": 10,
+    "ravintolat/Eater": 1,
+    "ravintolat/Helsingin Sanomat": 5,
+    "ravintolat/The Guardian": 9,
+    "tapahtumat/Linked Events": 39,
+    "trendit/Harper's Bazaar": 10,
+    "trendit/The Guardian": 4,
+    "trendit/Vogue": 10
+   },
+   "chosen": [
+    {
+     "section": "design",
+     "label": "Design",
+     "feed": "design/Design Milk",
+     "source": "Design Milk",
+     "title": "Kynttilänjalan uudet muodot brooklynilaisessa galleriassa",
+     "url": "https://design-milk.com/candelabra-palaver-piscina/",
+     "why": "Näyttely tarkastelee marraskuun arkeen kuuluvaa esinettä tuoreesta muotoilullisesta kulmasta toisin kuin lahjalistat tai kaupalliset koosteet.",
+     "considered": 3,
+     "available": 25
+    },
+    {
+     "section": "lifestyle",
+     "label": "Lifestyle",
+     "feed": "lifestyle/The Guardian",
+     "source": "The Guardian",
+     "title": "Käsin ommellut vaatteet vetävät uutta sukupolvea",
+     "url": "https://www.theguardian.com/fashion/ng-interactive/2026/nov/22/australian-fashion-artisans-who-still-make-clothes-by-hand",
+     "why": "Käsityötaidon säilyminen pukeutumisessa on painavampi elämäntapahuomio kuin alennusmyyntivinkit tai julkisuuden henkilöiden kuulumiset.",
+     "considered": 3,
+     "available": 23
+    },
+    {
+     "section": "hyvinvointi",
+     "label": "Hyvinvointi",
+     "feed": "hyvinvointi/Psyche",
+     "source": "Psyche",
+     "title": "Purettu lapsuudenkoti ja varuillaanolosta luopuminen",
+     "url": "https://psyche.co/turning-points/the-house-my-father-built-was-resilient-and-rickety-like-him",
+     "why": "Aineiston niukasta valikoimasta essee tarjoaa syvällisimmän näkökulman kodin, arkkitehtuurin ja mielenrauhan yhteyteen.",
+     "considered": 2,
+     "available": 4
+    },
+    {
+     "section": "ravintolat",
+     "label": "Ravintolat",
+     "feed": "ravintolat/Helsingin Sanomat",
+     "source": "Helsingin Sanomat",
+     "title": "Mandariini ja piparkakkumauste uudistavat tiikerikakun",
+     "url": "https://www.hs.fi/ruoka/art-2000012426202.html",
+     "why": "Kotimainen leivontaidea sopii marraskuun sunnuntaiaamuun luontevammin kuin ulkomaiset kiitospäiväjutut tai uutinen ravintolavarkauksista.",
+     "considered": 3,
+     "available": 15
+    },
+    {
+     "section": "trendit",
+     "label": "Trendit",
+     "feed": "trendit/The Guardian",
+     "source": "The Guardian",
+     "title": "Oopperatakki nousee talvella untuvatakin rinnalle",
+     "url": "https://www.theguardian.com/fashion/2026/nov/20/fashion-world-singing-opera-coats-trend",
+     "why": "Artikkeli avaa talvipukeutumisen materiaalista muutosta ja itse tekemisen ilmiötä ilman pintapuolista julkkisseurantaa.",
+     "considered": 3,
+     "available": 24
+    },
+    {
+     "section": "kulttuuri",
+     "label": "Kulttuuri",
+     "feed": "kulttuuri/Helsingin Sanomat",
+     "source": "Helsingin Sanomat",
+     "title": "Dima Slobodeniouk tuo Brittenin klassikon tähän aikaan",
+     "url": "https://www.hs.fi/kulttuuri/art-2000012401624.html",
+     "why": "Kotimaisen oopperan uuden ylikapellimestarin kausi ja ajankohtainen klassikkotulkinta ovat merkittävämpi kulttuuritapaus kuin viihdeuutiset.",
+     "considered": 3,
+     "available": 20
+    },
+    {
+     "section": "tapahtumat",
+     "label": "Tapahtumat",
+     "feed": "tapahtumat/Linked Events",
+     "source": "Helsinki Contemporary",
+     "title": "Ikebanaa ja lasiveistoksia Helsinki Contemporaryssa",
+     "url": "https://helsinkicontemporary.com/exhibitions/mitate",
+     "why": "Lasitaiteen ja japanilaisen kukka-asettelun kohtaaminen keskustagalleriassa vastaa lukijan estetiikkaa täsmällisemmin kuin muut alkuviikon tapahtumat.",
+     "considered": 3,
+     "available": 39
+    }
+   ],
+   "critique": {
+    "tone": 1,
+    "politics": 0,
+    "outlook": 1,
+    "scope": 0,
+    "depth": 0,
+    "novelty": -1,
+    "factuality": 10,
+    "freshness": 7,
+    "cliches": [
+     "Kylmän kauden kynnyksellä"
+    ],
+    "regions": {
+     "finland": 3,
+     "europe": 0,
+     "north_america": 2,
+     "elsewhere": 2
+    },
+    "critique": "Vältä toistamasta edellisen numeron aiheita, kuten Brooklynin kynttilänjalkoja ja Helsinki Contemporaryn näyttelyä, jotta katsaus pysyy aidosti tuoreena.",
+    "model": "gemini-3.8-flash"
+   }
   }
  ]
 }

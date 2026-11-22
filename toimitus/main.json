@@ -669,6 +669,115 @@
     "critique": "Painopistettä voisi seuraavassa numerossa siirtää hieman pois Yhdysvaltain suuryhtiöistä ja politiikasta kohti laajempaa eurooppalaista tai kotimaista näkökulmaa.",
     "model": "gemini-3.8-flash"
    }
+  },
+  {
+   "number": 16,
+   "slot": "2026-11-22T06:00",
+   "weather": "Open-Meteo",
+   "written": "2026-11-22T06:33",
+   "model": "gemini-4-carbon",
+   "seconds": 91,
+   "tokens": {
+    "in": 6214,
+    "out": 1515,
+    "thinking": 5804
+   },
+   "knobs": {
+    "tone": 0,
+    "politics": 0,
+    "outlook": 0,
+    "scope": 0,
+    "depth": 0,
+    "novelty": 0
+   },
+   "seen": {
+    "design/Dezeen": 3,
+    "design/Wallpaper*": 8,
+    "huippu_urheilu/BBC Sport": 10,
+    "huippu_urheilu/The Athletic": 10,
+    "media/The Guardian": 3,
+    "media/The New Yorker": 4,
+    "talous/Bloomberg": 7,
+    "talous/Financial Times": 9,
+    "tekniikka/Ars Technica": 10,
+    "tekniikka/Hacker News": 7
+   },
+   "chosen": [
+    {
+     "section": "tekniikka",
+     "label": "Tekniikka",
+     "feed": "tekniikka/Ars Technica",
+     "source": "Ars Technica",
+     "title": "Meta arvioi uudelleen vuoden 2030 päästötavoitteensa",
+     "url": "https://arstechnica.com/ai/2026/11/meta-reconsiders-2030-net-zero-goal-amid-record-emissions-from-ai-data-centers/",
+     "why": "Tekoälyinvestointien törmääminen päästörajoihin ja ilmastotavoitteiden joustaminen on rakenteellisesti painavin uutinen.",
+     "considered": 3,
+     "available": 17
+    },
+    {
+     "section": "talous",
+     "label": "Talous",
+     "feed": "talous/Bloomberg",
+     "source": "Bloomberg",
+     "title": "Yhdysvaltain sirurajoitukset koettelevat Kaakkois-Aasian konesaleja",
+     "url": "https://www.bloomberg.com/news/newsletters/2026-11-21/new-us-ai-chip-rules-against-china-threaten-pain-for-southeast-asia",
+     "why": "Uutinen osoittaa, miten teknologiapakotteiden kerrannaisvaikutukset ulottuvat kolmansien maiden fyysiseen infrastruktuuriin.",
+     "considered": 3,
+     "available": 16
+    },
+    {
+     "section": "design",
+     "label": "Design",
+     "feed": "design/Dezeen",
+     "source": "Dezeen",
+     "title": "Brittitoimisto ZHA sai valmiiksi Rabatin kansallisteatterin",
+     "url": "https://www.dezeen.com/2026/11/21/zha-theatre-royal-de-rabat-morroco/",
+     "why": "Julkinen kulttuuri-infrastruktuuri on ohuesta arkkitehtuuri- ja muotoiluaineistosta ainoa laajempaa yhteiskunnallista merkitystä kantava hanke.",
+     "considered": 3,
+     "available": 11
+    },
+    {
+     "section": "media",
+     "label": "Media",
+     "feed": "media/The Guardian",
+     "source": "The Guardian",
+     "title": "Irtisanoutumiset herättävät huolta Telegraphin suunnasta",
+     "url": "https://www.theguardian.com/media/2026/nov/21/telegraph-departures-direction-axel-springer-ownership",
+     "why": "Omistajanvaihdoksen jälkeinen strateginen tyhjiö havainnollistaa perinteisen uutismedian pääoma- ja ohjausongelmia.",
+     "considered": 3,
+     "available": 7
+    },
+    {
+     "section": "huippu_urheilu",
+     "label": "Huippu-urheilu",
+     "feed": "huippu_urheilu/The Athletic",
+     "source": "The Athletic",
+     "title": "Kansas City Current voitti ensimmäisen NWSL-mestaruutensa",
+     "url": "https://www.nytimes.com/athletic/7801489/2026/11/21/nwsl-championship-current-spirit-result-score/",
+     "why": "Mestaruuden ratkeaminen kuusi vuotta toimineelle seuralle on ottelutuloksista koostuvan urheiluaineiston selkein rakenteellinen uutinen.",
+     "considered": 3,
+     "available": 20
+    }
+   ],
+   "critique": {
+    "tone": 2,
+    "politics": 0,
+    "outlook": -1,
+    "scope": 1,
+    "depth": 1,
+    "novelty": -1,
+    "factuality": 10,
+    "freshness": 7,
+    "cliches": [],
+    "regions": {
+     "finland": 0,
+     "europe": 2,
+     "north_america": 2,
+     "elsewhere": 2
+    },
+    "critique": "Vältä toistamasta edellisen numeron pääuutista lähes identtisellä otsikolla ja näkökulmalla, kuten Metan päästötavoitteiden kohdalla nyt kävi.",
+    "model": "gemini-3.8-flash"
+   }
   }
  ]
 }
