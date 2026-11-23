@@ -1012,6 +1012,169 @@
     "critique": "Ravintolat-otsikon alla esitelty kotiruoka-artikkeli kannattaa jatkossa nimetä osuvammin vaikkapa Ruoka-kategoriaksi, jotta otsikko vastaa suoraan uutisen sisältöä.",
     "model": "gemini-3.8-flash"
    }
+  },
+  {
+   "number": 12,
+   "slot": "2026-11-23T06:00",
+   "weather": "Open-Meteo",
+   "written": "2026-11-23T06:38",
+   "model": "gemini-4-carbon",
+   "seconds": 219,
+   "tokens": {
+    "in": 15558,
+    "out": 2208,
+    "thinking": 15960
+   },
+   "knobs": {
+    "tone": 0,
+    "politics": 0,
+    "outlook": 0,
+    "scope": 0,
+    "depth": 0,
+    "novelty": 0
+   },
+   "seen": {
+    "design/Design Milk": 2,
+    "design/Dezeen": 10,
+    "design/Wallpaper*": 10,
+    "hyvinvointi/The Guardian": 1,
+    "hyvinvointi/The New York Times": 6,
+    "kauneus/Allure": 9,
+    "kauneus/The Guardian": 5,
+    "kauneus/Vogue": 7,
+    "kulttuuri/Helsingin Sanomat": 9,
+    "kulttuuri/The Guardian": 10,
+    "lifestyle/Condé Nast Traveler": 10,
+    "lifestyle/Monocle": 4,
+    "lifestyle/The Guardian": 10,
+    "ravintolat/Eater": 1,
+    "ravintolat/Helsingin Sanomat": 2,
+    "ravintolat/The Guardian": 6,
+    "tapahtumat/Linked Events": 37,
+    "tyyli/AnOther": 1,
+    "tyyli/The Guardian": 2,
+    "tyyli/Vogue": 10
+   },
+   "chosen": [
+    {
+     "section": "tyyli",
+     "label": "Tyyli",
+     "feed": "tyyli/Vogue",
+     "source": "Vogue",
+     "title": "Pukusuunnittelu tekee 2000-luvun alusta epookin",
+     "item_title": "‘The Body’ Costumes Make for the Ultimate 2000s Period Piece",
+     "url": "https://www.vogue.com/article/the-body-costume-designer-mirren-gordon-crozier-interview",
+     "why": "Pukusuunnittelija Mirren Gordon-Crozierin näkemys lähimenneisyyden pukeutumisesta tarjoaa ajatuksellisen näkökulman muotiin julkkisseurannan, punaisen maton ja jo käsitellyn oopperatakki-ilmiön sijaan.",
+     "considered": 3,
+     "available": 13
+    },
+    {
+     "section": "kauneus",
+     "label": "Kauneus",
+     "feed": "kauneus/Vogue",
+     "source": "Vogue",
+     "title": "Klassinen polkkatukka ja tummat huulet palaavat",
+     "item_title": "Beauty Marks: The Best Beauty Looks of the Week",
+     "url": "https://www.vogue.com/slideshow/best-beauty-looks-of-the-week-november-21",
+     "why": "Voguen katsaus hiusleikkauksiin ja huulisävyihin keskittyy muotoon ja ilmeeseen keskellä alennusmyyntilistojen ja kauneusoperaatiouutisten täyttämää tarjontaa.",
+     "considered": 3,
+     "available": 21
+    },
+    {
+     "section": "design",
+     "label": "Design",
+     "feed": "design/Wallpaper*",
+     "source": "Wallpaper*",
+     "title": "Hiilletty puu ja valo kohtaavat kalifornialaiskodissa",
+     "item_title": "Step inside this charred timber house, a warm family retreat in the Los Angeles Hills",
+     "url": "https://www.wallpaper.com/architecture/residential/charred-timber-house-nustudio-los-angeles-hills-usa",
+     "why": "Nustudion suunnittelema puutalo tuo esiin luonnonmateriaalin, valon ja asumisen mittakaavan lahjalistojen sekä messuennakoiden ohi.",
+     "considered": 3,
+     "available": 22
+    },
+    {
+     "section": "lifestyle",
+     "label": "Lifestyle",
+     "feed": "lifestyle/Monocle",
+     "source": "Monocle",
+     "title": "Pariisi etsii tilaa kehätiensä ulkopuolelta",
+     "item_title": "How can Paris broaden its horizons? By looking beyond its ring-road border",
+     "url": "https://monocle.com/affairs/urbanism/paris-projects-to-improve-the-suburbs/",
+     "why": "Monoclen katsaus Pariisin esikaupunkien teollisuusperinnön uusiokäyttöön avaa näkymän eurooppalaiseen kaupunkikehitykseen alennusmyyntien ja sotauutisten sijaan.",
+     "considered": 3,
+     "available": 24
+    },
+    {
+     "section": "hyvinvointi",
+     "label": "Hyvinvointi",
+     "feed": "hyvinvointi/The New York Times",
+     "source": "The New York Times",
+     "title": "Persoonallisuushäiriön hoidon uudistaja Marsha Linehan on kuollut",
+     "item_title": "Marsha Linehan Has Died. She Transformed Treatment for Personality Disorder.",
+     "url": "https://www.nytimes.com/2026/11/19/well/mind/marsha-linehan-dead.html",
+     "why": "Marsha Linehanin tutkimustyö mielenterveyden hoidossa on tieteellisesti painavin ja inhimillisesti kestävin aihe tämän päivän hyvinvointiaineistossa.",
+     "considered": 3,
+     "available": 7
+    },
+    {
+     "section": "ravintolat",
+     "label": "Ravintolat",
+     "feed": "ravintolat/The Guardian",
+     "source": "The Guardian",
+     "title": "Wienin kokit puolustavat kiireetöntä kahvilakulttuuria",
+     "item_title": "Vienna on a plate: a food lover’s guide to the Austrian capital",
+     "url": "https://www.theguardian.com/food/2026/nov/21/vienna-on-a-plate-a-food-lovers-guide-to-the-austrian-capital",
+     "why": "Wieniläiskokkien näkökulma kaupungin ruoka- ja kahvilaperinteeseen tarjoaa enemmän sisältöä kuin nimeämättömän viinin kritiikki tai uutinen ravintolanäpistelyistä.",
+     "considered": 3,
+     "available": 9
+    },
+    {
+     "section": "kulttuuri",
+     "label": "Kulttuuri",
+     "feed": "kulttuuri/Helsingin Sanomat",
+     "source": "Helsingin Sanomat",
+     "title": "Kirjasto oli Petri Tammiselle pelosta vapaa tila",
+     "item_title": "60-vuotias | Petri Tamminen yritti päästä eroon häpeän tunteesta häpeä­kurssilla – Pieleen meni",
+     "url": "https://www.hs.fi/popkulttuuri/art-2000012423271.html",
+     "why": "Kotimaisen eturivin prosaistin merkkipäivähaastattelu ulkopuolisuudesta ja kirjaston suojasta puhuttelee lähempää ja syvemmin kuin kansainväliset viihdeuutiset.",
+     "considered": 3,
+     "available": 19
+    },
+    {
+     "section": "tapahtumat",
+     "label": "Tapahtumat",
+     "feed": "tapahtumat/Linked Events",
+     "source": "Arkkitehtuuri- ja designmuseo",
+     "title": "Ilmaisilta avaa Arkkitehtuuri- ja designmuseon tiistaina",
+     "item_title": "Ilmaisilta",
+     "url": "https://admuseo.fi/nayttelyt-ja-tapahtumat/",
+     "why": "Arkkitehtuuri- ja designmuseon ilmaisilta osuu suoraan lukijan keskeisimpään kiinnostuksen kohteeseen ja sopii luontevasti tiistain alkuiltaan.",
+     "considered": 3,
+     "available": 37
+    }
+   ],
+   "critique": {
+    "tone": 1,
+    "politics": 0,
+    "outlook": 1,
+    "scope": 0,
+    "depth": 1,
+    "novelty": -1,
+    "factuality": 10,
+    "freshness": 10,
+    "cliches": [
+     "vanhan koulukunnan",
+     "vuoropuhelu"
+    ],
+    "regions": {
+     "finland": 2,
+     "europe": 2,
+     "north_america": 3,
+     "elsewhere": 1
+    },
+    "critique": "Lopetuskappaleen toisteiset tunnelmoinnit lämpimistä kupeista voisi korvata konkreettisemmalla ajatuksella tai jättää kokonaan pois tekstin jäntevyyden säilyttämiseksi.",
+    "model": "gemini-3.8-flash"
+   }
   }
  ]
 }

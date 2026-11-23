@@ -778,6 +778,121 @@
     "critique": "Vältä toistamasta edellisen numeron pääuutista lähes identtisellä otsikolla ja näkökulmalla, kuten Metan päästötavoitteiden kohdalla nyt kävi.",
     "model": "gemini-3.8-flash"
    }
+  },
+  {
+   "number": 17,
+   "slot": "2026-11-23T06:00",
+   "weather": "Open-Meteo",
+   "written": "2026-11-23T06:34",
+   "model": "gemini-4-carbon",
+   "seconds": 213,
+   "tokens": {
+    "in": 6210,
+    "out": 1805,
+    "thinking": 15596
+   },
+   "knobs": {
+    "tone": 0,
+    "politics": 0,
+    "outlook": 0,
+    "scope": 0,
+    "depth": 0,
+    "novelty": 0
+   },
+   "seen": {
+    "design/Dezeen": 4,
+    "design/Wallpaper*": 6,
+    "huippu_urheilu/BBC Sport": 10,
+    "huippu_urheilu/The Athletic": 10,
+    "media/The Guardian": 2,
+    "media/The New Yorker": 1,
+    "talous/Bloomberg": 8,
+    "talous/Financial Times": 8,
+    "talous/The Economist": 2,
+    "tekniikka/Ars Technica": 2,
+    "tekniikka/Hacker News": 8
+   },
+   "chosen": [
+    {
+     "section": "tekniikka",
+     "label": "Tekniikka",
+     "feed": "tekniikka/Hacker News",
+     "source": "Hacker News",
+     "title": "Toyota, Nissan ja Honda vakioivat ajoneuvojen osia",
+     "item_title": "Toyota, Nissan, and Honda to standardize parts to lower costs",
+     "url": "https://www.caranddriver.com/news/a74490092/toyota-nissan-honda-standardize-parts-lower-costs/",
+     "why": "Kolmen suuren autonvalmistajan päätös vakioida komponentteja on painavin rakenteellinen siirto päivän teknologia-aineistossa, joka koostuu muuten pääosin yksittäisistä projekteista, arvioista ja keskusteluavauksista.",
+     "considered": 3,
+     "available": 10
+    },
+    {
+     "section": "talous",
+     "label": "Talous",
+     "feed": "talous/Financial Times",
+     "source": "Financial Times",
+     "title": "Drooni-isku osui pakotteiden alaiseen venäläisalukseen Suomen lähellä",
+     "item_title": "Sanctioned Russian ship attacked by drones near Finland",
+     "url": "https://www.ft.com/content/2c959c95-97a5-4957-9eb2-8436c34ba374?syn-25a6b1a6=1",
+     "why": "Suomen välittömässä läheisyydessä tapahtunut isku pakotteiden alaiseen rahtilaivaan muuttaa suoraan lähialueen merellistä turvallisuus- ja kauppapoliittista riskiympäristöä, kun taas teknologiaosakkeiden laskua ja Nvidian johtajakysymystä on käsitelty jo aiemmissa numeroissa.",
+     "considered": 3,
+     "available": 18
+    },
+    {
+     "section": "design",
+     "label": "Design",
+     "feed": "design/Dezeen",
+     "source": "Dezeen",
+     "title": "Sharjahin arkkitehtuuritriennaalin kupolit piirtävät ohjukset yötaivaalle",
+     "item_title": "Domes depict constellations of missiles in the night sky at Sharjah Architecture Triennial",
+     "url": "https://www.dezeen.com/2026/11/22/after-night-there-is-nothing-sharjah-architecture-triennial/",
+     "why": "Sharjahin triennaalin tilateos kytkee arkkitehtuurin laajempaan ilmatilan ja infrastruktuurin turvallisuusmurrokseen muuten kevyessä aineistossa, jota hallitsevat lahjalistat ja yksittäiset sisustuskohteet.",
+     "considered": 3,
+     "available": 10
+    },
+    {
+     "section": "media",
+     "label": "Media",
+     "feed": "media/The Guardian",
+     "source": "The Guardian",
+     "title": "Yhdysvaltain konservatiivimedia punnitsee suhdettaan Trumpin liikkeeseen",
+     "item_title": "Conservative media weighs its future as cracks emerge in Trump’s movement",
+     "url": "https://www.theguardian.com/us-news/2026/nov/22/conservative-media-trump-midterm-elections-results",
+     "why": "Konservatiivimedian suunnanmuutoskeskustelu paljastaa poliittisen vallan ja kaupallisen mediamallin välisen rakenteellisen riippuvuuden selvästi syvemmin kuin henkilöhaastattelu tai elokuva-arvio.",
+     "considered": 2,
+     "available": 3
+    },
+    {
+     "section": "huippu_urheilu",
+     "label": "Huippu-urheilu",
+     "feed": "huippu_urheilu/BBC Sport",
+     "source": "BBC Sport",
+     "title": "Yhdistynyt kuningaskunta isännöi naisten MM-jalkapalloa vuonna 2035",
+     "item_title": "Fifa to confirm UK as host for 2035 Women's World Cup",
+     "url": "https://www.bbc.co.uk/sport/football/articles/cx30g83716lzo?at_medium=RSS&at_campaign=rss",
+     "why": "Vuoden 2035 MM-lopputurnauksen isännyyden vahvistuminen on pitkävaikutteinen instituutio- ja pääomaratkaisu yksittäisten sarjaotteluiden ja pelaajasiirtojen joukossa.",
+     "considered": 3,
+     "available": 20
+    }
+   ],
+   "critique": {
+    "tone": 1,
+    "politics": 0,
+    "outlook": -1,
+    "scope": 1,
+    "depth": 1,
+    "novelty": 0,
+    "factuality": 10,
+    "freshness": 10,
+    "cliches": [],
+    "regions": {
+     "finland": 1,
+     "europe": 1,
+     "north_america": 1,
+     "elsewhere": 2
+    },
+    "critique": "Syntetisoivassa pohdinnassa kannattaa kytkeä teemat useampaan kuin vain kahteen uutissignaaliin kokonaisuuden tasapainottamiseksi.",
+    "model": "gemini-3.8-flash"
+   }
   }
  ]
 }
