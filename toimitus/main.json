@@ -893,6 +893,126 @@
     "critique": "Syntetisoivassa pohdinnassa kannattaa kytkeä teemat useampaan kuin vain kahteen uutissignaaliin kokonaisuuden tasapainottamiseksi.",
     "model": "gemini-3.8-flash"
    }
+  },
+  {
+   "number": 18,
+   "slot": "2026-11-24T06:00",
+   "weather": "MET Norway",
+   "written": "2026-11-24T06:34",
+   "model": "gemini-4-carbon",
+   "seconds": 195,
+   "tokens": {
+    "in": 7888,
+    "out": 1750,
+    "thinking": 11156
+   },
+   "knobs": {
+    "tone": 0,
+    "politics": 0,
+    "outlook": 0,
+    "scope": 0,
+    "depth": 0,
+    "novelty": 0
+   },
+   "seen": {
+    "design/Dezeen": 8,
+    "design/Wallpaper*": 9,
+    "huippu_urheilu/BBC Sport": 10,
+    "huippu_urheilu/The Athletic": 10,
+    "media/Nieman Lab": 2,
+    "media/The Guardian": 3,
+    "media/The New Yorker": 7,
+    "talous/Bloomberg": 10,
+    "talous/Financial Times": 10,
+    "talous/The Economist": 1,
+    "tekniikka/Ars Technica": 10,
+    "tekniikka/Hacker News": 9
+   },
+   "chosen": [
+    {
+     "section": "tekniikka",
+     "label": "Tekniikka",
+     "feed": "tekniikka/Ars Technica",
+     "source": "Ars Technica",
+     "title": "Ilmastokokous COP31 päättyi ilman yhteistä sopimusta",
+     "item_title": "COP31 ends in failure as countries split over fossil fuels, climate finance",
+     "url": "https://arstechnica.com/science/2026/11/cop31-ends-in-failure-as-countries-split-over-fossil-fuels-climate-finance/",
+     "why": "Ilmastoneuvottelujen kariutuminen muuttaa energia- ja teknologiamarkkinoiden sääntely-ympäristöä laajemmin kuin yksittäiset oikeusjutut tai ohjelmistojulkaisut, ja Nvidian johtajakäänne käsitellään kattavamman aineiston turvin talousosiossa.",
+     "considered": 3,
+     "available": 19
+    },
+    {
+     "section": "talous",
+     "label": "Talous",
+     "feed": "talous/Financial Times",
+     "source": "Financial Times",
+     "title": "Nvidia palautti Jensen Huangin toimitusjohtajaksi Trumpin tuella",
+     "item_title": "Nvidia adds nearly $1tn to market value after it reinstates Jensen Huang",
+     "url": "https://www.ft.com/content/08914b05-bbfa-478d-b38a-549acfc1aae6?syn-25a6b1a6=1",
+     "why": "Nvidian hallituksen täyskäännös ja presidentin tuki on markkinavaikutukseltaan sekä yrityshallinnon ennakkotapauksena päivän painavin talousuutinen.",
+     "considered": 3,
+     "available": 21
+    },
+    {
+     "section": "design",
+     "label": "Design",
+     "feed": "design/Dezeen",
+     "source": "Dezeen",
+     "title": "RIBAn puheenjohtaja palasi arkkitehtirekisteriin palauttaakseen ammattinimikkeensä",
+     "item_title": "RIBA president rejoins ARB register to restore architect title",
+     "url": "https://www.dezeen.com/2026/11/23/riba-president-rejoins-arb/",
+     "why": "Ammatillisen kattojärjestön puheenjohtajan paluu viranomaisrekisteriin paljastaa suunnittelualan sääntelyn todellisen valtasuhteen selkeämmin kuin yksittäiset rakennus- tai näyttelykohteet.",
+     "considered": 3,
+     "available": 17
+    },
+    {
+     "section": "media",
+     "label": "Media",
+     "feed": "media/The Guardian",
+     "source": "The Guardian",
+     "title": "Alle puolet brittitalouksista maksaa lupamaksua vuosikymmenen kuluttua",
+     "item_title": "Fewer than half in UK will pay TV licence fee within a decade, report warns",
+     "url": "https://www.theguardian.com/media/2026/nov/23/bbc-tv-licence-fee-spiral-of-decline-report",
+     "why": "Yleisradion rahoituspohjan rakenteellinen mureneminen on mediakentän pitkän aikavälin kannalta merkittävämpi muutos kuin yksittäiset tietovuodot tai vaalikampanjoiden viestintäkeinot.",
+     "considered": 3,
+     "available": 12
+    },
+    {
+     "section": "huippu_urheilu",
+     "label": "Huippu-urheilu",
+     "feed": "huippu_urheilu/BBC Sport",
+     "source": "BBC Sport",
+     "title": "De Bruyne tukee talousrikkomuksista tuomitun Cityn omistajia",
+     "item_title": "De Bruyne's feelings for Man City will 'never change'",
+     "url": "https://www.bbc.co.uk/sport/football/articles/cxq6e9vlp39jo?at_medium=RSS&at_campaign=rss",
+     "why": "Valioliigan taloussääntöjen rikkomustuomion ja tähtipelaajan omistajauskollisuuden välinen asetelma avaa huippu-urheilun valtarakenteita syvemmin kuin yksittäiset ottelutulokset tai pelaajasopimukset.",
+     "considered": 3,
+     "available": 20
+    }
+   ],
+   "critique": {
+    "tone": 2,
+    "politics": 0,
+    "outlook": -1,
+    "scope": 1,
+    "depth": 1,
+    "novelty": 0,
+    "factuality": 10,
+    "freshness": 10,
+    "cliches": [
+     "pitää pintansa",
+     "itseään ruokkivan",
+     "laskukierteeseen"
+    ],
+    "regions": {
+     "finland": 0,
+     "europe": 3,
+     "north_america": 1,
+     "elsewhere": 1
+    },
+    "critique": "Aihevalikoima painottuu liikaa Ison-Britannian sisäisiin instituutioihin, joten maantieteellistä hajontaa kannattaa laajentaa seuraavaan numeroon.",
+    "model": "gemini-3.8-flash"
+   }
   }
  ]
 }

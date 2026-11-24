@@ -1175,6 +1175,168 @@
     "critique": "Lopetuskappaleen toisteiset tunnelmoinnit lämpimistä kupeista voisi korvata konkreettisemmalla ajatuksella tai jättää kokonaan pois tekstin jäntevyyden säilyttämiseksi.",
     "model": "gemini-3.8-flash"
    }
+  },
+  {
+   "number": 13,
+   "slot": "2026-11-24T06:00",
+   "weather": "Open-Meteo",
+   "written": "2026-11-24T06:37",
+   "model": "gemini-4-carbon",
+   "seconds": 152,
+   "tokens": {
+    "in": 15268,
+    "out": 1952,
+    "thinking": 10653
+   },
+   "knobs": {
+    "tone": 0,
+    "politics": 0,
+    "outlook": 0,
+    "scope": 0,
+    "depth": 0,
+    "novelty": 0
+   },
+   "seen": {
+    "design/Design Milk": 2,
+    "design/Dezeen": 10,
+    "design/Wallpaper*": 10,
+    "hyvinvointi/Psyche": 1,
+    "hyvinvointi/The Guardian": 2,
+    "hyvinvointi/The New York Times": 10,
+    "kauneus/Allure": 10,
+    "kauneus/The Guardian": 5,
+    "kauneus/Vogue": 3,
+    "kulttuuri/Helsingin Sanomat": 10,
+    "kulttuuri/The Guardian": 9,
+    "lifestyle/Condé Nast Traveler": 10,
+    "lifestyle/Monocle": 4,
+    "lifestyle/The Guardian": 9,
+    "ravintolat/Helsingin Sanomat": 1,
+    "ravintolat/The Guardian": 5,
+    "tapahtumat/Linked Events": 36,
+    "tyyli/AnOther": 1,
+    "tyyli/The Guardian": 2,
+    "tyyli/Vogue": 10
+   },
+   "chosen": [
+    {
+     "section": "tyyli",
+     "label": "Tyyli",
+     "feed": "tyyli/The Guardian",
+     "source": "The Guardian",
+     "title": "Syötävät veistokset valtaavat muotinäytökset ja messut",
+     "item_title": "Brioche armchairs, butter sculptures and edible chandeliers: meet the new food artists",
+     "url": "https://www.theguardian.com/food/2026/nov/23/brioche-armchairs-butter-sculptures-and-edible-chandeliers-meet-the-new-food-artists",
+     "why": "Ilmiö yhdistää muodin, muotoilun ja ruokataiteen kekseliäästi ilman ostokehotuksia tai julkkisjuoruja.",
+     "considered": 3,
+     "available": 13
+    },
+    {
+     "section": "kauneus",
+     "label": "Kauneus",
+     "feed": "kauneus/Allure",
+     "source": "Allure",
+     "title": "Kun pysyvä laserhoito ei vastaa muuttuvaa makua",
+     "item_title": "What Happens When You Regret Your Laser Hair Removal Choices?",
+     "url": "https://www.allure.com/story/regretting-laser-hair-removal",
+     "why": "Aineiston koostuessa lähes täysin Black Friday -tarjouslistoista ja lahjaoppaista tämä artikkeli tarjoaa aidon näkökulman kauneustoimenpiteiden pysyvyyteen ja maun muuttumiseen.",
+     "considered": 2,
+     "available": 18
+    },
+    {
+     "section": "design",
+     "label": "Design",
+     "feed": "design/Design Milk",
+     "source": "Design Milk",
+     "title": "Käsinmaalatut laatat lainaavat kuvionsa perinteisiltä kankailta",
+     "item_title": "Fireclay Tile Turns Traditional Textiles Into Hand-Painted Tile",
+     "url": "https://design-milk.com/fireclay-tile-idyllwild/",
+     "why": "Kokoelma yhdistää käsityön ja perinteiset tekstiiliaiheet kestävään sisustusmateriaaliin.",
+     "considered": 3,
+     "available": 22
+    },
+    {
+     "section": "lifestyle",
+     "label": "Lifestyle",
+     "feed": "lifestyle/The Guardian",
+     "source": "The Guardian",
+     "title": "Ystävyyssuhteet jäävät helposti työn ja parisuhteen varjoon",
+     "item_title": "Like Prue Leith, I’ve sadly neglected my friendships – but there is hope for us | Emma Beddington",
+     "url": "https://www.theguardian.com/commentisfree/2026/nov/23/prue-leith-young-women-friendship",
+     "why": "Ajatuksia herättävä puheenvuoro aikuisiän ystävyydestä erottuu selkeästi alennuskoodien ja uutiskohinan joukosta.",
+     "considered": 3,
+     "available": 23
+    },
+    {
+     "section": "hyvinvointi",
+     "label": "Hyvinvointi",
+     "feed": "hyvinvointi/The New York Times",
+     "source": "The New York Times",
+     "title": "Ruoasta nauttiminen tukee myös pitkäaikaista hyvinvointia",
+     "item_title": "Eating for Pleasure Doesn’t Need to Stop at the Holidays",
+     "url": "https://www.nytimes.com/2026/11/23/well/eat/food-pleasure-joy-benefits-holidays.html",
+     "why": "Rauhallinen, dieettikulttuurista vapaa näkökulma ruokailoon tukee lukijan arkea ja hyvinvointia.",
+     "considered": 2,
+     "available": 13
+    },
+    {
+     "section": "ravintolat",
+     "label": "Ravintolat",
+     "feed": "ravintolat/The Guardian",
+     "source": "The Guardian",
+     "title": "Ricotta-päärynäkakku ja mantelipuuro yhdistävät Italian ääripäät",
+     "item_title": "A taste of Italy: Alessandro Giannatempo’s recipes for Amalfi-style ricotta and pear cake, and crocodile’s porridge",
+     "url": "https://www.theguardian.com/food/2026/nov/23/italian-dessert-recipes-amalfi-ricotta-pear-cake-crocodiles-porridge-alessandro-giannatempo",
+     "why": "Huolella laaditut sesonkireseptit puhuttelevat estetiikasta ja ruoanlaitosta kiinnostunutta lukijaa enemmän kuin marketin kylkeen avattu siipiravintola.",
+     "considered": 3,
+     "available": 6
+    },
+    {
+     "section": "kulttuuri",
+     "label": "Kulttuuri",
+     "feed": "kulttuuri/Helsingin Sanomat",
+     "source": "Helsingin Sanomat",
+     "title": "Tarmo Peltokoski johtaa Hongkongin filharmonikkoja Musiikkitalossa",
+     "item_title": "Musiikki | ”Jokaisen on pakko tehdä omat virheensä”, sanoo burnoutin kokenut 26-vuotias kapelli­mestari",
+     "url": "https://www.hs.fi/kulttuuri/art-2000012287573.html",
+     "why": "Paikallisesti merkittävä konsertti Musiikkitalossa yhdistyy avoimeen puheenvuoroon nuoren taiteilijan jaksamisesta.",
+     "considered": 3,
+     "available": 19
+    },
+    {
+     "section": "tapahtumat",
+     "label": "Tapahtumat",
+     "feed": "tapahtumat/Linked Events",
+     "source": "Cirko - Uuden Sirkuksen Keskus / Maneesi",
+     "title": "Nykytanssi ja akrobatia kohtaavat Cirkon Maneesissa",
+     "item_title": "Kinetic Orchestra: Silence",
+     "url": "https://cirko.fi/esitys/kinetic-orchestra/",
+     "why": "Fyysinen ja keskittynyt näyttämöteos Cirkon Maneesissa tarjoaa vahvan visuaalisen kulttuuri-illan tälle tiistaille.",
+     "considered": 3,
+     "available": 36
+    }
+   ],
+   "critique": {
+    "tone": 1,
+    "politics": 0,
+    "outlook": 1,
+    "scope": 0,
+    "depth": 0,
+    "novelty": 0,
+    "factuality": 10,
+    "freshness": 10,
+    "cliches": [
+     "kokonaisvaltaista hyvinvointia"
+    ],
+    "regions": {
+     "finland": 2,
+     "europe": 3,
+     "north_america": 2,
+     "elsewhere": 1
+    },
+    "critique": "Tapahtumaosion päivämäärä kannattaa tarkistaa huolellisesti, sillä marraskuun 24. päivä ei aina osu tiistaille ilman kalenterivirhettä.",
+    "model": "gemini-3.8-flash"
+   }
   }
  ]
 }
