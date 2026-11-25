@@ -1133,6 +1133,124 @@
     "critique": "Aihevalikoima painottuu liikaa Yhdysvaltoihin, joten seuraavaan numeroon kannattaa tuoda enemmän eurooppalaisia tai pohjoismaisia uutisaiheita tasapainottamaan kokonaisuutta.",
     "model": "gemini-3.8-flash"
    }
+  },
+  {
+   "number": 20,
+   "slot": "2026-11-25T06:00",
+   "weather": "MET Norway",
+   "written": "2026-11-25T08:46",
+   "model": "gemini-3.8-flash",
+   "seconds": 40,
+   "tokens": {
+    "in": 7010,
+    "out": 1626,
+    "thinking": 1522
+   },
+   "knobs": {
+    "tone": 0,
+    "politics": 0,
+    "outlook": 0,
+    "scope": 0,
+    "depth": 0,
+    "novelty": 0
+   },
+   "seen": {
+    "design/Dezeen": 9,
+    "design/Wallpaper*": 10,
+    "huippu_urheilu/BBC Sport": 9,
+    "huippu_urheilu/The Athletic": 10,
+    "media/Nieman Lab": 3,
+    "media/The Guardian": 6,
+    "media/The New Yorker": 3,
+    "talous/Bloomberg": 10,
+    "talous/Financial Times": 9,
+    "talous/The Economist": 2,
+    "tekniikka/Ars Technica": 9,
+    "tekniikka/Hacker News": 4
+   },
+   "chosen": [
+    {
+     "section": "tekniikka",
+     "label": "Tekniikka",
+     "feed": "tekniikka/Ars Technica",
+     "source": "Ars Technica",
+     "title": "Tidal poistaa kymmeniä miljoonia tekoälykappaleita palvelustaan",
+     "item_title": "Tidal announces ban on AI-generated music; 27 million tracks will be deleted",
+     "url": "https://arstechnica.com/ai/2026/11/tidal-will-ban-fully-ai-generated-music-on-december-9/",
+     "why": "Harvinainen ja rakenteellisesti merkittävä linjanveto alustataloudessa, jossa sisältövolyymin sijaan aletaan suojella arvoa ja artistien ansaintalogiikkaa.",
+     "considered": 3,
+     "available": 13
+    },
+    {
+     "section": "talous",
+     "label": "Talous",
+     "feed": "talous/Financial Times",
+     "source": "Financial Times",
+     "title": "Yhdysvallat valmistelee laajoja uusia tulleja liittolaisilleen",
+     "item_title": "Trump readies raft of new tariffs on major economies",
+     "url": "https://www.ft.com/content/335b593d-1478-4550-ab0a-71fec6280eb0?syn-25a6b1a6=1",
+     "why": "Makrotalouden merkittävin rakenteellinen riski, joka kohdistuu suoraan eurooppalaiseen ja aasialaiseen teollisuusperustaan.",
+     "considered": 3,
+     "available": 21
+    },
+    {
+     "section": "design",
+     "label": "Design",
+     "feed": "design/Wallpaper*",
+     "source": "Wallpaper*",
+     "title": "Kanal muuttaa autotehtaan Brysselin uudeksi museokeskukseksi",
+     "item_title": "Kanal, Europe’s ‘largest museum development’, opens and flaunts its beautiful imperfection",
+     "url": "https://www.wallpaper.com/architecture/public-buildings/kanal-brussels-opens-belgium",
+     "why": "Mittakaavaltaan mantereen suurin suojellun teollisuusrakenteen uudelleenkäyttöhanke, joka kiteyttää modernin tilasuunnittelun suunnan.",
+     "considered": 3,
+     "available": 19
+    },
+    {
+     "section": "media",
+     "label": "Media",
+     "feed": "media/The Guardian",
+     "source": "The Guardian",
+     "title": "BBC siirtää lastenohjelmiaan Netflixin jakeluun",
+     "item_title": "BBC’s preschool shows to be made available in CBeebies hub on Netflix",
+     "url": "https://www.theguardian.com/media/2026/nov/24/bbc-preschool-shows-cbeebies-hub-netflix",
+     "why": "Perinteisen julkisen palvelun jakelustrategian ratkaiseva muutos, jossa oma alusta alistetaan globaalin jätin peitinkasvuksi.",
+     "considered": 3,
+     "available": 12
+    },
+    {
+     "section": "huippu_urheilu",
+     "label": "Huippu-urheilu",
+     "feed": "huippu_urheilu/BBC Sport",
+     "source": "BBC Sport",
+     "title": "Jannik Sinner polvileikkaukseen ennen Australian avoimia",
+     "item_title": "'I miss being on court' - Sinner has 'minor surgery' on knee",
+     "url": "https://www.bbc.co.uk/sport/tennis/articles/cxlylr3p4q8mo?at_medium=RSS&at_campaign=rss",
+     "why": "Lajin terävimmän kärjen pelaajan yllättävä loukkaantuminen vaikuttaa tulevan kauden koko kilpailuasetelmaan.",
+     "considered": 3,
+     "available": 19
+    }
+   ],
+   "critique": {
+    "tone": 2,
+    "politics": 0,
+    "outlook": 0,
+    "scope": 1,
+    "depth": 1,
+    "novelty": 0,
+    "factuality": 10,
+    "freshness": 10,
+    "cliches": [
+     "kruununjalokiviään"
+    ],
+    "regions": {
+     "finland": 0,
+     "europe": 3,
+     "north_america": 2,
+     "elsewhere": 0
+    },
+    "critique": "Tuokaa mukaan ainakin yksi suoraan Suomea tai Pohjoismaita koskeva uutissignaali, jotta katsauksen maantieteellinen ankkurointi kotimaahan säilyy myös säähavainnon ulkopuolella.",
+    "model": "gemini-3.8-flash"
+   }
   }
  ]
 }
