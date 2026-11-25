@@ -21,7 +21,7 @@ on:
   workflow_dispatch:   # "Run workflow" by hand publishes immediately
     inputs:
       profiles:
-        description: "Editions to write now (space-separated: main minna); leave empty to redeploy the site only"
+        description: "Editions to write now (space-separated: main minna), or none to redeploy the site only"
         default: "main"
         required: false
 
@@ -46,6 +46,8 @@ jobs:
           REQUESTED: ${{ inputs.profiles }}
         run: |
           if [ "$EVENT" = "workflow_dispatch" ]; then
+            # GitHub fills an empty field with the default, so "none" asks for a redeploy only
+            if [ "$REQUESTED" = "none" ]; then REQUESTED=""; fi
             echo "profiles=$REQUESTED" >> "$GITHUB_OUTPUT"
           else
             python3 generate.py --due

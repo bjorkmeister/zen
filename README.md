@@ -115,7 +115,7 @@ Each edition is a `Profile` in `generate.py`: its sources, its editorial voice, 
 | The models | `MODELS` in `generate.py`, tried in order |
 | The look | The colour and font tokens at the top of `template.html`, and the inline styles in `email.html` |
 
-The workflow doesn't fire at exact times. At every look-in, `generate.py --due` (which knows Helsinki time, including summer time) lists the editions missing from their pages, and only those are written. A look-in that finds nothing due stops within seconds; one that finds an edition missing publishes it, so a lost run delays an edition instead of skipping it. Running the workflow by hand writes the editions you name, whatever the time; leave the field empty to redeploy the site without a new edition. A change to `toimitus/index.html` is deployed on its own.
+The workflow doesn't fire at exact times. At every look-in, `generate.py --due` (which knows Helsinki time, including summer time) lists the editions missing from their pages, and only those are written. A look-in that finds nothing due stops within seconds; one that finds an edition missing publishes it, so a lost run delays an edition instead of skipping it. Running the workflow by hand writes the editions you name, whatever the time; write `none` to redeploy the site without a new edition. A change to `toimitus/index.html` is deployed on its own.
 
 The pages are written in Finnish. To change the language, rewrite `LANGUAGE` and the profiles' prompts, the labels in `template.html` and `email.html`, and the Finnish day and month names in `generate.py`.
 
