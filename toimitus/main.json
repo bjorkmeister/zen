@@ -1013,6 +1013,126 @@
     "critique": "Aihevalikoima painottuu liikaa Ison-Britannian sisäisiin instituutioihin, joten maantieteellistä hajontaa kannattaa laajentaa seuraavaan numeroon.",
     "model": "gemini-3.8-flash"
    }
+  },
+  {
+   "number": 19,
+   "slot": "2026-11-25T06:00",
+   "weather": "MET Norway",
+   "written": "2026-11-25T06:36",
+   "model": "gemini-3.8-flash",
+   "seconds": 63,
+   "tokens": {
+    "in": 7248,
+    "out": 1690,
+    "thinking": 4928
+   },
+   "knobs": {
+    "tone": 0,
+    "politics": 0,
+    "outlook": 0,
+    "scope": 0,
+    "depth": 0,
+    "novelty": 0
+   },
+   "seen": {
+    "design/Dezeen": 10,
+    "design/Wallpaper*": 10,
+    "huippu_urheilu/BBC Sport": 9,
+    "huippu_urheilu/The Athletic": 10,
+    "media/Nieman Lab": 4,
+    "media/The Guardian": 6,
+    "media/The New Yorker": 3,
+    "talous/Bloomberg": 10,
+    "talous/Financial Times": 8,
+    "talous/The Economist": 2,
+    "tekniikka/Ars Technica": 10,
+    "tekniikka/Hacker News": 5
+   },
+   "chosen": [
+    {
+     "section": "tekniikka",
+     "label": "Tekniikka",
+     "feed": "tekniikka/Ars Technica",
+     "source": "Ars Technica",
+     "title": "Microsoft uudistaa pilvi-infrastruktuurinsa vikatilanteen jälkeen",
+     "item_title": "Microsoft's historic cloud outage exposed an engineering “fog of war”",
+     "url": "https://arstechnica.com/gadgets/2026/11/microsofts-historic-cloud-outage-exposed-an-engineering-fog-of-war/",
+     "why": "Pilvikäyttökatkon sisäinen arviointi paljastaa kriittisen infrastruktuurin järjestelmätason haavoittuvuudet paremmin kuin yksittäiset tuotejulkistukset.",
+     "considered": 3,
+     "available": 15
+    },
+    {
+     "section": "talous",
+     "label": "Talous",
+     "feed": "talous/Financial Times",
+     "source": "Financial Times",
+     "title": "Yhdysvallat tuomitsi Huawein pitkässä oikeusprosessissa",
+     "item_title": "Huawei convicted in US trial that exposed corporate espionage and sanctions evasion",
+     "url": "https://www.ft.com/content/6c64b8b8-531c-4eea-8fd0-90c4c4967ab9?syn-25a6b1a6=1",
+     "why": "Oikeudenkäynnin päätös vahvistaa pysyvän rakenteellisen jakolinjan maailmanlaajuisessa teleteknologiassa.",
+     "considered": 3,
+     "available": 20
+    },
+    {
+     "section": "design",
+     "label": "Design",
+     "feed": "design/Dezeen",
+     "source": "Dezeen",
+     "title": "London Museum muuttaa historialliseen teurastamohalliin",
+     "item_title": "London Museum brings \"back a bit of London's heritage\" with Smithfield Market opening",
+     "url": "https://www.dezeen.com/2026/11/24/london-museum-stanton-williams-asif-khan-julian-harrap-architects/",
+     "why": "Smithfieldin hallien uudelleenkäyttö on Euroopan merkittävimpiä ja arkkitehtonisesti vaativimpia suojellun rakennuskannan muutosprojekteja.",
+     "considered": 3,
+     "available": 20
+    },
+    {
+     "section": "media",
+     "label": "Media",
+     "feed": "media/Nieman Lab",
+     "source": "Nieman Lab",
+     "title": "Wall Street Journal sulki ovensa tekoälyboteilta",
+     "item_title": "The Wall Street Journal joins a growing list of publishers disallowing bots by default",
+     "url": "https://www.niemanlab.org/2026/11/the-wall-street-journal-joins-growing-list-of-publishers-disallowing-bots-by-default/",
+     "why": "Yhden maailman johtavan talousmedian suojautuminen bottiliikenteeltä merkitsee käännekohtaa avoimen verkon ja tekoälykoulutuksen suhteessa.",
+     "considered": 3,
+     "available": 13
+    },
+    {
+     "section": "huippu_urheilu",
+     "label": "Huippu-urheilu",
+     "feed": "huippu_urheilu/The Athletic",
+     "source": "The Athletic",
+     "title": "Ottelumanipulaation tutkinta etenee Yhdysvaltain baseball-liigassa",
+     "item_title": "MLB pitch-rigging trial: Wife of Guardians pitcher told him to 'delete all evidence'",
+     "url": "https://www.nytimes.com/athletic/7810569/2026/11/24/mlb-pitch-rigging-trial-luis-ortiz-delete-evidence/",
+     "why": "Oikeudenkäynti tuo näkyväksi digitaalisen urheiluvedonlyönnin ja ammattiurheilun lahjomattomuuden välisen syvenevän ristiriidan.",
+     "considered": 3,
+     "available": 19
+    }
+   ],
+   "critique": {
+    "tone": 1,
+    "politics": 0,
+    "outlook": -1,
+    "scope": 1,
+    "depth": 1,
+    "novelty": -1,
+    "factuality": 9,
+    "freshness": 10,
+    "cliches": [
+     "sulki ovensa",
+     "näyttää suuntaa",
+     "hengitys höyryää vaimeasti"
+    ],
+    "regions": {
+     "finland": 0,
+     "europe": 1,
+     "north_america": 3,
+     "elsewhere": 1
+    },
+    "critique": "Aihevalikoima painottuu liikaa Yhdysvaltoihin, joten seuraavaan numeroon kannattaa tuoda enemmän eurooppalaisia tai pohjoismaisia uutisaiheita tasapainottamaan kokonaisuutta.",
+    "model": "gemini-3.8-flash"
+   }
   }
  ]
 }

@@ -1337,6 +1337,170 @@
     "critique": "Tapahtumaosion päivämäärä kannattaa tarkistaa huolellisesti, sillä marraskuun 24. päivä ei aina osu tiistaille ilman kalenterivirhettä.",
     "model": "gemini-3.8-flash"
    }
+  },
+  {
+   "number": 14,
+   "slot": "2026-11-25T06:00",
+   "weather": "Open-Meteo",
+   "written": "2026-11-25T06:42",
+   "model": "gemini-3.8-flash",
+   "seconds": 57,
+   "tokens": {
+    "in": 14491,
+    "out": 2003,
+    "thinking": 4034
+   },
+   "knobs": {
+    "tone": 0,
+    "politics": 0,
+    "outlook": 0,
+    "scope": 0,
+    "depth": 0,
+    "novelty": 0
+   },
+   "seen": {
+    "design/Design Milk": 4,
+    "design/Dezeen": 10,
+    "design/Wallpaper*": 10,
+    "hyvinvointi/Psyche": 2,
+    "hyvinvointi/The Guardian": 3,
+    "hyvinvointi/The New York Times": 10,
+    "kauneus/Allure": 6,
+    "kauneus/The Guardian": 5,
+    "kauneus/Vogue": 3,
+    "kulttuuri/Helsingin Sanomat": 10,
+    "kulttuuri/The Guardian": 10,
+    "lifestyle/Condé Nast Traveler": 10,
+    "lifestyle/Monocle": 5,
+    "lifestyle/The Guardian": 10,
+    "ravintolat/Eater": 1,
+    "ravintolat/Helsingin Sanomat": 1,
+    "ravintolat/The Guardian": 4,
+    "tapahtumat/Linked Events": 37,
+    "tyyli/AnOther": 3,
+    "tyyli/The Guardian": 2,
+    "tyyli/Vogue": 10
+   },
+   "chosen": [
+    {
+     "section": "tyyli",
+     "label": "Tyyli",
+     "feed": "tyyli/Vogue",
+     "source": "Vogue",
+     "title": "Tilavat arkilaukut palauttavat käytännöllisyyden muotiin",
+     "item_title": "The Big Bag Theory: 2026 Was for the Schleppers",
+     "url": "https://www.vogue.com/slideshow/2026-big-bag-revival-celebrity-style",
+     "why": "Aihe käsittelee aitoa muutosta käyttötavoissa ja muodin suhteessa naisen arkeen.",
+     "considered": 3,
+     "available": 15
+    },
+    {
+     "section": "kauneus",
+     "label": "Kauneus",
+     "feed": "kauneus/Vogue",
+     "source": "Vogue",
+     "title": "Pohjameikki suosii nyt ihon omaa kuultoa",
+     "item_title": "The New Rules of Complexion Makeup",
+     "url": "https://www.vogue.com/article/complexion-makeup-tints-beauty-board",
+     "why": "Uutinen vahvistaa vapauttavaa siirtymää kohti luonnollista ihonhoitoa ja keveämpää kauneusihannetta.",
+     "considered": 3,
+     "available": 14
+    },
+    {
+     "section": "design",
+     "label": "Design",
+     "feed": "design/Wallpaper*",
+     "source": "Wallpaper*",
+     "title": "Brasilialainen asuinarkkitehtuuri luottaa kolmeen perusmateriaaliin",
+     "item_title": "Casa Bloco is a Brazilian house reduced to its bare essentials and immersed in greenery",
+     "url": "https://www.wallpaper.com/architecture/residential/casa-bloco-brazilian-house",
+     "why": "Kohde edustaa puhtaimmillaan materiaalitietoista, hiljaista arkkitehtuuria.",
+     "considered": 3,
+     "available": 24
+    },
+    {
+     "section": "lifestyle",
+     "label": "Lifestyle",
+     "feed": "lifestyle/The Guardian",
+     "source": "The Guardian",
+     "title": "Kestävät ja myrkyttömät astiat talvileivontaan",
+     "item_title": "We’ve tested dozens of nontoxic baking tools – our favorites for festive cookies, muffins and more",
+     "url": "https://www.theguardian.com/thefilter-us/2026/nov/24/nontoxic-bakeware-essentials",
+     "why": "Arjen esteettinen ja terveellinen keittiövälineistö kiinnostaa laadusta välittävää lukijaa.",
+     "considered": 3,
+     "available": 25
+    },
+    {
+     "section": "hyvinvointi",
+     "label": "Hyvinvointi",
+     "feed": "hyvinvointi/The New York Times",
+     "source": "The New York Times",
+     "title": "Käsityöretriitit tarjoavat palautumista neulonnan ja keramiikan parissa",
+     "item_title": "6 Craft Retreats Offer Knitting, Pottery and More for All Skill Levels",
+     "url": "https://www.nytimes.com/2026/11/24/travel/crafting-retreat-grandma-hobbies.html",
+     "why": "Taitoihin ja käsillä tekemiseen perustuva lepo tarjoaa tutkitusti kestävää hyvinvointia ilman suorituspaineita.",
+     "considered": 3,
+     "available": 15
+    },
+    {
+     "section": "ravintolat",
+     "label": "Ravintolat",
+     "feed": "ravintolat/The Guardian",
+     "source": "The Guardian",
+     "title": "Talvisalaatit rakentuvat lämmöstä ja tekstuureista",
+     "item_title": "Crunch time: Niki Segnit’s five rules for winter salads",
+     "url": "https://www.theguardian.com/food/2026/nov/24/winter-salad-recipes-five-rules-niki-segnit",
+     "why": "Sesonginmukaista, hienostunutta mutta helppoa kotiruokaa arvostavalle lukijalle erinomainen oivallus.",
+     "considered": 3,
+     "available": 6
+    },
+    {
+     "section": "kulttuuri",
+     "label": "Kulttuuri",
+     "feed": "kulttuuri/Helsingin Sanomat",
+     "source": "Helsingin Sanomat",
+     "title": "Runoilija Teemu Helle sai kotimaista tunnustusta",
+     "item_title": "Palkinnot | Kansainvälisesti julkaistu suomalaisrunoilija saa vihdoin tunnustusta kotimaassaan",
+     "url": "https://www.hs.fi/kulttuuri/art-2000012432354.html",
+     "why": "Runous ja tinkimätön taiteellinen työkenttä ansaitsevat huomion pikaisten uutisten keskellä.",
+     "considered": 3,
+     "available": 20
+    },
+    {
+     "section": "tapahtumat",
+     "label": "Tapahtumat",
+     "feed": "tapahtumat/Linked Events",
+     "source": "Talvipuutarha",
+     "title": "Tanssiteos herättää Talvipuutarhan kaktushuoneen henkiin",
+     "item_title": "Tanssia Talvipuutarhassa: Garden of Others",
+     "url": "https://tapahtumat.hel.fi/fi/events/helsinki:agq7gej6ka",
+     "why": "Visuaalisesti ja tilallisesti harvinaislaatuinen esitys Helsingin kauneimmassa kasvihuoneessa.",
+     "considered": 3,
+     "available": 37
+    }
+   ],
+   "critique": {
+    "tone": 1,
+    "politics": 0,
+    "outlook": 1,
+    "scope": 0,
+    "depth": 0,
+    "novelty": -1,
+    "factuality": 9,
+    "freshness": 10,
+    "cliches": [
+     "vastapainona kiireiselle elämäntavalle",
+     "kestää aikaa"
+    ],
+    "regions": {
+     "finland": 2,
+     "europe": 2,
+     "north_america": 3,
+     "elsewhere": 1
+    },
+    "critique": "Talvipuutarhan tanssiteoksen esittelyssä kannattaa mainita sen teemat toiseuttamisesta ja kolonialismista pelkän tilatunnelmoinnin sijaan.",
+    "model": "gemini-3.8-flash"
+   }
   }
  ]
 }
