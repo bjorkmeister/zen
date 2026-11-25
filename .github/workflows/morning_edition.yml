@@ -126,8 +126,27 @@ jobs:
         with:
           path: _site
 
-      - id: deploy
+      # GitHub's Pages service sometimes cannot find an artifact uploaded a second
+      # earlier ("No artifacts named github-pages"); a second try after a short
+      # wait gets through, so one hiccup no longer costs the morning's notifications.
+      - id: deploy_first
+        continue-on-error: true
         uses: actions/deploy-pages@v4
+
+      - name: Wait before trying the deployment again
+        if: steps.deploy_first.outcome == 'failure'
+        run: sleep 30
+
+      - id: deploy_again
+        if: steps.deploy_first.outcome == 'failure'
+        uses: actions/deploy-pages@v4
+
+      - id: deploy
+        name: Note the page address
+        env:
+          FIRST: ${{ steps.deploy_first.outputs.page_url }}
+          AGAIN: ${{ steps.deploy_again.outputs.page_url }}
+        run: echo "page_url=${FIRST:-$AGAIN}" >> "$GITHUB_OUTPUT"
 
       - name: Send the main edition's morning link
         if: steps.generate.outputs.main_morning == 'true'
