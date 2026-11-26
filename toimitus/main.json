@@ -1251,6 +1251,121 @@
     "critique": "Tuokaa mukaan ainakin yksi suoraan Suomea tai Pohjoismaita koskeva uutissignaali, jotta katsauksen maantieteellinen ankkurointi kotimaahan säilyy myös säähavainnon ulkopuolella.",
     "model": "gemini-3.8-flash"
    }
+  },
+  {
+   "number": 21,
+   "slot": "2026-11-26T06:00",
+   "weather": "MET Norway",
+   "written": "2026-11-26T06:34",
+   "model": "gemini-4-carbon",
+   "seconds": 132,
+   "tokens": {
+    "in": 8792,
+    "out": 1622,
+    "thinking": 8112
+   },
+   "knobs": {
+    "tone": 0,
+    "politics": 0,
+    "outlook": 0,
+    "scope": 0,
+    "depth": 0,
+    "novelty": 0
+   },
+   "seen": {
+    "design/Dezeen": 10,
+    "design/Wallpaper*": 10,
+    "huippu_urheilu/BBC Sport": 10,
+    "huippu_urheilu/The Athletic": 10,
+    "media/The Guardian": 10,
+    "media/The New Yorker": 8,
+    "talous/Bloomberg": 10,
+    "talous/Financial Times": 10,
+    "talous/The Economist": 3,
+    "tekniikka/Ars Technica": 10,
+    "tekniikka/Hacker News": 9
+   },
+   "chosen": [
+    {
+     "section": "tekniikka",
+     "label": "Tekniikka",
+     "feed": "tekniikka/Ars Technica",
+     "source": "Ars Technica",
+     "title": "Yhdysvallat sallii SpaceX:lle miljoonan satelliitin laivaston",
+     "item_title": "The FCC has authorized SpaceX to deploy 1 million satellites",
+     "url": "https://arstechnica.com/space/2026/11/the-fcc-has-authorized-spacex-to-deploy-1-million-satellites/",
+     "why": "Kiertoradan kapasiteetin viisikymmenkertaistava lupa yhdelle yhtiölle on rakenteellisesti painavampi päätös kuin yksittäiset tietoturvapoikkeamat tai ohjelmistojulkaisut.",
+     "considered": 3,
+     "available": 19
+    },
+    {
+     "section": "talous",
+     "label": "Talous",
+     "feed": "talous/Financial Times",
+     "source": "Financial Times",
+     "title": "Etelä-Korean keskuspankki nosti ohjauskorkoaan sirubuumissa",
+     "item_title": "Bank of Korea raises interest rates amid AI chip boom",
+     "url": "https://www.ft.com/content/823af978-e22b-49a4-a2a1-52867a6520fa",
+     "why": "Tekoälysirujen kysynnän kääntyminen keskuspankin koronnostoksi osoittaa konkreettisesti, miten teknologiasektorin kasvu muuttaa koko kansantalouden rahoitusoloja.",
+     "considered": 3,
+     "available": 23
+    },
+    {
+     "section": "design",
+     "label": "Design",
+     "feed": "design/Dezeen",
+     "source": "Dezeen",
+     "title": "Edinburghin taidekorkeakoulu lakkauttaa käsityöpainotteisia muotoilulinjoja",
+     "item_title": "Staff at Edinburgh College of Art criticise \"financially-driven\" closure of design courses",
+     "url": "https://www.dezeen.com/2026/11/25/staff-edinburgh-college-of-art-financially-driven-closure-design-courses-news/",
+     "why": "Korkeakoulun päätös karsia käsityöpainotteista muotoiluopetusta kertoo alan instituutioiden rahoituspaineista enemmän kuin yksittäiset arkkitehtuurikohteet tai tuotejulkistukset.",
+     "considered": 3,
+     "available": 20
+    },
+    {
+     "section": "media",
+     "label": "Media",
+     "feed": "media/The Guardian",
+     "source": "The Guardian",
+     "title": "Tuomioistuin jäädytti viestintäviraston toimet ABC:tä vastaan",
+     "item_title": "Judge blocks Brendan Carr-led FCC from taking any further action against ABC’s licenses",
+     "url": "https://www.theguardian.com/us-news/2026/nov/25/brendan-carr-fcc-abc-licenses",
+     "why": "Tuomioistuimen väliintulo toimilupaviranomaisen ja mediayhtiön kiistassa määrittää riippumattoman tiedonvälityksen ja hallinnollisen vallankäytön välistä rajaa.",
+     "considered": 3,
+     "available": 18
+    },
+    {
+     "section": "huippu_urheilu",
+     "label": "Huippu-urheilu",
+     "feed": "huippu_urheilu/The Athletic",
+     "source": "The Athletic",
+     "title": "Aaron Rodgers ryöpytti julkisesti Pittsburgh Steelersin valmentajaa",
+     "item_title": "Aaron Rodgers, Mike McCarthy and scenes from the Steelers’ surreal day",
+     "url": "https://www.nytimes.com/athletic/7812979/2026/11/25/aaron-rodgers-mike-mccarthy-mcafee-locker-room/",
+     "why": "Avainpelaajan ja päävalmentajan julkinen yhteenotto joukkueen edessä paljastaa huippu-urheiluorganisaation johtamisrakenteen haurauden selkeämmin kuin yksittäiset ottelutulokset.",
+     "considered": 3,
+     "available": 20
+    }
+   ],
+   "critique": {
+    "tone": 1,
+    "politics": 0,
+    "outlook": -1,
+    "scope": 2,
+    "depth": 1,
+    "novelty": -1,
+    "factuality": 10,
+    "freshness": 10,
+    "cliches": [],
+    "regions": {
+     "finland": 0,
+     "europe": 1,
+     "north_america": 3,
+     "elsewhere": 1
+    },
+    "critique": "Seuraavaan numeroon kannattaisi nostaa ainakin yksi kotimainen tai pohjoismainen uutinen tasapainottamaan vahvaa Yhdysvallat-painotusta.",
+    "model": "gemini-4-hydrogen"
+   }
   }
  ]
 }

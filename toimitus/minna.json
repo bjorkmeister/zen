@@ -1501,6 +1501,149 @@
     "critique": "Talvipuutarhan tanssiteoksen esittelyssä kannattaa mainita sen teemat toiseuttamisesta ja kolonialismista pelkän tilatunnelmoinnin sijaan.",
     "model": "gemini-3.8-flash"
    }
+  },
+  {
+   "number": 15,
+   "slot": "2026-11-26T06:00",
+   "weather": "Open-Meteo",
+   "written": "2026-11-26T06:37",
+   "model": "gemini-4-carbon",
+   "seconds": 191,
+   "tokens": {
+    "in": 17585,
+    "out": 2073,
+    "thinking": 13780
+   },
+   "knobs": {
+    "tone": 0,
+    "politics": 0,
+    "outlook": 0,
+    "scope": 0,
+    "depth": 0,
+    "novelty": 0
+   },
+   "seen": {
+    "design/Design Milk": 6,
+    "design/Dezeen": 10,
+    "design/Wallpaper*": 9,
+    "hyvinvointi/Psyche": 3,
+    "hyvinvointi/The Guardian": 3,
+    "hyvinvointi/The New York Times": 9,
+    "kauneus/Allure": 8,
+    "kauneus/The Guardian": 4,
+    "kauneus/Vogue": 8,
+    "kulttuuri/Helsingin Sanomat": 10,
+    "kulttuuri/The Guardian": 10,
+    "lifestyle/Condé Nast Traveler": 10,
+    "lifestyle/Monocle": 10,
+    "lifestyle/The Guardian": 10,
+    "ravintolat/Eater": 3,
+    "ravintolat/Helsingin Sanomat": 3,
+    "ravintolat/The Guardian": 6,
+    "tapahtumat/Linked Events": 37,
+    "tyyli/AnOther": 5,
+    "tyyli/The Guardian": 3,
+    "tyyli/Vogue": 10
+   },
+   "chosen": [
+    {
+     "section": "tyyli",
+     "label": "Tyyli",
+     "feed": "tyyli/The Guardian",
+     "source": "The Guardian",
+     "title": "Takaperin puettu V-neule tuo pukeutumiseen hillittyä linjaa",
+     "item_title": "They’re bringing sexy back – but this time it’s classy | Jess Cartner-Morley",
+     "url": "https://www.theguardian.com/fashion/2026/nov/25/jess-cartner-morley-on-fashion-sexy-is-back",
+     "why": "Konkreettinen ja oivaltava stailausajatus pukeutumisen leikkauksista ja mittasuhteista ilman ostokehotuksia tai julkkisjuoruja.",
+     "considered": 3,
+     "available": 18
+    },
+    {
+     "section": "kauneus",
+     "label": "Kauneus",
+     "feed": "kauneus/Vogue",
+     "source": "Vogue",
+     "title": "Ripsivärikoostumukset siirtyvät kevyeen ja tahraamattomaan erotteluun",
+     "item_title": "Mascara Has Entered Its Sophisticated Era",
+     "url": "https://www.vogue.com/article/modern-mascara",
+     "why": "Ainoa aidosti koostumuksiin ja meikkitekniikkaan keskittyvä juttu Black Friday -listojen hallitsemassa aineistossa.",
+     "considered": 3,
+     "available": 20
+    },
+    {
+     "section": "design",
+     "label": "Design",
+     "feed": "design/Wallpaper*",
+     "source": "Wallpaper*",
+     "title": "Ann Demeulemeester muistelee arkeaan Le Corbusier’n talossa",
+     "item_title": "Inside Le Corbusier’s Maison Guiette, one-time home to Ann Demeulemeester",
+     "url": "https://www.wallpaper.com/architecture/residential/maison-guiette-book-ann-demeulemeesters-home-belgium",
+     "why": "Arkkitehtuurin ja muodin poikkeuksellinen kohtaaminen, joka avaa modernistisen tilan arkea.",
+     "considered": 3,
+     "available": 25
+    },
+    {
+     "section": "lifestyle",
+     "label": "Lifestyle",
+     "feed": "lifestyle/Monocle",
+     "source": "Monocle",
+     "title": "Turun uusi konserttitalo Fuuga nousi kansainväliseen tarkasteluun",
+     "item_title": "Fuuga, Finland’s newest concert hall, is a multipurpose space that hits all the right notes",
+     "url": "https://monocle.com/culture/inside-fuuga-turkus-e90m-concert-hall-in-finland/",
+     "why": "Suomeen sijoittuva arkkitehtuuri- ja kaupunkikulttuuriuutinen menee etusijalle kaukomatkailun ja ostosoppaiden edelle.",
+     "considered": 3,
+     "available": 30
+    },
+    {
+     "section": "hyvinvointi",
+     "label": "Hyvinvointi",
+     "feed": "hyvinvointi/Psyche",
+     "source": "Psyche",
+     "title": "Pitkä asuminen ulkomailla muuttaa suhdetta lähtömaahan",
+     "item_title": "Feeling at home in a new country makes you a stranger in the old",
+     "url": "https://psyche.co/ideas/feeling-at-home-in-a-new-country-makes-you-a-stranger-in-the-old",
+     "why": "Ajatuksellisesti syvin ja rauhallisin teksti identiteetistä ja kodin merkityksestä.",
+     "considered": 3,
+     "available": 15
+    },
+    {
+     "section": "ravintolat",
+     "label": "Ravintolat",
+     "feed": "ravintolat/Helsingin Sanomat",
+     "source": "Helsingin Sanomat",
+     "title": "Keväällä sulkeva Grön arvioitiin kymmenen vuoden jälkeen",
+     "item_title": "Ravintola-arvio | Keväällä sulkeva Grön saa samat neljä tähteä kuin kymmenen vuotta sitten, mutta eri syistä",
+     "url": "https://www.hs.fi/ruoka/art-2000012329686.html",
+     "why": "Merkittävä helsinkiläinen ravintolauutinen ja huolellinen arvio yhdestä kaupungin keskeisestä keittiöstä.",
+     "considered": 3,
+     "available": 12
+    },
+    {
+     "section": "kulttuuri",
+     "label": "Kulttuuri",
+     "feed": "kulttuuri/Helsingin Sanomat",
+     "source": "Helsingin Sanomat",
+     "title": "Hyvinvointikulttuuri haastaa vanhan myytin kärsivästä taiteilijasta",
+     "item_title": "Ilmiöt | Tarvitseeko taide tuskaa? Hyvin­vointi­kulttuuri haastaa taiteilijan",
+     "url": "https://www.hs.fi/kulttuuri/art-2000012424014.html",
+     "why": "Kotimainen kulttuuriessee, joka tarkastelee ajankohtaista ilmiötä älyllisesti ja lukijaa aliarvioimatta.",
+     "considered": 3,
+     "available": 20
+    },
+    {
+     "section": "tapahtumat",
+     "label": "Tapahtumat",
+     "feed": "tapahtumat/Linked Events",
+     "source": "Teater Viirus",
+     "title": "Monitaiteellinen näyttämöteos tutkii omistajuutta Teater Viiruksessa",
+     "item_title": "Collage – Stage of Things",
+     "url": "https://www.viirus.fi/fi/esitykset/collage",
+     "why": "Taiteellisesti kunnianhimoinen iltaesitys Helsingissä tilassa, jota ei ole käsitelty viime numeroissa.",
+     "considered": 3,
+     "available": 37
+    }
+   ],
+   "critique": null
   }
  ]
 }
