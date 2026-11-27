@@ -1366,6 +1366,121 @@
     "critique": "Seuraavaan numeroon kannattaisi nostaa ainakin yksi kotimainen tai pohjoismainen uutinen tasapainottamaan vahvaa Yhdysvallat-painotusta.",
     "model": "gemini-4-hydrogen"
    }
+  },
+  {
+   "number": 22,
+   "slot": "2026-11-27T06:00",
+   "weather": "Open-Meteo",
+   "written": "2026-11-27T06:21",
+   "model": "gemini-4-carbon",
+   "seconds": 157,
+   "tokens": {
+    "in": 8013,
+    "out": 1663,
+    "thinking": 10982
+   },
+   "knobs": {
+    "tone": 0,
+    "politics": 0,
+    "outlook": 0,
+    "scope": 0,
+    "depth": 0,
+    "novelty": 0
+   },
+   "seen": {
+    "design/Dezeen": 10,
+    "design/Wallpaper*": 10,
+    "huippu_urheilu/BBC Sport": 8,
+    "huippu_urheilu/The Athletic": 10,
+    "media/The Guardian": 9,
+    "media/The New Yorker": 2,
+    "talous/Bloomberg": 10,
+    "talous/Financial Times": 8,
+    "talous/The Economist": 4,
+    "tekniikka/Ars Technica": 9,
+    "tekniikka/Hacker News": 10
+   },
+   "chosen": [
+    {
+     "section": "tekniikka",
+     "label": "Tekniikka",
+     "feed": "tekniikka/Ars Technica",
+     "source": "Ars Technica",
+     "title": "Ladybird julkaisi riippumattoman selainmoottorinsa ensimmäisen alfaversion",
+     "item_title": "Ladybird browser's first downloadable alpha is surprisingly capable",
+     "url": "https://arstechnica.com/gadgets/2026/11/ladybirds-new-alpha-shows-theres-life-beyond-chromium/",
+     "why": "Uuden riippumattoman selainmoottorin eteneminen ladattavaan vaiheeseen on verkon perusrakenteen kannalta painavampi uutinen kuin yksittäiset tuotejulkistukset tai tekoälyominaisuudet.",
+     "considered": 3,
+     "available": 19
+    },
+    {
+     "section": "talous",
+     "label": "Talous",
+     "feed": "talous/Bloomberg",
+     "source": "Bloomberg",
+     "title": "Eurooppalaisjohtajat tukevat de Cosia EKP:n seuraavaksi pääjohtajaksi",
+     "item_title": "De Cos Gets Leaders’ Nod for ECB Presidency in Post-Lagarde Era",
+     "url": "https://www.bloomberg.com/news/articles/2026-11-26/de-cos-is-poised-to-take-ecb-presidency-in-era-after-lagarde",
+     "why": "Euroopan keskuspankin pääjohtajavalinta määrittää suoraan euroalueen rahoitusolot ja on rakenteellisesti merkittävämpi kuin yksittäisen ohjelmistoyhtiön henkilöstövähennykset.",
+     "considered": 3,
+     "available": 22
+    },
+    {
+     "section": "design",
+     "label": "Design",
+     "feed": "design/Dezeen",
+     "source": "Dezeen",
+     "title": "Carlo Ratti kuratoi Soulin arkkitehtuuribiennaalin tekoälyn kanssa",
+     "item_title": "Carlo Ratti and AI assistant to curate Seoul Biennale of Architecture and Urbanism 2027",
+     "url": "https://www.dezeen.com/2026/11/26/carlo-ratti-seoul-biennale/",
+     "why": "Merkittävän kansainvälisen biennaalin kuratointivallan jakaminen tekoälyjärjestelmälle kertoo alan instituutioiden murroksesta enemmän kuin yksittäiset rakennuspalkinnot tai brändiuudistukset.",
+     "considered": 3,
+     "available": 20
+    },
+    {
+     "section": "media",
+     "label": "Media",
+     "feed": "media/The Guardian",
+     "source": "The Guardian",
+     "title": "Ofcom vaatii julkisen palvelun sovelluksille etusijaa älytelevisioissa",
+     "item_title": "Public service broadcaster services should be top of TV app menus – Ofcom",
+     "url": "https://www.theguardian.com/uk-news/2026/nov/26/public-service-broadcaster-services-top-of-tv-app-menus-ofcom",
+     "why": "Käyttöliittymien näkyvyyttä koskeva sääntely on mediajärjestelmän valtasuhteiden kannalta olennaisempi kuin yksittäiset henkilöjutut tai sisäiset selvitykset.",
+     "considered": 3,
+     "available": 11
+    },
+    {
+     "section": "huippu_urheilu",
+     "label": "Huippu-urheilu",
+     "feed": "huippu_urheilu/BBC Sport",
+     "source": "BBC Sport",
+     "title": "Ottelun jälkeiset dopingtestit puuttuivat huippumaiden maaottelusarjasta",
+     "item_title": "No post-match drug testing in South Africa v New Zealand series",
+     "url": "https://www.bbc.co.uk/sport/rugby-union/articles/c69309lz275wo?at_medium=RSS&at_campaign=rss",
+     "why": "Valvontajärjestelmän aukko kahden kärkimaan ottelusarjassa on urheiluinstituutioiden uskottavuuden kannalta merkittävämpi uutinen kuin yksittäisten kierrosten ottelutulokset.",
+     "considered": 3,
+     "available": 18
+    }
+   ],
+   "critique": {
+    "tone": 2,
+    "politics": 0,
+    "outlook": 0,
+    "scope": 1,
+    "depth": 1,
+    "novelty": 1,
+    "factuality": 10,
+    "freshness": 10,
+    "cliches": [],
+    "regions": {
+     "finland": 0,
+     "europe": 2,
+     "north_america": 0,
+     "elsewhere": 3
+    },
+    "critique": "Seuraavaan numeroon voisi sisällyttää vähintään yhden suomalaisen tai pohjoismaisen uutissignaalin, jotta alueellinen tasapaino paranisi.",
+    "model": "gemini-4-hydrogen"
+   }
   }
  ]
 }

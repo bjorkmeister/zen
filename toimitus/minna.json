@@ -1644,6 +1644,169 @@
     }
    ],
    "critique": null
+  },
+  {
+   "number": 16,
+   "slot": "2026-11-27T06:00",
+   "weather": "Open-Meteo",
+   "written": "2026-11-27T06:28",
+   "model": "gemini-4-hydrogen",
+   "seconds": 44,
+   "tokens": {
+    "in": 17959,
+    "out": 2109,
+    "thinking": 6657
+   },
+   "knobs": {
+    "tone": 0,
+    "politics": 0,
+    "outlook": 0,
+    "scope": 0,
+    "depth": 0,
+    "novelty": 0
+   },
+   "seen": {
+    "design/Design Milk": 6,
+    "design/Dezeen": 10,
+    "design/Wallpaper*": 10,
+    "hyvinvointi/Psyche": 3,
+    "hyvinvointi/The Guardian": 4,
+    "hyvinvointi/The New York Times": 9,
+    "kauneus/Allure": 8,
+    "kauneus/The Guardian": 4,
+    "kauneus/Vogue": 7,
+    "kulttuuri/Helsingin Sanomat": 10,
+    "kulttuuri/The Guardian": 9,
+    "lifestyle/Condé Nast Traveler": 10,
+    "lifestyle/Monocle": 10,
+    "lifestyle/The Guardian": 9,
+    "ravintolat/Eater": 3,
+    "ravintolat/Helsingin Sanomat": 2,
+    "ravintolat/The Guardian": 8,
+    "tapahtumat/Linked Events": 37,
+    "tyyli/AnOther": 8,
+    "tyyli/The Guardian": 4,
+    "tyyli/Vogue": 10
+   },
+   "chosen": [
+    {
+     "section": "tyyli",
+     "label": "Tyyli",
+     "feed": "tyyli/AnOther",
+     "source": "AnOther",
+     "title": "Kahdeksan korutaiteilijaa etsii kauneutta yllättävistä lähteistä",
+     "item_title": "Eight Jewellers to Have On Your Radar",
+     "url": "https://www.anothermag.com/fashion-beauty/17658/sarabande-foundation-house-of-bandits-eight-fine-jewellers-jewellery-showcase",
+     "why": "Valitsin tämän, koska se nostaa esiin itsenäisten korumuotoilijoiden omaperäisen materiaalivalinnan ja käsityötaidon ilman kulutuspainetta.",
+     "considered": 3,
+     "available": 22
+    },
+    {
+     "section": "kauneus",
+     "label": "Kauneus",
+     "feed": "kauneus/Vogue",
+     "source": "Vogue",
+     "title": "Veruschkan muuntautumiskykyinen kauneus jäi historiaan",
+     "item_title": "Veruschka: The Late ’60s Supermodel’s Best Beauty Looks of All Time",
+     "url": "https://www.vogue.com/article/veruschka-60s-supermodel-best-beauty-looks-graphic-eyes-big-hair",
+     "why": "Kauneusosiossa lähes kaikki muut jutut olivat ostoslistoja tai alennuskampanjoita, joten Veruschkan perintö oli selkeästi sisällöllisesti painavin.",
+     "considered": 3,
+     "available": 19
+    },
+    {
+     "section": "design",
+     "label": "Design",
+     "feed": "design/Wallpaper*",
+     "source": "Wallpaper*",
+     "title": "Hylätty puu muuttui huonekaluiksi ilman verkkoyhteyttä",
+     "item_title": "Max Lamb and Hugo França let us into their world of tropical hardwood, chainsaws and sawdust",
+     "url": "https://www.wallpaper.com/design-interiors/interior-design/furniture/max-lamb-hugo-franca-collaboration",
+     "why": "Valitsin tämän ennen arkkitehtuuripalkintoja, koska käsityön, raaka-aineen ja digitaalisesta hälystä irrottautumisen yhdistelmä on erityisen puhutteleva.",
+     "considered": 3,
+     "available": 26
+    },
+    {
+     "section": "lifestyle",
+     "label": "Lifestyle",
+     "feed": "lifestyle/Monocle",
+     "source": "Monocle",
+     "title": "Jeanne Gang suunnittelee lasipintoja myös linnuille",
+     "item_title": "US architect Jeanne Gang has sky-high ambitions for cities: Design for birds, not just for people",
+     "url": "https://monocle.com/design/architecture/us-architect-jeanne-gang-design-for-birds-not-just-for-people/",
+     "why": "Tämä on konkreettinen ja rauhallinen näkökulma kestävään kaupunkielämään ilman matkailukliseitä tai ostossuosituksia.",
+     "considered": 3,
+     "available": 29
+    },
+    {
+     "section": "hyvinvointi",
+     "label": "Hyvinvointi",
+     "feed": "hyvinvointi/The New York Times",
+     "source": "The New York Times",
+     "title": "Syöpäpotilaille turvapaikan luonut Joanna Bull on kuollut",
+     "item_title": "Joanna Bull Has Died. She Created Gilda’s Club, a Haven for Cancer Patients.",
+     "url": "https://www.nytimes.com/2026/11/25/well/joanna-bull-dead.html",
+     "why": "Valitsin tämän inhimillisen ja merkityksellisen elämäntyön kevyempien liikunta- ja keskusteluvinkkien sijaan.",
+     "considered": 3,
+     "available": 16
+    },
+    {
+     "section": "ravintolat",
+     "label": "Ravintolat",
+     "feed": "ravintolat/Helsingin Sanomat",
+     "source": "Helsingin Sanomat",
+     "title": "Ravintola Pamelan ruskistettu voi syventää tomaattikastikkeen",
+     "item_title": "Kastikkeet | Näin tehdään helsinkiläis­ravintolan suosikiksi noussut kastike, joka vie kielen",
+     "url": "https://www.hs.fi/ruoka/art-2000012436396.html",
+     "why": "Paikallinen helsinkiläisravintola ja konkreettinen ruoanlaittotekniikka palvelevat lukijaa parhaiten.",
+     "considered": 3,
+     "available": 13
+    },
+    {
+     "section": "kulttuuri",
+     "label": "Kulttuuri",
+     "feed": "kulttuuri/Helsingin Sanomat",
+     "source": "Helsingin Sanomat",
+     "title": "Oliver Beerin teos Kiasmassa saa kiireen lakkaamaan",
+     "item_title": "Näyttely­arvio | Kiasman ylimmän kerroksen teos saa kiireen lakkaamaan",
+     "url": "https://www.hs.fi/kulttuuri/art-2000012432163.html",
+     "why": "Valitsin tämän paikallisen näyttelyarvion, koska se kutsuu lukijan Kiasmaan kokemaan juuri sitä rauhaa, johon lehti tähtää.",
+     "considered": 3,
+     "available": 19
+    },
+    {
+     "section": "tapahtumat",
+     "label": "Tapahtumat",
+     "feed": "tapahtumat/Linked Events",
+     "source": "Helsinki Contemporary",
+     "title": "Winter Salon kokoaa taiteen ja tekijät Helsinki Contemporaryyn",
+     "item_title": "Winter Salon",
+     "url": "https://helsinkicontemporary.com/exhibitions/winter-salon-2026",
+     "why": "Galleriaympäristö ja eri tekijöiden vuoropuhelu sopivat suoraan tyylistä ja nykytaiteesta kiinnostuneelle lukijalle.",
+     "considered": 3,
+     "available": 37
+    }
+   ],
+   "critique": {
+    "tone": 1,
+    "politics": 0,
+    "outlook": 1,
+    "scope": 0,
+    "depth": 0,
+    "novelty": -1,
+    "factuality": 9,
+    "freshness": 10,
+    "cliches": [
+     "keskellä vuoden pimeintä aikaa"
+    ],
+    "regions": {
+     "finland": 3,
+     "europe": 2,
+     "north_america": 2,
+     "elsewhere": 1
+    },
+    "critique": "Tekstiin voisi tuoda enemmän vaihtelua lauserakenteisiin, sillä useat uutiskappaleet päättyvät samankaltaiseen toteavaan opetukseen.",
+    "model": "gemini-4-hydrogen"
+   }
   }
  ]
 }
