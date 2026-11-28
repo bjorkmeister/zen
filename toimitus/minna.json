@@ -1807,6 +1807,171 @@
     "critique": "Tekstiin voisi tuoda enemmän vaihtelua lauserakenteisiin, sillä useat uutiskappaleet päättyvät samankaltaiseen toteavaan opetukseen.",
     "model": "gemini-4-hydrogen"
    }
+  },
+  {
+   "number": 17,
+   "slot": "2026-11-28T06:00",
+   "weather": "Open-Meteo",
+   "written": "2026-11-28T06:26",
+   "model": "gemini-3.8-flash",
+   "seconds": 52,
+   "tokens": {
+    "in": 16683,
+    "out": 2049,
+    "thinking": 2353
+   },
+   "knobs": {
+    "tone": 0,
+    "politics": 0,
+    "outlook": 0,
+    "scope": 0,
+    "depth": 0,
+    "novelty": 0
+   },
+   "seen": {
+    "design/Design Milk": 5,
+    "design/Dezeen": 10,
+    "design/Wallpaper*": 10,
+    "hyvinvointi/Psyche": 5,
+    "hyvinvointi/The Guardian": 1,
+    "hyvinvointi/The New York Times": 9,
+    "kauneus/Allure": 10,
+    "kauneus/The Guardian": 5,
+    "kauneus/Vogue": 8,
+    "kulttuuri/Helsingin Sanomat": 10,
+    "kulttuuri/The Guardian": 10,
+    "lifestyle/Condé Nast Traveler": 10,
+    "lifestyle/Monocle": 10,
+    "lifestyle/The Guardian": 9,
+    "ravintolat/Eater": 2,
+    "ravintolat/Helsingin Sanomat": 2,
+    "ravintolat/The Guardian": 9,
+    "tapahtumat/Linked Events": 37,
+    "tyyli/AnOther": 9,
+    "tyyli/The Guardian": 3,
+    "tyyli/Vogue": 10
+   },
+   "chosen": [
+    {
+     "section": "tyyli",
+     "label": "Tyyli",
+     "feed": "tyyli/AnOther",
+     "source": "AnOther",
+     "title": "Sarah Burton tulkitsee klassisen laukun pehmeänä",
+     "item_title": "AnOther Loves: A Shearling Sac",
+     "url": "https://www.anothermag.com/fashion-beauty/17662/another-loves-a-shearling-sac-givenchy",
+     "why": "Burtonin uusi materiaalikokeilu tarjoaa selkeän esimerkin sesongin tekstuurien pehmenemisestä ilman kaupallista hehkutusta.",
+     "considered": 3,
+     "available": 22
+    },
+    {
+     "section": "kauneus",
+     "label": "Kauneus",
+     "feed": "kauneus/Vogue",
+     "source": "Vogue",
+     "title": "Talven tuoksuissa korostuvat puu ja viipyvä pehmeys",
+     "item_title": "After Careful Review, These Are the Best Perfumes for Women",
+     "url": "https://www.vogue.com/article/perfumes-for-women",
+     "why": "Katsaus tuo esiin laadukkaat hajuvesitalot ja havainnollistaa tuoksumieltymysten vuodenaikasiirtymää.",
+     "considered": 3,
+     "available": 23
+    },
+    {
+     "section": "design",
+     "label": "Design",
+     "feed": "design/Dezeen",
+     "source": "Dezeen",
+     "title": "Geoffrey Bawan aistillinen arkkitehtuuri Vitra-museossa",
+     "item_title": "\"We wanted to avoid the idea of tropical modernism\" says curator of Geoffrey Bawa exhibition at Vitra Design Museum",
+     "url": "https://www.dezeen.com/2026/11/27/geoffrey-bawa-exhibition-vitra-design-museum/",
+     "why": "Merkittävä retrospektiivi avaa modernismin monimuotoisuutta ja tilojen aistillista kokemista.",
+     "considered": 3,
+     "available": 25
+    },
+    {
+     "section": "lifestyle",
+     "label": "Lifestyle",
+     "feed": "lifestyle/Monocle",
+     "source": "Monocle",
+     "title": "Käsin kirjoitettu kirje kantaa ajatuksen painon",
+     "item_title": "A cache of emails could never measure up to a stash of much-treasured letters",
+     "url": "https://monocle.com/the-weekend-opener/emails-can-never-compare-to-hand-written-letters/",
+     "why": "Ajankohtainen muistutus hitaan kommunikaation ja fyysisen paperin tuomasta rauhoittavasta arvosta.",
+     "considered": 3,
+     "available": 29
+    },
+    {
+     "section": "hyvinvointi",
+     "label": "Hyvinvointi",
+     "feed": "hyvinvointi/The New York Times",
+     "source": "The New York Times",
+     "title": "Aito kuuntelu vaatii oman puheen pysäyttämistä",
+     "item_title": "To Listen, You Must Stop Talking",
+     "url": "https://www.nytimes.com/2026/11/27/style/modern-love-to-listen-you-must-stop-talking.html",
+     "why": "Kirkas ja kliseetön näkökulma ihmissuhteiden laatuun ja kuuntelun taitoon ilman self help -retoriikkaa.",
+     "considered": 3,
+     "available": 15
+    },
+    {
+     "section": "ravintolat",
+     "label": "Ravintolat",
+     "feed": "ravintolat/Helsingin Sanomat",
+     "source": "Helsingin Sanomat",
+     "title": "Tuomaan markkinoiden maut nojaavat huolellisiin liemiin",
+     "item_title": "HS10 | Kahdeksan hitiksi kelpaavaa herkkua, jotka kannattaa maistaa Tuomaan markkinoilla",
+     "url": "https://www.hs.fi/ruoka/art-2000012430899.html",
+     "why": "Läheinen ja sesonkiin sopiva helsinkiläinen ruokasuositus, joka keskittyy raaka-aineiden laatuun.",
+     "considered": 3,
+     "available": 13
+    },
+    {
+     "section": "kulttuuri",
+     "label": "Kulttuuri",
+     "feed": "kulttuuri/Helsingin Sanomat",
+     "source": "Helsingin Sanomat",
+     "title": "L. Onervan Mirdja herää näyttämöllä visuaalisena runsaudensarvena",
+     "item_title": "Teatteriarvio | Aikansa it-tytöstä kertova esitys innostaa – mutta vain puoliksi",
+     "url": "https://www.hs.fi/kulttuuri/art-2000012436524.html",
+     "why": "Kotimaisen kirjallisuusklassikon ja tanssiteatterin kohtaaminen on kiinnostava kulttuuritapaus.",
+     "considered": 3,
+     "available": 20
+    },
+    {
+     "section": "tapahtumat",
+     "label": "Tapahtumat",
+     "feed": "tapahtumat/Linked Events",
+     "source": "Johanneksenkirkko",
+     "title": "Bachin Jouluoratorio soi Johanneksenkirkossa",
+     "item_title": "J. S. Bach Jouluoratorio",
+     "url": "https://www.facebook.com/events/1453130533587703/",
+     "why": "FiBOn esittämä Jouluoratorio tarjoaa laadukkaan ja esteettisesti täysipainoisen musiikkielämyksen lauantai-iltaan.",
+     "considered": 3,
+     "available": 37
+    }
+   ],
+   "critique": {
+    "tone": 1,
+    "politics": 0,
+    "outlook": 1,
+    "scope": 0,
+    "depth": 0,
+    "novelty": -1,
+    "factuality": 10,
+    "freshness": 10,
+    "cliches": [
+     "Talven kynnyksellä",
+     "ilman turhaa kikkailua",
+     "visuaalisena runsaudensarvena"
+    ],
+    "regions": {
+     "finland": 3,
+     "europe": 2,
+     "north_america": 1,
+     "elsewhere": 2
+    },
+    "critique": "Karsi toistuvaa aistillisuuden ja hidastamisen teemallista hehkutusta luodaksesi tiiviimmän ja särmikkäämmän yleisvaikutelman.",
+    "model": "gemini-3.8-flash"
+   }
   }
  ]
 }

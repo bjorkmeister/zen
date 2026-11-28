@@ -1481,6 +1481,123 @@
     "critique": "Seuraavaan numeroon voisi sisällyttää vähintään yhden suomalaisen tai pohjoismaisen uutissignaalin, jotta alueellinen tasapaino paranisi.",
     "model": "gemini-4-hydrogen"
    }
+  },
+  {
+   "number": 23,
+   "slot": "2026-11-28T06:00",
+   "weather": "Open-Meteo",
+   "written": "2026-11-28T06:21",
+   "model": "gemini-4-carbon",
+   "seconds": 162,
+   "tokens": {
+    "in": 8168,
+    "out": 1863,
+    "thinking": 10424
+   },
+   "knobs": {
+    "tone": 0,
+    "politics": 0,
+    "outlook": 0,
+    "scope": 0,
+    "depth": 0,
+    "novelty": 0
+   },
+   "seen": {
+    "design/Dezeen": 10,
+    "design/Wallpaper*": 10,
+    "huippu_urheilu/BBC Sport": 10,
+    "huippu_urheilu/The Athletic": 10,
+    "media/The Guardian": 10,
+    "media/The New Yorker": 5,
+    "talous/Bloomberg": 10,
+    "talous/Financial Times": 10,
+    "tekniikka/Ars Technica": 5,
+    "tekniikka/Hacker News": 5
+   },
+   "chosen": [
+    {
+     "section": "tekniikka",
+     "label": "Tekniikka",
+     "feed": "tekniikka/Ars Technica",
+     "source": "Ars Technica",
+     "title": "Trump vaati Inteliltä osuutta luvattuja tukia vastaan",
+     "item_title": "Intel faced a choice: Give Trump 10% or face the consequences",
+     "url": "https://arstechnica.com/tech-policy/2026/11/intel-faced-a-choice-give-trump-10-or-face-the-consequences/",
+     "why": "Valtionavustusten kytkeminen suoraan omistusosuuteen paljastaa merkittävän rakenteellisen käänteen Yhdysvaltain teollisuuspolitiikassa toisin kuin kuluttajatuotteiden arviot tai yksittäiset tietoturvapoikkeamat.",
+     "considered": 3,
+     "available": 10
+    },
+    {
+     "section": "talous",
+     "label": "Talous",
+     "feed": "talous/Bloomberg",
+     "source": "Bloomberg",
+     "title": "Saksa rahoittaa puolustusta ja infrastruktuuria jättivelalla",
+     "item_title": "German Budget Passes With €210 Billion in New Borrowing Planned",
+     "url": "https://www.bloomberg.com/news/articles/2026-11-27/german-budget-passes-with-210-billion-in-new-borrowing-planned",
+     "why": "Saksan poikkeuksellisen suuri velanotto muuttaa koko Euroopan finanssipolitiikan ja valtionlainamarkkinoiden tasapainoa suoremmin kuin yksittäiset luottoluokitusnäkymät tai yritysten väliset oikeusriidat.",
+     "considered": 3,
+     "available": 20
+    },
+    {
+     "section": "design",
+     "label": "Design",
+     "feed": "design/Dezeen",
+     "source": "Dezeen",
+     "title": "Britannian ensimmäinen asunnottomien perheiden talo valmistui Lontooseen",
+     "item_title": "Hawkins\\Brown's temporary housing for homeless families in London is a UK first",
+     "url": "https://www.dezeen.com/2026/11/27/harold-hill-family-welcome-centre-hawkins-brown-temporary-homeless-housing/",
+     "why": "Tarkoitukseen rakennettu tilapäismajoitus merkitsee uutta julkisen asuntorakentamisen typologiaa Britanniassa, kun taas muut uutiset käsittelivät pääasiassa yksityiskoteja, palkintoja ja kausituotteita.",
+     "considered": 3,
+     "available": 20
+    },
+    {
+     "section": "media",
+     "label": "Media",
+     "feed": "media/The Guardian",
+     "source": "The Guardian",
+     "title": "Britannian hallitus etenee vaientamiskanteita rajoittavassa lakihankkeessa",
+     "item_title": "Labour backs bill to stop lawsuits used to silence journalists and whistleblowers",
+     "url": "https://www.theguardian.com/media/2026/nov/27/labour-backs-bill-lawsuits-journalists-whistleblowers-slapps",
+     "why": "Sananvapautta ja tutkivaa journalismia suojaavan lainsäädännön prosessuaaliset kynnykset ovat media-alan toimintaedellytysten kannalta painavampi aihe kuin henkilöuutiset, muistokirjoitukset tai viihdeilmiöt.",
+     "considered": 3,
+     "available": 15
+    },
+    {
+     "section": "huippu_urheilu",
+     "label": "Huippu-urheilu",
+     "feed": "huippu_urheilu/The Athletic",
+     "source": "The Athletic",
+     "title": "Inter Miamin mestaruuden puolustaminen kaatui pudotuspeleissä",
+     "item_title": "Inter Miami's MLS title defense goes up in flames: Messi & Co.'s debacle of a 2026",
+     "url": "https://www.nytimes.com/athletic/7812495/2026/11/27/inter-miami-2026-mls-season-playoff-elimination-messi/",
+     "why": "Hallitsevan mestarin kauden hajoaminen valmentajanvaihdokseen ja aikaisiin putoamisiin valaisee tähtivetoisen seurastrategian haavoittuvuutta selkeämmin kuin yksittäisten runkosarja- tai harjoitusotteluiden tulokset.",
+     "considered": 3,
+     "available": 20
+    }
+   ],
+   "critique": {
+    "tone": 1,
+    "politics": 0,
+    "outlook": -1,
+    "scope": 0,
+    "depth": 1,
+    "novelty": 0,
+    "factuality": 9,
+    "freshness": 10,
+    "cliches": [
+     "painopistettä julkisiin hankintoihin",
+     "kriisitilanteessa olevien perheiden arkea"
+    ],
+    "regions": {
+     "finland": 0,
+     "europe": 3,
+     "north_america": 2,
+     "elsewhere": 0
+    },
+    "critique": "Mukana tulisi olla vähintään yksi kotimaahan tai Pohjoismaihin suoraan kytkeytyvä uutisaihe, jotta numero ei jäisi maantieteellisesti liian etäiseksi suomalaiselle lukijalle.",
+    "model": "gemini-3.8-flash"
+   }
   }
  ]
 }
