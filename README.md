@@ -35,7 +35,7 @@ If an edition fails, nothing is published for it and its previous edition stays 
 | `toimitus/` | The editor's desk page, its settings and each edition's log |
 | `index.html`, `minna/index.html` | The current editions, written by the workflow |
 
-A story told in either edition is not offered again for two weeks: each run sets aside the links and titles the editor's log shows were chosen recently, and gives the writer the latest headlines to avoid.
+A story told in either edition is not offered again for about six weeks (45 editions): each run sets aside the links and titles the editor's log shows were chosen recently, and gives the writer the latest headlines to avoid.
 
 Every edition is numbered (*N:o 1, N:o 2, …*). Each page records its own number in a hidden tag, and the next run adds one to it. Only published editions are counted, so a failed run doesn't skip a number. To start an edition's count again from N:o 1, delete its `index.html`.
 
@@ -108,7 +108,7 @@ Each edition is a `Profile` in `generate.py`: its sources, its editorial voice, 
 | To change | Edit |
 | --- | --- |
 | The location | `OLARI` (latitude and longitude) in `generate.py`, and the word *Espoo* in `template.html` |
-| An edition's sources | `sections` in its profile: up to three RSS feeds per domain, or `events=True` |
+| An edition's sources | `sections` in its profile: up to three RSS feeds per domain, or `events=True`; a feed that posts rarely can read further back with `window_hours` |
 | An edition's voice | `reader`, `principles`, `synthesis`, `signal_why` and `reflection` in its profile |
 | An edition's hours | `editions` in its profile (and `TZ` for another time zone) |
 | The language rules, weather line and closing line | `LANGUAGE`, `ATMOSPHERE` and `ZEN` in `generate.py` |

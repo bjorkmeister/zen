@@ -75,6 +75,7 @@ class Feed:
     name: str
     url: str
     paywalled: bool = False  # shown as "tilaajille" and not linked
+    window_hours: int = 0    # read further back than the profile does (a source that posts rarely)
 
 
 @dataclass(frozen=True)
@@ -142,6 +143,8 @@ MAIN = Profile(
         Section("tekniikka", "Tekniikka", (
             Feed("Ars Technica", "https://feeds.arstechnica.com/arstechnica/index"),
             Feed("Hacker News", "https://hnrss.org/frontpage?points=200"),
+            # The Finnish web and software industry; posts every few weeks.
+            Feed("Vierityspalkki", "https://vierityspalkki.fi/feed/", window_hours=30 * 24),
         )),
         Section("talous", "Talous", (
             Feed("Financial Times", "https://www.ft.com/rss/home"),
@@ -621,7 +624,7 @@ def read_feed(feed: Feed, now: float, window_hours: int) -> list[dict]:
         if not stamp:
             continue
         age = (now - calendar.timegm(stamp)) / 3600
-        if not -1 <= age <= window_hours:
+        if not -1 <= age <= (feed.window_hours or window_hours):
             continue
         title = clean(entry.get("title", ""))
         if not title or NOISE.search(title):
@@ -1245,7 +1248,7 @@ def read_log(profile: Profile) -> dict:
     return {"profile": profile.key, "editions": []}
 
 
-RECENT_EDITIONS = 14   # a story chosen within this many editions is not offered again
+RECENT_EDITIONS = 45   # a story chosen within this many editions is not offered again (longer than any feed's window)
 
 
 def fingerprint(title: str) -> str:
